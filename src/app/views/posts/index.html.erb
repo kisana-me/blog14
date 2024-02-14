@@ -1,0 +1,7 @@
+<h1>BLOG 14</h1>
+<p>おすすめの記事</p>
+<% if logged_in? %>
+  <%= button_to("ログアウト", logout_path, method: :delete) %>
+<% else %>
+  <%= button_to("ログイン", login_path, method: :get) %>
+<% end %>
