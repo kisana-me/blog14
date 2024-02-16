@@ -32,6 +32,6 @@ Rails.application.routes.draw do
 
   # API
   namespace :v1 do
-    #
+    post 'images/create' =>  'images#create'
   end
 end

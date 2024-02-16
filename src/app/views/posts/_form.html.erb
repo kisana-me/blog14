@@ -33,14 +33,85 @@
 <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
 <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 <script>
+  const _imageMaxSize = 10000 * 10000 * 2
+  const _imageAccept = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
   const easyMDE = new EasyMDE({
     element: document.getElementById('my-text-area'),
     insertTexts: {
-      horizontalRule: ["", "\n\n-----\n\n"],
-      image: ["![](http://", ")"],
-      link: ["[", "](https://)"],
       table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
     },
-    showIcons: ["code", "table"],
+    uploadImage: true,
+    imageUploadFunction: uploadImage,
+    showIcons: ["code", "horizontal-rule", "table", "upload-image"],
   })
+  function uploadImage(file, onSuccess, onError){
+    if (file.size === 0) {
+      onError(constructErrorMessage(400))
+      return
+    }
+    if (file.size > _imageMaxSize) {
+      onError(constructErrorMessage(413))
+      return
+    }
+    if (file.type) {
+      const file_type = file.type.toLowerCase()
+      if (!file_type.startsWith('image/')) {
+        onError(constructErrorMessage(415))
+        return
+      }
+      if (_imageAccept && _imageAccept.length > 0) {
+        if (_imageAccept.indexOf(file_type) === -1 && _imageAccept.indexOf('image/*') === -1) {
+          onError(constructErrorMessage(415))
+          return
+        }
+      }
+    } else {
+      onError(constructErrorMessage(415))
+      return
+    }
+    const formData = new FormData()
+    const name = window.prompt("[任意]画像名を指定してください", "名前")
+    const image_name_id = window.prompt("[必須]画像IDを指定してください", "ID(英数5字以上)")
+    console.log("入力された値:", image_name_id)
+    formData.append('image[name]', name)
+    formData.append('image[image_name_id]', image_name_id)
+    formData.append('image[image]', file)
+    fetch("<%= full_url('/v1/images/create') %>", {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => {
+    if (!res.ok) {
+        console.error('Error:', error)
+        onError(constructErrorMessage(500))
+        throw new Error('アップロードに失敗しました')
+      }
+      return res.json()
+    })
+    .then(data => {
+      console.log('Success:', data)
+      onSuccess(data.url)
+    })
+    .catch(error => {
+      console.error('Error:', error)
+      onError(constructErrorMessage(500))
+    })
+  }
+  function constructErrorMessage(httpStatus) {
+    var fileMsg = 'ファイル名: #image_name#\nファイルサイズ: #image_size#\n送信可能ファイルサイズ: #image_max_size#';
+    switch (httpStatus) {
+      case 400:	//noFileGiven
+        return 'ファイルが指定されていません\n' + fileMsg;
+      case 413:	//fileTooLarge
+        return 'ファイルが送信可能サイズを超えています\n' + fileMsg;
+      case 415:	//typeNotAllowed
+        var types = getAllowedFileTypeStr();
+        return '許可されないファイル形式です\n' + fileMsg + (types && types.length > 0 ? '\n送信可能ファイル形式: ' + types : '');
+      case 500:	//internalServerError
+        return 'サーバーで何らかのエラーが発生しました\n' + fileMsg;
+      default:
+        return '予期せぬエラーが発生しました\n' + fileMsg;
+    }
+  }
+
 </script>

@@ -1,11 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>App</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charSet="UTF-8" />
+    <title><%= full_title(yield(:title)) %></title>
+    <meta name="theme-color" content="#ffa9c7" />
+    <meta name="color-scheme" content="light" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="author" content=<%= yield(:author) %> />
+    <meta name="generator" content="BLOG14" />
+    <meta name="description" content=<%= yield(:description) %> />
+    <meta name="keywords" content=<%= yield(:keywords) %> />
+    <meta name="robots" content=<%= yield(:robots) %> />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="creator" content=<%= yield(:author) %> />
+    <meta name="googlebot" content=<%= yield(:robots) %> />
+    <meta name="publisher" content=<%= yield(:author) %> />
+    <meta name="format-detection" content="email=no,telephone=no,address=no" />
+    <meta property="og:url" content=<%= yield(:url) %> />
+    <meta property="og:title" content=<%= yield(:title) %> />
+    <meta property="og:type" content=<%= yield(:type) %> />
+    <meta property="og:description" content=<%= yield(:description) %> />
+    <meta property="og:image" content=<%= yield(:image) %> />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:site_name" content="BLOG14" >
+    <meta name="twitter:card" content=<%= yield(:card) %> />
+    <meta name="twitter:site" content="BLOG14" />
+    <meta name="twitter:site:id" content=<%= yield(:id) %> />
+    <meta name="twitter:title" content=<%= yield(:title) %> />
+    <meta name="twitter:description" content=<%= yield(:description) %> />
+    <meta name="twitter:image" content=<%= yield(:image) %> />
+    <meta name="twitter:image:alt" content=<%= yield(:alt) %> />
+    <meta name="twitter:creator" content=<%= yield(:author) %> />
+    <meta name="twitter:creator:id" content=<%= yield(:id) %> />
+    <link rel="icon" href="/blog14.ico" />
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <%= yield(:head) %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -17,6 +47,8 @@
         <%= link_to('プロフ', account_path(@current_account.name_id)) %>
         <%= button_to("ログアウト", logout_path, method: :delete) %>
       <% end %>
+      <nav>
+      </nav>
     </header>
     <hr />
     <main>
