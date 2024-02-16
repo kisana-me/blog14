@@ -1,0 +1,35 @@
+<%= form_with model: @image, url: url, data: { turbo: false } do |f| %>
+  <%= render 'shared/error_messages', instead: @image %>
+  <% if new %>
+  <div>
+    <%= f.label :image, 'image' %>
+    <%= f.file_field :image %>
+  </div>
+  <% end %>
+  <div>
+    <%= f.label :name, '名前' %>
+    <%= f.text_field :name, placeholder: '名前' %>
+  </div>
+  <br/>
+  <div>
+    <%= f.label :image_name_id, 'ID' %>
+    <%= f.text_field :image_name_id, placeholder: 'ID' %>
+  </div>
+  <br/>
+  <div>
+    <%= f.label :nsfw, 'nsfw' %>
+    <%= f.check_box :nsfw ,{}, "1", "0" %>
+  </div>
+  <br/>
+  <div>
+    <%= f.label :nsfw_message, 'nsfw_message' %>
+    <%= f.text_field :nsfw_message, placeholder: 'nsfw_message' %>
+  </div>
+  <br/>
+  <div>
+    <%= f.label :public_visibility, '公開' %>
+    <%= f.check_box :public_visibility ,{}, "1", "0" %>
+  </div>
+  <br/>
+  <%= f.submit 'アップロード' %>
+<% end %>

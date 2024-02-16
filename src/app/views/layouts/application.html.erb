@@ -11,9 +11,21 @@
   </head>
 
   <body>
-    <%= yield %>
+    <header>
+      <h1>BLOG14</h1>
+      <% if logged_in? %>
+        <%= link_to('プロフ', account_path(@current_account.name_id)) %>
+        <%= button_to("ログアウト", logout_path, method: :delete) %>
+      <% end %>
+    </header>
+    <hr />
+    <main>
+      <%= yield %>
+    </main>
     <% flash.each do |message_type, message| %>
       <div class="flash <%= message_type %>"><%= message %></div>
     <% end %>
+    <hr />
+    <footer>@kisana</footer>
   </body>
 </html>

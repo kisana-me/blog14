@@ -1,0 +1,11 @@
+<h1>Tags 一覧</h1>
+<% @tags.each do |tag| %>
+<div>
+  <%= link_to(tag_path(tag.tag_name_id)) do %>
+    <h2><%= tag.name %></h2>
+    <div><%= tag.tag_name_id %></div>
+    <div><%= tag.description %></div>
+  <% end %>
+</div>
+<hr />
+<% end %>

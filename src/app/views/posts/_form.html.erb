@@ -1,0 +1,46 @@
+<%= form_with(model: post, url: url, method: method, data: { turbo: false }) do |f| %>
+  <%= render 'shared/error_messages', instead: post %>
+  <div class="login-inputs">
+    <div class="login-input">
+      <%= f.label :post_name_id, 'ID', class: 'login-input-label' %>
+      <%= f.text_field :post_name_id, class: 'login-input-field', placeholder: 'ID' %>
+    </div>
+    <div class="login-input">
+      <%= f.label :thumbnail, 'サムネ', class: 'login-input-label' %>
+      <%= f.text_field :thumbnail, class: 'login-input-field', placeholder: 'サムネ' %>
+    </div>
+    <div class="login-input">
+      <%= f.label :title, 'タイトル', class: 'login-input-label' %>
+      <%= f.text_field :title, class: 'login-input-field', placeholder: 'タイトル' %>
+    </div>
+    <div class="login-input">
+      <%= f.label :summary, 'まとめ', class: 'login-input-label' %>
+      <%= f.text_area :summary, placeholder: 'まとめ' %>
+    </div>
+    <div>
+      <%= f.label :draft, '下書き' %>
+      <%= f.check_box :draft ,{}, "1", "0" %>
+    </div>
+    <%= f.collection_check_boxes :tag_ids, Tag.all, :id, :name %>
+    <div class="login-input">
+      <%= f.label :content, '内容', class: 'login-input-label' %>
+      <%= f.text_area :content, class: 'login-input-area', id: 'my-text-area', placeholder: '' %>
+    </div>
+  </div>
+  <%= f.submit "アップロード" %>
+<% end %>
+
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+<script>
+  const easyMDE = new EasyMDE({
+    element: document.getElementById('my-text-area'),
+    insertTexts: {
+      horizontalRule: ["", "\n\n-----\n\n"],
+      image: ["![](http://", ")"],
+      link: ["[", "](https://)"],
+      table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
+    },
+    showIcons: ["code", "table"],
+  })
+</script>

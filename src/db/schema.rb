@@ -10,22 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 5) do
+ActiveRecord::Schema[7.1].define(version: 9) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "account_id", null: false
     t.string "name", default: "", null: false
     t.string "name_id", null: false
+    t.string "icon", default: "", null: false
     t.text "bio", default: "", null: false
     t.integer "posts_count", default: 0, null: false
     t.text "settings", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.string "role", default: "", null: false
     t.string "password_digest", null: false
-    t.timestamp "last_online"
-    t.boolean "locked", default: false, null: false
+    t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id", "name_id"], name: "index_accounts_on_account_id_and_name_id", unique: true
+    t.index ["name_id"], name: "index_accounts_on_name_id", unique: true
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
     t.check_constraint "json_valid(`settings`)", name: "settings"
   end
@@ -58,45 +57,99 @@ ActiveRecord::Schema[7.1].define(version: 5) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.string "name", default: "", null: false
+    t.text "content", default: "", null: false
+    t.string "contact", default: "", null: false
+    t.boolean "public_visibility", default: false, null: false
+    t.boolean "deleted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_comments_on_post_id"
+  end
+
+  create_table "images", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "name", default: "", null: false
+    t.string "image_name_id", null: false
+    t.boolean "nsfw", default: false, null: false
+    t.string "nsfw_message", default: "", null: false
+    t.boolean "public_visibility", default: true, null: false
+    t.boolean "deleted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_images_on_account_id"
+    t.index ["image_name_id"], name: "index_images_on_image_name_id", unique: true
+  end
+
   create_table "others", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "other_id", null: false
     t.string "other_type", default: "", null: false
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.text "content", default: "", null: false
     t.boolean "done", default: false, null: false
+    t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["other_id"], name: "index_others_on_other_id", unique: true
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
+  end
+
+  create_table "post_tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_tags_on_post_id"
+    t.index ["tag_id"], name: "index_post_tags_on_tag_id"
   end
 
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "post_id", null: false
+    t.string "post_name_id", null: false
+    t.string "thumbnail", default: "", null: false
     t.string "title", default: "", null: false
+    t.text "summary", default: "", null: false
     t.text "content", default: "", null: false
     t.boolean "draft", default: false, null: false
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
+    t.integer "comments_count", default: 0, null: false
+    t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_posts_on_account_id"
-    t.index ["post_id"], name: "index_posts_on_post_id", unique: true
+    t.index ["post_name_id"], name: "index_posts_on_post_name_id", unique: true
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
   end
 
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "session_id", null: false
+    t.string "session_name_id", null: false
     t.string "name", default: "", null: false
     t.string "session_digest", null: false
+    t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_sessions_on_account_id"
-    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["session_name_id"], name: "index_sessions_on_session_name_id", unique: true
+  end
+
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "tag_name_id", default: "", null: false
+    t.string "description", default: "", null: false
+    t.integer "posts_count", default: 0, null: false
+    t.boolean "deleted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_name_id"], name: "index_tags_on_tag_name_id", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comments", "posts"
+  add_foreign_key "images", "accounts"
+  add_foreign_key "post_tags", "posts"
+  add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "accounts"
   add_foreign_key "sessions", "accounts"
 end

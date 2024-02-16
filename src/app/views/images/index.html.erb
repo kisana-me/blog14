@@ -1,0 +1,9 @@
+<h1>Image 一覧</h1>
+<% @images.each do |image| %>
+<div>
+  <h2><%= image.name %></h2>
+  <p><%= image.image_name_id %></p>
+  <%= image_tag image_path(image.image_name_id) %>
+  <%= link_to('編集', edit_image_path(image.image_name_id)) %>
+</div>
+<% end %>

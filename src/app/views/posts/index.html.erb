@@ -1,7 +1,11 @@
-<h1>BLOG 14</h1>
-<p>おすすめの記事</p>
-<% if logged_in? %>
-  <%= button_to("ログアウト", logout_path, method: :delete) %>
-<% else %>
-  <%= button_to("ログイン", login_path, method: :get) %>
+<h1>Post 一覧</h1>
+<% @posts.each do |post| %>
+<div>
+  <%= link_to(post_path(post.post_name_id)) do %>
+    <div>画像</div>
+    <h2><%= post.title %></h2>
+    <div><%= post.summary %></div>
+  <% end %>
+</div>
+<hr />
 <% end %>

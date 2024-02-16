@@ -1,24 +1,22 @@
 Rails.application.routes.draw do
 
   get "health" => "rails/health#show", as: :rails_health_check
-  root "posts#index"
+  root "others#index"
 
-  # Accounts
-  get 'signup' => 'accounts#signup'
-  post 'signup' => 'accounts#create_signup'
-  get 'login' => 'accounts#login'
-  post 'login' => 'accounts#create_login'
-  delete 'logout' => 'accounts#logout'
-  get 'a/:name_id' => 'accounts#show', as: 'account'
-  get 'a/:name_id/edit' => 'accounts#edit', as: 'edit_account'
-  post 'a/:name_id/edit' => 'accounts#update', as: 'update_account'
+  scope :secret do
+    get 'signup' => 'accounts#signup'
+    post 'signup' => 'accounts#create_signup'
+    get 'login' => 'accounts#login'
+    post 'login' => 'accounts#create_login'
+    delete 'logout' => 'accounts#logout'
+  end
 
-  # Posts
-  get 'p/:post_id' => 'posts#show', as: 'post'
-  get 'p' => 'posts#new'
-  post 'p' => 'posts#create'
-  get 'p/:post_id/edit' => 'posts#edit', as: 'edit_post'
-  post 'p/:post_id/edit' => 'posts#update', as: 'update_post'
+  resources :accounts, param: :name_id, except: [:new, :create]
+  resources :images, param: :image_name_id
+  resources :posts, param: :post_name_id
+  resources :tags, param: :tag_name_id
+
+  post 'comment' => 'comments#create'
 
   # Others
   get 'terms' => 'others#terms'
@@ -29,19 +27,11 @@ Rails.application.routes.draw do
 
   # Administorator
   namespace :admin do
-    #root 'application#index'
-    #get 'accounts'
-    #get 'a/:name_id' => 'accounts#show', as: 'account'
-    #post 'a/:name_id/update' => 'accounts#update', as: 'update_account'
-    #get 'posts'
-    #get 'p/:post_id' => 'posts#show', as: 'post'
-    #post 'p/:post_id/edit' => 'posts#update', as: 'update_post'
-    #get 'others'
+    #
   end
 
-  # TODO
-  ## Comments
-  ## Tags
-  ## Categories
-  ## API
+  # API
+  namespace :v1 do
+    #
+  end
 end

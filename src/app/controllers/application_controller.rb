@@ -18,6 +18,9 @@ class ApplicationController < ActionController::Base
     end
   end
   def admin_account
+    unless logged_in? && @current_account.role == 'admin'
+      render :file => "#{Rails.root}/public/404.html",  layout: false, status: :not_found
+    end
   end
   def logged_in_account
     unless logged_in?

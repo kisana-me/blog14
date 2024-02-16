@@ -1,2 +1,7 @@
 <h1><%= @post.title %></h1>
-<p><%= @post.content %></p>
+<div>
+  <%= toc(@post.content) %>
+</div>
+<div>
+  <%= markdown(@post.content) %>
+</div>
