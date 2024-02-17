@@ -42,7 +42,7 @@
 
   <body>
     <header>
-      <h1>BLOG14</h1>
+      <div>BLOG14</div>
       <% if logged_in? %>
         <%= link_to('プロフ', account_path(@current_account.name_id)) %>
         <%= button_to("ログアウト", logout_path, method: :delete) %>

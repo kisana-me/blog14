@@ -98,19 +98,19 @@
     })
   }
   function constructErrorMessage(httpStatus) {
-    var fileMsg = 'ファイル名: #image_name#\nファイルサイズ: #image_size#\n送信可能ファイルサイズ: #image_max_size#';
+    var fileMsg = 'ファイル名: #image_name#\nファイルサイズ: #image_size#\n送信可能ファイルサイズ: #image_max_size#'
     switch (httpStatus) {
       case 400:	//noFileGiven
-        return 'ファイルが指定されていません\n' + fileMsg;
+        return 'ファイルが指定されていません\n' + fileMsg
       case 413:	//fileTooLarge
-        return 'ファイルが送信可能サイズを超えています\n' + fileMsg;
+        return 'ファイルが送信可能サイズを超えています\n' + fileMsg
       case 415:	//typeNotAllowed
-        var types = getAllowedFileTypeStr();
-        return '許可されないファイル形式です\n' + fileMsg + (types && types.length > 0 ? '\n送信可能ファイル形式: ' + types : '');
+        var types = getAllowedFileTypeStr()
+        return '許可されないファイル形式です\n' + fileMsg + (types && types.length > 0 ? '\n送信可能ファイル形式: ' + types : '')
       case 500:	//internalServerError
-        return 'サーバーで何らかのエラーが発生しました\n' + fileMsg;
+        return 'サーバーで何らかのエラーが発生しました\n' + fileMsg
       default:
-        return '予期せぬエラーが発生しました\n' + fileMsg;
+        return '予期せぬエラーが発生しました\n' + fileMsg
     }
   }
 
