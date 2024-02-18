@@ -33,31 +33,53 @@
     <meta name="twitter:creator" content=<%= yield(:author) %> />
     <meta name="twitter:creator:id" content=<%= yield(:id) %> />
     <link rel="icon" href="/blog14.ico" />
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield(:head) %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
     <header>
-      <div>BLOG14</div>
-      <% if logged_in? %>
-        <%= link_to('プロフ', account_path(@current_account.name_id)) %>
-        <%= button_to("ログアウト", logout_path, method: :delete) %>
-      <% end %>
+      <div class="blog-name"><%= link_to(ENV['APP_NAME'], root_path) %></div>
       <nav>
+        <%= link_to(posts_path) do %>
+          記事一覧
+        <% end %>
+        <%= link_to(tags_path) do %>
+          タグ一覧
+        <% end %>
       </nav>
     </header>
-    <hr />
-    <main>
-      <%= yield %>
+    <main class="wf-roundedmplus1c">
+      <div class="main-container">
+        <%= yield %>
+      </div>
+      <% if yield(:layout_style) == 'full'%>
+      <div class="sub-container">
+        <h3>おすすめの記事</h3>
+        <% recommended_posts(5).each do |post| %>
+          <%= render 'posts/show_mini', post: post %>
+        <% end %>
+      </div>
+      <% end %>
     </main>
     <% flash.each do |message_type, message| %>
       <div class="flash <%= message_type %>"><%= message %></div>
     <% end %>
-    <hr />
-    <footer>@kisana</footer>
+    <footer>
+      @Kisana528/@Koyu0TT |
+      <%= link_to('利用規約', terms_path) %> |
+      <%= link_to('ポリシー', policy_path) %> |
+      <%= link_to('免責事項', disclaimer_path) %> |
+      <%= link_to('お問い合わせ', contact_path) %>
+      <% if logged_in? %>
+        |
+        <%= link_to('プロフ編集', edit_account_path(@current_account.name_id)) %>
+        <%= button_to("ログアウト", logout_path, method: :delete) %>
+      <% end %>
+    </footer>
   </body>
 </html>

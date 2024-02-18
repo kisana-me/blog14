@@ -1,7 +1,8 @@
 class CreateAccounts < ActiveRecord::Migration[7.1]
   def change
     create_table :accounts do |t|
-      t.string :name, null: false, default: ''
+      t.string :account_id, null: false
+      t.string :name, null: false
       t.string :name_id, null: false
       t.string :icon, null: false, default: ''
       t.text :bio, null: false, default: ''
@@ -14,6 +15,6 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
-    add_index :accounts, [:name_id], unique: true
+    add_index :accounts, [:account_id, :name_id], unique: true
   end
 end

@@ -1,3 +1,18 @@
+<% keywords = '' %>
+<% authors = '' %>
+<% provide(:title, 'ログイン') %>
+<% provide(:author, authors) %>
+<% provide(:description, 'ログイン') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:url, full_url("/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, '') %>
+
 <%= form_with(scope: :session, url: login_path, data: { turbo: false }) do |f| %>
   <% if @error_message.present? %>
     <div class="alert alert-danger">

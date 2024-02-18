@@ -9,7 +9,7 @@ module AccountsHelper
     token = SecureRandom.urlsafe_base64
     Session.create(
       account_id: account.id,
-      session_name_id: uuid,
+      session_unique_id: uuid,
       session_digest: digest(token)
     )
     secure_cookies = ENV["RAILS_SECURE_COOKIES"].present?
@@ -38,7 +38,8 @@ module AccountsHelper
   def log_out
     Session.find_by(
       account_id: cookies.signed[:blog14_aid],
-      session_name_id: cookies.signed[:blog14_uid]
+      session_unique_id: cookies.signed[:blog14_uid],
+      deleted: false
     ).destroy
     cookies.delete(:blog14_aid)
     cookies.delete(:blog14_uid)
@@ -53,10 +54,14 @@ module AccountsHelper
       return
     else
       begin
-        account = Account.find(cookies.signed[:blog14_aid])
+        account = Account.find_by(
+          id: cookies.signed[:blog14_aid],
+          deleted: false
+        )
         session = Session.find_by(
           account_id: cookies.signed[:blog14_aid],
-          session_name_id: cookies.signed[:blog14_uid]
+          session_unique_id: cookies.signed[:blog14_uid],
+          deleted: false
         )
         if BCrypt::Password.new(session.session_digest).is_password?(cookies.signed[:blog14_rtk])
           @current_account = account

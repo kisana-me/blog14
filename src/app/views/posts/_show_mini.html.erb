@@ -1,0 +1,24 @@
+<div class="show-mini-post">
+  <%= link_to(post_path(post.post_name_id)) do %>
+  <div class="show-mini-post-container">
+    <div class="show-mini-post-thumbnail">
+      <% if post.thumbnail.present? %>
+      <%= image_tag image_path(post.thumbnail) %>
+      <% else %>
+      <div class="show-mini-post-altspace">
+        <div class="show-mini-post-alttext">
+          画像なし
+        </div>
+      </div>
+      <% end %>
+    </div>
+    <div class="show-mini-post-context">
+      <div class="show-mini-post-title"><%= post.title %></div>
+    <span>
+      公開:<%= post.created_at.strftime('%Y/%m/%d %H:%M') %>
+      <%= '更新:' + post.updated_at.strftime('%Y/%m/%d %H:%M') if post.updated_at.present? %>
+    </span>
+    </div>
+  </div>
+  <% end %>
+</div>

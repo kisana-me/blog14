@@ -1,1 +1,4 @@
+<% provide(:title, '編集') %>
+<% provide(:layout_style, '') %>
+
 <%= render 'images/form', image: @image, url: image_path(@image.image_name_id), method: :post, new: true %>

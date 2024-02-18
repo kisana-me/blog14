@@ -21,7 +21,7 @@
       <%= f.label :draft, '下書き' %>
       <%= f.check_box :draft ,{}, "1", "0" %>
     </div>
-    <%= f.collection_check_boxes :tag_ids, Tag.all, :id, :name %>
+    <%= f.collection_check_boxes :tag_ids, all_tags, :id, :name %>
     <div class="login-input">
       <%= f.label :content, '内容', class: 'login-input-label' %>
       <%= f.text_area :content, class: 'login-input-area', id: 'my-text-area', placeholder: '' %>

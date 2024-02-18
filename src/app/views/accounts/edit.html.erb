@@ -1,3 +1,6 @@
+<% provide(:title, '編集') %>
+<% provide(:layout_style, '') %>
+
 <%= form_with(model: @account, url: account_path(@account.name_id), method: :patch, data: { turbo: false }) do |f| %>
   <%= render 'shared/error_messages', instead: @account %>
   <div class="login-inputs">

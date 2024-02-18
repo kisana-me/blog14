@@ -1,0 +1,32 @@
+<% keywords = 'お問い合わせ' %>
+<% authors = 'Kisana528, Koyu0TT' %>
+<% provide(:title, 'お問い合わせ') %>
+<% provide(:author, authors) %>
+<% provide(:description, 'BLOG14お問い合わせ') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'index, follow') %>
+<% provide(:url, full_url("/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, full_url("/")) %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, 'alt') %>
+<% provide(:id, 'Kisana528/Koyu0TT') %>
+<% provide(:layout_style, '') %>
+
+<h1>お問い合わせ</h1>
+<p>お手数ですが、計算問題を解き半角数字で入力してください。</p>
+<p>「*」は掛け算、「/」は割り算です。</p>
+<%= form_with(model: @other, url: contact_path, method: :post, data: { turbo: false }) do |f| %>
+  <%= render 'shared/error_messages', instead: @other %>
+  <div class="inputs">
+    <div class="input">
+      <%= label :test1, :test, @problem %>
+      <%= text_field :test1, :test, placeholder: '解答' %>
+    </div>
+    <div class="input">
+      <%= f.label :content, '内容' %>
+      <%= f.text_area :content, placeholder: '内容' %>
+    </div>
+  </div>
+  <%= f.submit "送信" %>
+<% end %>

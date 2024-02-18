@@ -1,11 +1,19 @@
-<h1>Tags 一覧</h1>
+<% keywords = 'タグ一覧' %>
+<% authors = '' %>
+<% provide(:title, 'タグ一覧') %>
+<% provide(:author, authors) %>
+<% provide(:description, 'タグ一覧') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'index, follow') %>
+<% provide(:url, full_url("/tags/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, 'full') %>
+
+<h1>タグ一覧</h1>
 <% @tags.each do |tag| %>
-<div>
-  <%= link_to(tag_path(tag.tag_name_id)) do %>
-    <h2><%= tag.name %></h2>
-    <div><%= tag.tag_name_id %></div>
-    <div><%= tag.description %></div>
-  <% end %>
-</div>
-<hr />
+  <%= render 'tags/show', tag: tag %>
 <% end %>

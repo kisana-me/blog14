@@ -1,6 +1,47 @@
-<p>ブログを作り始めて14個目。今度こそ。</p>
+<% keywords = 'ブログ' %>
+<% authors = 'Kisana528, Koyu0TT' %>
+<% provide(:title, '') %>
+<% provide(:author, authors) %>
+<% provide(:description, 'BLOG14トップページ') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'index, follow') %>
+<% provide(:url, full_url("/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, full_url("/")) %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, 'alt') %>
+<% provide(:id, 'Kisana528/Koyu0TT') %>
+<% provide(:layout_style, 'full') %>
+
+<h1>BLOG14</h1>
+<p>ブログを作り始めて14個目。</p>
 <h2>おすすめの記事</h2>
 <div>
-  <h3>記事1ダミー</h3>
-  <p>内容...</p>
+  <% recommended_posts(1).each do |post| %>
+    <%= render 'posts/show', post: post %>
+  <% end %>
+</div>
+<h2>新着の記事</h2>
+<div>
+  <% new_posts(5).each do |post| %>
+    <%= render 'posts/show', post: post %>
+  <% end %>
+</div>
+<h2>○○タグのついた記事</h2>
+<div>
+  <% recommended_posts(1).each do |post| %>
+    <%= render 'posts/show', post: post %>
+  <% end %>
+</div>
+<h2>コメントが多い記事</h2>
+<div>
+  <% recommended_posts(1).each do |post| %>
+    <%= render 'posts/show', post: post %>
+  <% end %>
+</div>
+<h2>○○が書いた記事</h2>
+<div>
+  <% recommended_posts(1).each do |post| %>
+    <%= render 'posts/show', post: post %>
+  <% end %>
 </div>

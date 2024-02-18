@@ -1,12 +1,9 @@
 class TagsController < ApplicationController
+  include TagsHelper
   before_action :set_tag, only: %i[ show edit update ]
   before_action :logged_in_account, only: %i[ new create edit update ]
   def index
-    @tags = Tag.where(
-      deleted: false
-    ).order(
-      id: :desc
-    )
+    @tags = all_tags
   end
   def show
   end
@@ -45,9 +42,6 @@ class TagsController < ApplicationController
     )
   end
   def set_tag
-    @tag = Tag.find_by(
-      tag_name_id: params[:tag_name_id],
-      deleted: false
-    )
+    @tag = find_tag(params[:tag_name_id])
   end  
 end

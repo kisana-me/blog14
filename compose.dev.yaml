@@ -7,7 +7,7 @@ services:
       APP_NAME: 'BLOG14'
       APP_URL: 'http://localhost:3000/'
       RAILS_ENV: development
-      RAILS_SECURE_COOKIES: false
+      RAILS_SECURE_COOKIES: ''
       S3_ENDPOINT_INSIDE: 'http://minio:9000/'
       S3_ENDPOINT_OUTSIDE: 'http://localhost:9000/'
       S3_USER: 'minioroot'

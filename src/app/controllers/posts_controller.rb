@@ -1,9 +1,10 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update ]
+  before_action :set_post, only: %i[ show ]
+  before_action :set_correct_post, only: %i[ edit update ]
   before_action :logged_in_account, only: %i[ new create edit update ]
   include PostsHelper
   def index
-    @posts = all_posts
+    @posts = paged_posts(params[:page])
   end
   def show
   end
@@ -12,7 +13,7 @@ class PostsController < ApplicationController
   end
   def create
     @post = Post.new(post_params)
-    @post.account_id = @current_account.id
+    @post.accounts << @current_account
     if @post.save
       flash[:success] = '作成しました'
       redirect_to post_path(@post.post_name_id)
@@ -49,5 +50,12 @@ class PostsController < ApplicationController
   end
   def set_post
     @post = find_post(params[:post_name_id])
+  end
+  def set_correct_post
+    @post = find_correct_post(params[:post_name_id])
+    unless @post.accounts.include?(@current_account)
+      flash[:danger] = '正しいアカウントではありません'
+      redirect_to root_path
+    end
   end
 end

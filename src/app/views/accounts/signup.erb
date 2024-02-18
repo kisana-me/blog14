@@ -1,3 +1,18 @@
+<% keywords = '' %>
+<% authors = '' %>
+<% provide(:title, 'サインアップ') %>
+<% provide(:author, authors) %>
+<% provide(:description, 'サインアップ') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:url, full_url("/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, '') %>
+
 <%= form_with(model: @account, url: signup_path, data: { turbo: false }) do |f| %>
   <%= render 'shared/error_messages', instead: @account %>
   <div class="login-inputs">

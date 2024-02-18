@@ -1,9 +1,9 @@
 class Account < ApplicationRecord
-  has_many :sessions
-  has_many :posts
-  has_many :images
+  has_many :sessions, foreign_key: :account_id
+  has_many :account_posts
+  has_many :posts, through: :account_posts
+  has_many :images, foreign_key: :account_id
   has_secure_password
-  BASE_64_URL_REGEX  = /\A[a-zA-Z0-9_-]*\z/
   validates :name_id,
     presence: true,
     length: { in: 5..50, allow_blank: true },

@@ -12,6 +12,7 @@ class AccountsController < ApplicationController
   end
   def create_signup
     @account = Account.new(account_params)
+    @account.account_id = unique_random_id(Account, 'account_id')
     if params[:account][:invitation_code] == ENV['INVITATION_CODE']
       if @account.save
         redirect_to login_path

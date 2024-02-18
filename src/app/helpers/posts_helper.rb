@@ -18,7 +18,7 @@ module PostsHelper
       deleted: false
     )
   end
-  def find_draft_post(post_name_id)
+  def find_correct_post(post_name_id)
     Post.find_by(
       post_name_id: post_name_id,
       deleted: false
@@ -30,6 +30,42 @@ module PostsHelper
       deleted: false
     ).order(
       id: :desc
+    )
+  end
+  def paged_posts(param)
+    param = param.to_i
+    page = param < 1 ? 1 : param
+    offset_item = (page - 1) * 10 # 開始位置
+    limit_item = 10 # 表示件数
+    return Post.where(
+      draft: false,
+      deleted: false
+    ).offset(
+      offset_item.to_i
+    ).limit(
+      limit_item.to_i
+    ).order(
+      created_at: :desc
+    )
+  end
+  def recommended_posts(limit)
+    return Post.where(
+      draft: false,
+      deleted: false
+    ).limit(
+      limit.to_i
+    ).order(
+      created_at: :desc
+    )
+  end
+  def new_posts(limit)
+    return Post.where(
+      draft: false,
+      deleted: false
+    ).limit(
+      limit.to_i
+    ).order(
+      created_at: :desc
     )
   end
 end

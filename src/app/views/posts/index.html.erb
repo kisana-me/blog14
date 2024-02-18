@@ -1,11 +1,19 @@
-<h1>Post 一覧</h1>
+<% keywords = '記事一覧' %>
+<% authors = '' %>
+<% provide(:title, '記事一覧') %>
+<% provide(:author, authors) %>
+<% provide(:description, '記事一覧') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'index, follow') %>
+<% provide(:url, full_url("/posts/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, 'full') %>
+
+<h1>記事一覧</h1>
 <% @posts.each do |post| %>
-<div>
-  <%= link_to(post_path(post.post_name_id)) do %>
-    <div>画像</div>
-    <h2><%= post.title %></h2>
-    <div><%= post.summary %></div>
-  <% end %>
-</div>
-<hr />
+  <%= render 'posts/show', post: post %>
 <% end %>

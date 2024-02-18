@@ -1,0 +1,33 @@
+<div class="show-post">
+  <%= link_to(post_path(post.post_name_id)) do %>
+  <div class="show-post-container">
+    <div class="show-post-thumbnail">
+      <% if post.thumbnail.present? %>
+      <div class="show-post-altspace">
+        <div class="show-post-alttext">
+          <% thumbnail = find_image(post.thumbnail) %>
+          画像名:<%= thumbnail.name %>
+          <br />
+          画像説明:<%= thumbnail.name %>
+        </div>
+      </div>
+      <%= image_tag image_path(post.thumbnail) %>
+      <% else %>
+      <div class="show-post-altspace">
+        <div class="show-post-alttext">
+          サムネイル画像なし
+        </div>
+      </div>
+      <% end %>
+    </div>
+    <div class="show-post-context">
+      <h2><%= post.title %></h2>
+      <p><%= post.summary %></p>
+      <span>
+        公開:<%= post.created_at.strftime('%Y/%m/%d %H:%M') %>
+        <%= '更新:' + post.updated_at.strftime('%Y/%m/%d %H:%M') if post.updated_at.present? %>
+      </span>
+    </div>
+  </div>
+  <% end %>
+</div>

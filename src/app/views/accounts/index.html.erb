@@ -1,4 +1,19 @@
-<h1>Account 一覧</h1>
+<% keywords = '' %>
+<% authors = '' %>
+<% provide(:title, 'アカウント一覧') %>
+<% provide(:author, authors) %>
+<% provide(:description, 'アカウント一覧') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:url, full_url("/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, 'full') %>
+
+<h1>アカウント一覧</h1>
 <% @accounts.each do |account| %>
 <div>
   <h2><%= account.name %></h2>

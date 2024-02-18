@@ -1,9 +1,24 @@
-<h1>Image 一覧</h1>
+<% keywords = '画像一覧' %>
+<% authors = '' %>
+<% provide(:title, '画像一覧') %>
+<% provide(:author, authors) %>
+<% provide(:description, '画像一覧') %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:url, full_url("/posts/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, 'full') %>
+
+<h1>画像一覧</h1>
 <% @images.each do |image| %>
 <div>
   <h2><%= image.name %></h2>
   <p><%= image.image_name_id %></p>
   <%= image_tag image_path(image.image_name_id) %>
-  <%= link_to('編集', edit_image_path(image.image_name_id)) %>
+  <%= link_to('編集', edit_image_path(image.image_name_id)) if image.account == @current_account %>
 </div>
 <% end %>

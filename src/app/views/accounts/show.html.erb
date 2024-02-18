@@ -1,6 +1,25 @@
+<% keywords = '' %>
+<% authors = '' %>
+<% provide(:title, @account.name) %>
+<% provide(:author, authors) %>
+<% provide(:description, @account.bio) %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:url, full_url("/")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, 'full') %>
+
 <h1><%= @account.name %></h1>
-<span><%= @account.name_id %></span>
-<div>投稿一覧</div>
-<% if @current_account === @account %>
-  <%= link_to('編集', edit_account_path(@current_account.name_id)) %>
+<div>
+  ID:<%= @account.name_id %>
+</div>
+<div>
+  BIO:<%= @account.bio %>
+</div>
+<% @account.posts.each do |post| %>
+  <%= render 'posts/show', post: post %>
 <% end %>

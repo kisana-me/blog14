@@ -15,7 +15,7 @@ module AccountImages
       resize: resize,
       extent: extent
     )
-    resized.merge(end_optimize)
+    #resized.merge(end_optimize)
   end
   private
   def start_optimize
@@ -31,22 +31,19 @@ module AccountImages
       strip: true,
     }
   end
-  Rails.logger.info(`gravity southeast text 10,2 '#{ENV["APP_URL"].to_s}'`)
-  draw_text = "gravity southeast text 10,2 '" + ENV["APP_URL"] + "'"
-  Rails.logger.info(draw_text)
   def end_optimize
     {
       gravity: "south",
       background: "black",
       fill: "white",
-      font: '/app/app/assets/fonts/mplus-1p-regular.ttf',
+      font: font,
       splice: "0x24",
       pointsize: "14",
-      draw: "gravity southeast text 10,2 'Posted to #{ENV["APP_NAME"]} | Amiverse' ",
+      draw: "gravity southeast text 10,2 'Posted to #{ENV["APP_NAME"]}' ",
       deconstruct: true # アニメーションシーケンスの最適化2 #動くwebpで2回目処理時に文字が消えるバグ対策
     }
   end
   def font
-    './app/assets/fonts/mplus-1p-regular.ttf'
+    './app/assets/fonts/???'
   end
 end

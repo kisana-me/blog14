@@ -1,6 +1,7 @@
 <% keywords = @post.tags.pluck(:name).join(', ') %>
+<% authors = @post.accounts.pluck(:name).join('/') %>
 <% provide(:title, @post.title) %>
-<% provide(:author, @post.account.name) %>
+<% provide(:author, authors) %>
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
 <% provide(:robots, 'index, follow') %>
@@ -10,15 +11,50 @@
 <% provide(:card, 'summary') # summary,summary_large_image, app, player %>
 <% provide(:alt, @post.summary) %>
 <% provide(:id, @post.post_name_id) %>
+<% provide(:layout_style, 'full') %>
 
-<h1><%= @post.title %></h1>
-<div>
-  <%= link_to('編集', edit_post_path(@post.post_name_id), data: { turbo: false }) if @post.account == @current_account %>
-  <%= toc(@post.content) %>
-</div>
-<div>
-  <%= toc(@post.content) %>
-</div>
-<div>
-  <%= markdown(@post.content) %>
+<div class="post">
+  <div class="post-thumbnail">
+    <% if @post.thumbnail.present? %>
+    <%= image_tag image_path(@post.thumbnail) %>
+    <% else %>
+    <div class="post-altspace">
+      <div class="post-alttext">
+        画像なし
+      </div>
+    </div>
+    <% end %>
+  </div>
+  <div class="post-context">
+    <h1><%= @post.title %></h1>
+    <p><%= @post.summary %></p>
+    <span>
+      公開:<%= @post.created_at.strftime('%Y/%m/%d %H:%M') %>
+      <%= '更新:' + @post.updated_at.strftime('%Y/%m/%d %H:%M') if @post.updated_at.present? %>
+    </span>
+    <div>
+      作成者:
+      <% @post.accounts.each do |account| %>
+        <%= link_to(account.name, account_path(account.name_id)) %>
+      <% end %>
+    </div>
+    <div>
+      タグ:
+      <% @post.tags.each do |tag| %>
+        <%= link_to(tag.name, tag_path(tag.tag_name_id)) %>
+      <% end %>
+    </div>
+    <div class="post-meta">
+      <button>共有</button>
+      <button>コメント</button>
+      <%= button_to('編集', edit_post_path(@post.post_name_id), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
+    </div>
+  </div>
+  <div class="post-toc">
+    <span>目次</span>
+    <%= toc(@post.content) %>
+  </div>
+  <div class="post-content">
+    <%= markdown(@post.content) %>
+  </div>
 </div>

@@ -24,7 +24,7 @@ class ImagesController < ApplicationController
       io: (params[:image][:image]),
       filename: "#{@image.image_name_id}.#{image_type}"
     )
-    @image.account_id = @current_account.id
+    @image.account = @current_account
     if @image.save
       @image.resize_image('image')
       flash[:success] = "画像をアップロードしました"
@@ -51,8 +51,7 @@ class ImagesController < ApplicationController
     params.require(:image).permit(
       :name,
       :image_name_id,
-      :nsfw,
-      :nsfw_message,
+      :description,
       :public_visibility
     )
   end

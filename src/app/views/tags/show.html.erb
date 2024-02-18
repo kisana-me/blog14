@@ -1,7 +1,25 @@
+<% keywords = @tag.name %>
+<% authors = '' %>
+<% provide(:title, @tag.name) %>
+<% provide(:author, authors) %>
+<% provide(:description, @tag.description) %>
+<% provide(:keywords, keywords) %>
+<% provide(:robots, 'index, follow') %>
+<% provide(:url, full_url("/tags/#{@tag.tag_name_id}")) %>
+<% provide(:type, 'website') # website or article %>
+<% provide(:image, "/") %>
+<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:alt, '') %>
+<% provide(:id, '') %>
+<% provide(:layout_style, 'full') %>
+
 <h1><%= @tag.name %></h1>
 <div>
-  <%= @tag.description %>
+  タグID:<%= @tag.tag_name_id %>
 </div>
 <div>
-  <%= @tag.tag_name_id %>
+  紹介:<%= @tag.description %>
 </div>
+<% @tag.posts.each do |post| %>
+  <%= render 'posts/show', post: post %>
+<% end %>
