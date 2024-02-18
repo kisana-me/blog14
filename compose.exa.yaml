@@ -3,14 +3,24 @@ services:
     build: .
     tty: true
     stdin_open: true
+    restart: always
     environment:
-      RAILS_ENV: development
-      RAILS_SECURE_COOKIES: false
+      APP_NAME: 'BLOG14'
+      APP_URL: 'https://blog.amiverse.net/'
+      RAILS_ENV: production
+      RAILS_SECURE_COOKIES: 'true'
+      S3_ENDPOINT_INSIDE: 'http://minio:9000/'
+      S3_ENDPOINT_OUTSIDE: 'https://blog.amiverse.net/'
+      S3_USER: 'minioroot'
+      S3_PASSWORD: 'minioroot'
+      S3_REGION: 'blog14'
+      S3_BUCKET: 'production'
+      INVITATION_CODE: 'zettainibarenaiko-dowosiyousitekudasai'
     working_dir: /app
     volumes:
       - ./src:/app
     ports:
-      - '3000:3000'
+      - '3040:3000'
     command: >
       bash -c "rm -f /app/tmp/pids/server.pid &&
       rm -f /app/public/assets &&
@@ -22,38 +32,41 @@ services:
     image: mariadb:latest
     tty: true
     stdin_open: true
+    restart: always
     environment:
       TZ: 'Asia/Tokyo'
       MARIADB_ROOT_PASSWORD: 'mdbroot'
     volumes:
       - db-vol:/var/lib/mysql
     ports:
-      - '3306:3306'
+      - '3346:3306'
 
   minio:
     image: minio/minio:latest
     tty: true
     stdin_open: true
+    restart: always
     environment:
       MINIO_ROOT_USER: 'minioroot'
       MINIO_ROOT_PASSWORD: 'minioroot'
     volumes:
       - minio-vol:/data
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - '9040:9000'
+      - '9041:9001'
     command: server /data --console-address ":9001"
 
   phpmyadmin:
     image: phpmyadmin:latest
     tty: true
     stdin_open: true
+    restart: always
     environment:
       PMA_HOSTS: 'db'
     depends_on:
       - db
     ports:
-      - '8080:80'
+      - '8040:80'
 
 volumes:
   db-vol:

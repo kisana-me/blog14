@@ -39,6 +39,12 @@
     <%= yield(:head) %>
     <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <% if Rails.env.production? %>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3JW0EY2GYV"></script>
+    <% end %>
+
   </head>
 
   <body>
