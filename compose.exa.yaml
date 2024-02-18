@@ -20,12 +20,14 @@ services:
     volumes:
       - ./src:/app
     ports:
-      - '3040:3000'
+      - '3000:3000'
     command: >
       bash -c "rm -f /app/tmp/pids/server.pid &&
-      rm -f /app/public/assets &&
+      rm -rf /app/public/assets &&
       gem cleanup &&
       bundle install -j4 &&
+      rails db:migrate &&
+      RAILS_ENV=production rails assets:precompile &&
       rails s -b 0.0.0.0"
 
   db:
@@ -39,7 +41,7 @@ services:
     volumes:
       - db-vol:/var/lib/mysql
     ports:
-      - '3346:3306'
+      - '3306:3306'
 
   minio:
     image: minio/minio:latest
@@ -52,8 +54,8 @@ services:
     volumes:
       - minio-vol:/data
     ports:
-      - '9040:9000'
-      - '9041:9001'
+      - '9000:9000'
+      - '9001:9001'
     command: server /data --console-address ":9001"
 
   phpmyadmin:
@@ -66,7 +68,7 @@ services:
     depends_on:
       - db
     ports:
-      - '8040:80'
+      - '8080:80'
 
 volumes:
   db-vol:
