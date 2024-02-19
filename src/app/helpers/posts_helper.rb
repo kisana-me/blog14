@@ -2,6 +2,8 @@ module PostsHelper
   def markdown(text)
     options = {
       tables: true,
+      fenced_code_blocks: true,
+      strikethrough: true
     }
     markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, options)
     markdown.render(text).html_safe
