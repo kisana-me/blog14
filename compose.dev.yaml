@@ -20,6 +20,9 @@ services:
       - ./src:/app
     ports:
       - '3000:3000'
+    depends_on:
+      - db
+      - minio
     command: >
       bash -c "rm -f /app/tmp/pids/server.pid &&
       rm -f /app/public/assets &&
