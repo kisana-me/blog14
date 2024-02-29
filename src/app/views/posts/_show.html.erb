@@ -21,7 +21,7 @@
       <% end %>
     </div>
     <div class="show-post-context">
-      <h2><%= post.title %></h2>
+      <h2><%= post.title.present? ? post.title : 'タイトルなし' %></h2>
       <p><%= post.summary %></p>
       <span>
         公開:<%= post.created_at.strftime('%Y/%m/%d %H:%M') %>

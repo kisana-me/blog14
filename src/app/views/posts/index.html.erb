@@ -12,8 +12,10 @@
 <% provide(:alt, '') %>
 <% provide(:id, '') %>
 <% provide(:layout_style, 'full') %>
+<% provide(:ga4, 'true') %>
 
 <h1>記事一覧</h1>
 <% @posts.each do |post| %>
   <%= render 'posts/show', post: post %>
 <% end %>
+<%= render 'shared/paging', pages: @total, page: params[:page], path: posts_path %>

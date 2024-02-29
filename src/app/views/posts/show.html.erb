@@ -12,6 +12,7 @@
 <% provide(:alt, @post.summary) %>
 <% provide(:id, @post.post_name_id) %>
 <% provide(:layout_style, 'full') %>
+<% provide(:ga4, 'true') %>
 
 <div class="post">
   <div class="post-thumbnail">
@@ -26,7 +27,7 @@
     <% end %>
   </div>
   <div class="post-context">
-    <h1><%= @post.title %></h1>
+    <h1><%= @post.title.present? ? @post.title : 'タイトルなし' %></h1>
     <p><%= @post.summary %></p>
     <span>
       公開:<%= @post.created_at.strftime('%Y/%m/%d %H:%M') %>

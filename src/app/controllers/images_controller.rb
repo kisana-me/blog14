@@ -8,7 +8,6 @@ class ImagesController < ApplicationController
     @images = all_images
   end
   def show
-    Rails.logger.info(@image)
     send_noblob_stream(
       @image.image, @image.resize_image('image')
     )

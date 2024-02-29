@@ -13,7 +13,7 @@
       <% end %>
     </div>
     <div class="show-mini-post-context">
-      <div class="show-mini-post-title"><%= post.title %></div>
+      <div class="show-mini-post-title"><%= post.title.present? ? post.title : 'タイトルなし' %></div>
     <span>
       公開:<%= post.created_at.strftime('%Y/%m/%d %H:%M') %>
       <%= '更新:' + post.updated_at.strftime('%Y/%m/%d %H:%M') if post.updated_at.present? %>

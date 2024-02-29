@@ -39,16 +39,18 @@
     <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
+    <% if yield(:ga4).present? %>
     <% if Rails.env.production? %>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3JW0EY2GYV"></script>
+    <% end %>
     <% end %>
 
   </head>
 
   <body>
     <header>
-      <div class="blog-name"><%= link_to(ENV['APP_NAME'], root_path) %></div>
+      <div class="app-name"><%= link_to(ENV['APP_NAME'], root_path) %></div>
       <nav>
         <%= link_to(posts_path) do %>
           記事一覧
@@ -64,10 +66,12 @@
       </div>
       <% if yield(:layout_style) == 'full'%>
       <div class="sub-container">
-        <h3>おすすめの記事</h3>
-        <% recommended_posts(5).each do |post| %>
-          <%= render 'posts/show_mini', post: post %>
-        <% end %>
+        <div class="sub-content">
+          <h3>おすすめの記事</h3>
+          <% recommended_posts(5).each do |post| %>
+            <%= render 'posts/show_mini', post: post %>
+          <% end %>
+        </div>
       </div>
       <% end %>
     </main>
@@ -75,16 +79,25 @@
       <div class="flash <%= message_type %>"><%= message %></div>
     <% end %>
     <footer>
-      @Kisana528/@Koyu0TT |
-      <%= link_to('利用規約', terms_path) %> |
-      <%= link_to('ポリシー', policy_path) %> |
-      <%= link_to('免責事項', disclaimer_path) %> |
-      <%= link_to('お問い合わせ', contact_path) %>
-      <% if logged_in? %>
-        |
-        <%= link_to('プロフ編集', edit_account_path(@current_account.name_id)) %>
-        <%= button_to("ログアウト", logout_path, method: :delete) %>
-      <% end %>
+        <div class="footer-app-name">
+        <%= link_to(ENV['APP_NAME'], root_path) %>
+        </div>
+        <div class="footer-links">
+          <ul>
+            <li><%= link_to('利用規約', terms_path) %></li>
+            <li><%= link_to('ポリシー', policy_path) %></li>
+            <li><%= link_to('免責事項', disclaimer_path) %></li>
+          <ul>
+        </div>
+        <div class="footer-actions">
+          <ul>
+            <li><%= link_to('お問い合わせ', contact_path) %></li>
+            <% if logged_in? %>
+            <li><%= link_to('プロフ編集', edit_account_path(@current_account.name_id)) %></li>
+            <li><%= button_to("ログアウト", logout_path, method: :delete) %></li>
+            <% end %>
+          </ul>
+        </div>
     </footer>
   </body>
 </html>

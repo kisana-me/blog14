@@ -1,11 +1,14 @@
 module PostsHelper
   def markdown(text)
     options = {
-      tables: true,
       fenced_code_blocks: true,
-      strikethrough: true
+      strikethrough: true,
+      with_toc_data: true
     }
-    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, options)
+    extensions = {
+      tables: true,
+    }
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(options), extensions)
     markdown.render(text).html_safe
   end
   def toc(text)
@@ -34,11 +37,19 @@ module PostsHelper
       id: :desc
     )
   end
+  def posts_page
+    total_posts = Post.where(
+      draft: false,
+      deleted: false
+    ).count
+    per_page = 10 # 表示件数
+    return total_posts > 0 ? (total_posts.to_i / per_page).ceil : 0
+  end
   def paged_posts(param)
     param = param.to_i
     page = param < 1 ? 1 : param
-    offset_item = (page - 1) * 10 # 開始位置
     limit_item = 10 # 表示件数
+    offset_item = (page - 1) * limit_item
     return Post.where(
       draft: false,
       deleted: false

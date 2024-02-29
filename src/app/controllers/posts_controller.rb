@@ -5,6 +5,7 @@ class PostsController < ApplicationController
   include PostsHelper
   def index
     @posts = paged_posts(params[:page])
+    @total = posts_page
   end
   def show
   end
