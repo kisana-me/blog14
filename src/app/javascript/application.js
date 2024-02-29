@@ -8,9 +8,9 @@ document.addEventListener('turbo:load', (event) => {
     window.dataLayer.push(arguments);
   }
   gtag('js', new Date());
-  gtag('config', 'G-3JW0EY2GYV', { page_location: event.detail.url });
+  gtag('config', 'G-EMJR3TFCRD', { page_location: event.detail.url });
   gtag('event', 'page_view', {
     page_location: event.detail.url,
-    send_to: 'G-3JW0EY2GYV',
+    send_to: 'G-EMJR3TFCRD',
   });
 });
