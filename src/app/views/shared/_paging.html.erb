@@ -2,19 +2,19 @@
 <% page = page.to_i %>
 <% page < 1 ? 1 : page %>
 <% if page > 1 %>
-<%= link_to "←", posts_path(page: page - 1) %>
+<%= link_to "←", "#{page_to}?page=#{page - 1}" %>
 <% end %>
 |
 <% pages.times.each_with_index do |_, index| %>
 <% if index + 1 == page %>
 <%= index + 1 %>
 <% else %>
-<%= link_to index + 1, posts_path(page: index + 1) %>
+<%= link_to index + 1, "#{page_to}?page=#{index + 1}" %>
 <% end %>
 |
 <% end %>
 
 <% if page + 1 <= pages %>
-<%= link_to "→", posts_path(page: page + 1) %>
+<%= link_to "→", "#{page_to}?page=#{page + 1}" %>
 <% end %>
 <% end %>

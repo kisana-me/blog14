@@ -81,4 +81,14 @@ module PostsHelper
       created_at: :desc
     )
   end
+  def whos_posts(who, limit)
+    return who.posts.where(
+      draft: false,
+      deleted: false
+    ).limit(
+      limit.to_i
+    ).order(
+      created_at: :desc
+    )
+  end
 end

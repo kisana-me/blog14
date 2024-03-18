@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   # Administorator
   namespace :admin do
-    #
+    root "studio#index"
   end
 
   # API

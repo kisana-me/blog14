@@ -21,6 +21,14 @@
 <div>
   BIO:<%= @account.bio %>
 </div>
+<% if @current_account == @account %>
+<h2>全投稿(下書き含む)</h2>
 <% @account.posts.each do |post| %>
   <%= render 'posts/show', post: post %>
+<% end %>
+<% else %>
+<h2>投稿(最新10つ)</h2>
+<% whos_posts(@account, 10).each do |post| %>
+  <%= render 'posts/show', post: post %>
+<% end %>
 <% end %>

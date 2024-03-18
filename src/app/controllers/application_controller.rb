@@ -25,13 +25,13 @@ class ApplicationController < ActionController::Base
   def logged_in_account
     unless logged_in?
       flash[:danger] = "ログインしてください"
-      redirect_to login_url
+      redirect_to login_path
     end
   end
   def logged_out_account
     unless !logged_in?
       flash[:danger] = "ログイン済みです"
-      redirect_to root_url
+      redirect_to root_path
     end
   end
 end

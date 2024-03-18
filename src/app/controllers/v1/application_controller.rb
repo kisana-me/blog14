@@ -1,6 +1,6 @@
 class V1::ApplicationController < ApplicationController
-  protect_from_forgery except: :new
-  def new
+  protect_from_forgery except: :new_token
+  def new_token
     set_csrf_token_cookie
     render body: nil
   end
