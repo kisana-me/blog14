@@ -24,8 +24,12 @@
       <h2><%= post.title.present? ? post.title : 'タイトルなし' %></h2>
       <p><%= post.summary %></p>
       <span>
+        <% if post.created_at == post.updated_at %>
         公開:<%= post.created_at.strftime('%Y/%m/%d %H:%M') %>
-        <%= '更新:' + post.updated_at.strftime('%Y/%m/%d %H:%M') if post.updated_at.present? %>
+        <% else %>
+        公開:<%= post.created_at.strftime('%Y/%m/%d %H:%M') %>
+        更新:<%= post.updated_at.strftime('%Y/%m/%d %H:%M') %>
+        <% end %>
       </span>
     </div>
   </div>
