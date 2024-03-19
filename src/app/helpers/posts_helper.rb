@@ -1,19 +1,28 @@
 module PostsHelper
   def markdown(text)
     options = {
+      hard_wrap: true,
       with_toc_data: true
     }
     extensions = {
       tables: true,
       fenced_code_blocks: true,
-      strikethrough: true
+      autolink: true,
+      strikethrough: true,
+      lax_spacing: true,
+      space_after_headers: true,
+      superscript: true,
+      underline: true,
+      highlight: true,
+      quote: true,
+      footnotes: true
     }
     markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(options), extensions)
     markdown.render(text).html_safe
   end
   def toc(text)
       renderer = Redcarpet::Render::HTML_TOC.new(nesting_level: 3)
-      markdown = Redcarpet::Markdown.new(renderer)
+      markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
       markdown.render(text).html_safe
   end
   def find_post(post_name_id)
