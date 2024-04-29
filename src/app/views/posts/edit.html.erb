@@ -1,4 +1,4 @@
 <% provide(:title, '編集') %>
 <% provide(:layout_style, '') %>
 
-<%= render 'posts/form', post: @post, url: post_path(@post.post_name_id), method: :patch %>
+<%= render 'posts/form', post: @post, url: post_path(@post.aid), method: :patch %>

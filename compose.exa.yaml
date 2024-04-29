@@ -9,8 +9,8 @@ services:
       APP_URL: 'https://blog.amiverse.net/'
       RAILS_ENV: production
       RAILS_SECURE_COOKIES: 'true'
-      S3_ENDPOINT_INSIDE: 'http://minio:9000/'
-      S3_ENDPOINT_OUTSIDE: 'https://blog.amiverse.net/'
+      S3_LOCAL_ENDPOINT: 'http://minio:9000/'
+      S3_PUBLIC_ENDPOINT: 'https://blog.amiverse.net/'
       S3_USER: 'minioroot'
       S3_PASSWORD: 'minioroot'
       S3_REGION: 'blog14'

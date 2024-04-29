@@ -8,8 +8,8 @@ services:
       APP_URL: 'http://localhost:3000/'
       RAILS_ENV: development
       RAILS_SECURE_COOKIES: ''
-      S3_ENDPOINT_INSIDE: 'http://minio:9000/'
-      S3_ENDPOINT_OUTSIDE: 'http://localhost:9000/'
+      S3_LOCAL_ENDPOINT: 'http://minio:9000/'
+      S3_PUBLIC_ENDPOINT: 'http://localhost:9000/'
       S3_USER: 'minioroot'
       S3_PASSWORD: 'minioroot'
       S3_REGION: 'blog14'

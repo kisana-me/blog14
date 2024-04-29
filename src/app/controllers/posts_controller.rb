@@ -14,10 +14,14 @@ class PostsController < ApplicationController
   end
   def create
     @post = Post.new(post_params)
+    # 画像探してthumbnail作成
+    # or 
+    # 画像があればimage作成してthumbnail作成
+    @post.aid = generate_aid(Post, 'aid')
     @post.accounts << @current_account
     if @post.save
       flash[:success] = '作成しました'
-      redirect_to post_path(@post.post_name_id)
+      redirect_to post_path(@post.aid)
     else
       flash.now[:danger] = '作成できませんでした'
       render 'new'
@@ -28,7 +32,7 @@ class PostsController < ApplicationController
   def update
     if @post.update(post_params)
       flash[:success] = '編集しました'
-      redirect_to post_path(@post.post_name_id)
+      redirect_to post_path(@post.aid)
     else
       flash.now[:danger] = '編集できませんでした'
       render 'new'
@@ -39,21 +43,17 @@ class PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(
-      :post_name_id,
-      :image_name_id,
       :title,
-      :content,
-      :draft,
-      :thumbnail,
       :summary,
-      tag_ids: []
+      :content,
+      :draft
     )
   end
   def set_post
-    @post = find_post(params[:post_name_id])
+    @post = find_post(params[:aid])
   end
   def set_correct_post
-    @post = find_correct_post(params[:post_name_id])
+    @post = find_correct_post(params[:aid])
     unless @post.accounts.include?(@current_account)
       flash[:danger] = '正しいアカウントではありません'
       redirect_to root_path

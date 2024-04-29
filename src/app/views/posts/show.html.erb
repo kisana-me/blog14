@@ -5,19 +5,19 @@
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
 <% provide(:robots, 'index, follow') %>
-<% provide(:url, full_url("/posts/#{@post.post_name_id}")) %>
+<% provide(:url, full_url("/posts/#{@post.aid}")) %>
 <% provide(:type, 'article') # website or article %>
-<% provide(:image, full_url("/images/#{@post.thumbnail}")) %>
+<% provide(:image, full_url("/images/#{@post.aid}")) %>
 <% provide(:card, 'summary') # summary,summary_large_image, app, player %>
 <% provide(:alt, @post.summary) %>
-<% provide(:id, @post.post_name_id) %>
+<% provide(:id, @post.aid) %>
 <% provide(:layout_style, 'full') %>
 <% provide(:ga4, 'true') %>
 
 <div class="post">
   <div class="post-thumbnail">
-    <% if @post.thumbnail.present? %>
-    <%= image_tag image_path(@post.thumbnail) %>
+    <% if false %>
+    <%= image_tag image_path(@post.aid) %>
     <% else %>
     <div class="post-altspace">
       <div class="post-alttext">
@@ -52,7 +52,7 @@
     <div class="post-meta">
       <button>共有</button>
       <button>コメント</button>
-      <%= button_to('編集', edit_post_path(@post.post_name_id), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
+      <%= button_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
     </div>
   </div>
   <div class="post-toc">

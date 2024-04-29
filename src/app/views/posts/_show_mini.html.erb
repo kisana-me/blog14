@@ -1,8 +1,8 @@
 <div class="show-mini-post">
-  <%= link_to(post_path(post.post_name_id)) do %>
+  <%= link_to(post_path(post.aid)) do %>
   <div class="show-mini-post-container">
     <div class="show-mini-post-thumbnail">
-      <% if post.thumbnail.present? %>
+      <% if false %>
       <%= image_tag image_path(post.thumbnail) %>
       <% else %>
       <div class="show-mini-post-altspace">

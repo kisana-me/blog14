@@ -10,12 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 10) do
+ActiveRecord::Schema[7.1].define(version: 12) do
   create_table "account_posts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.bigint "post_id", null: false
-    t.string "role", default: "", null: false
-    t.boolean "manager", default: true, null: false
+    t.boolean "administrator", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_account_posts_on_account_id"
@@ -23,21 +22,25 @@ ActiveRecord::Schema[7.1].define(version: 10) do
   end
 
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "account_id", null: false
-    t.string "name", null: false
+    t.string "aid", null: false
     t.string "name_id", null: false
-    t.string "icon", default: "", null: false
-    t.text "bio", default: "", null: false
+    t.string "icon_original_key", default: "", null: false
+    t.text "icon_variants", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
+    t.string "name", null: false
+    t.text "description", default: "", null: false
+    t.bigint "views_count", default: 0, null: false
     t.integer "posts_count", default: 0, null: false
     t.text "settings", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
-    t.string "role", default: "", null: false
+    t.text "role", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.string "password_digest", null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id", "name_id"], name: "index_accounts_on_account_id_and_name_id", unique: true
+    t.index ["aid", "name_id"], name: "index_accounts_on_aid_and_name_id", unique: true
+    t.check_constraint "json_valid(`icon_variants`)", name: "icon_variants"
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
+    t.check_constraint "json_valid(`role`)", name: "role"
     t.check_constraint "json_valid(`settings`)", name: "settings"
   end
 
@@ -84,18 +87,22 @@ ActiveRecord::Schema[7.1].define(version: 10) do
 
   create_table "images", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.string "aid", null: false
     t.string "name", default: "", null: false
-    t.string "image_name_id", null: false
     t.string "description", default: "", null: false
     t.boolean "public_visibility", default: true, null: false
+    t.string "original_key", default: "", null: false
+    t.text "variants", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_images_on_account_id"
-    t.index ["image_name_id"], name: "index_images_on_image_name_id", unique: true
+    t.index ["aid"], name: "index_images_on_aid", unique: true
+    t.check_constraint "json_valid(`variants`)", name: "variants"
   end
 
   create_table "others", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "aid", default: "", null: false
     t.string "others_type", default: "", null: false
     t.text "content", default: "", null: false
     t.text "memo", default: "", null: false
@@ -104,7 +111,17 @@ ActiveRecord::Schema[7.1].define(version: 10) do
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["aid"], name: "index_others_on_aid", unique: true
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
+  end
+
+  create_table "post_comments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "comment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["comment_id"], name: "index_post_comments_on_comment_id"
+    t.index ["post_id"], name: "index_post_comments_on_post_id"
   end
 
   create_table "post_tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -117,42 +134,52 @@ ActiveRecord::Schema[7.1].define(version: 10) do
   end
 
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "post_name_id", null: false
-    t.string "thumbnail", default: "", null: false
+    t.string "aid", null: false
     t.string "title", default: "", null: false
     t.text "summary", default: "", null: false
     t.text "content", default: "", null: false
     t.boolean "draft", default: false, null: false
     t.integer "comments_count", default: 0, null: false
+    t.bigint "views_count", default: 0, null: false
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["post_name_id"], name: "index_posts_on_post_name_id", unique: true
+    t.index ["aid"], name: "index_posts_on_aid", unique: true
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
   end
 
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "session_unique_id", null: false
+    t.string "aid", null: false
     t.string "name", default: "", null: false
     t.string "session_digest", null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_sessions_on_account_id"
-    t.index ["session_unique_id"], name: "index_sessions_on_session_unique_id", unique: true
+    t.index ["aid"], name: "index_sessions_on_aid", unique: true
   end
 
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "aid", null: false
     t.string "name", default: "", null: false
-    t.string "tag_name_id", null: false
-    t.string "description", default: "", null: false
+    t.text "description", default: "", null: false
     t.integer "posts_count", default: 0, null: false
+    t.bigint "views_count", default: 0, null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tag_name_id"], name: "index_tags_on_tag_name_id", unique: true
+    t.index ["aid"], name: "index_tags_on_aid", unique: true
+  end
+
+  create_table "thumbnails", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "image_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["image_id"], name: "index_thumbnails_on_image_id"
+    t.index ["post_id"], name: "index_thumbnails_on_post_id"
   end
 
   add_foreign_key "account_posts", "accounts"
@@ -161,7 +188,11 @@ ActiveRecord::Schema[7.1].define(version: 10) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "accounts"
   add_foreign_key "images", "accounts"
+  add_foreign_key "post_comments", "comments"
+  add_foreign_key "post_comments", "posts"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "sessions", "accounts"
+  add_foreign_key "thumbnails", "images"
+  add_foreign_key "thumbnails", "posts"
 end

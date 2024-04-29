@@ -17,15 +17,10 @@ class ImagesController < ApplicationController
   end
   def create
     @image = Image.new(image_params)
-    image_type = content_type_to_extension(params[:image][:image].content_type)
-    @image.image.attach(
-      key: "accounts/#{@current_account.id}/images/#{@image.image_name_id}.#{image_type}",
-      io: (params[:image][:image]),
-      filename: "#{@image.image_name_id}.#{image_type}"
-    )
     @image.account = @current_account
+    @image.aid = generate_aid(Image, 'aid')
     if @image.save
-      @image.resize_image('image')
+      @image.process_image
       flash[:success] = "画像をアップロードしました"
       redirect_to images_path
     else
@@ -48,14 +43,17 @@ class ImagesController < ApplicationController
   private
   def image_params
     params.require(:image).permit(
+      :image,
       :name,
-      :image_name_id,
       :description,
       :public_visibility
     )
   end
   def set_image
-    @image = find_image(params[:image_name_id])
+    @image = Image.find_by(
+      aid: params[:aid],
+      deleted: false
+    )
   end
   def content_type_to_extension(type)
     case type
@@ -66,7 +64,10 @@ class ImagesController < ApplicationController
     end
   end
   def correct_account
-    unless @current_account == find_image(params[:image_name_id]).account
+    unless @current_account == Image.find_by(
+      aid: params[:aid],
+      deleted: false
+    ).account
       flash[:danger] = '正しいアカウントではありません'
       redirect_to root_path
     end

@@ -1,6 +1,7 @@
 class CreateOthers < ActiveRecord::Migration[7.1]
   def change
     create_table :others do |t|
+      t.string :aid, null: false, default: ''
       t.string :others_type, null: false, default: ''
       t.text :content, null: false, default: ''
       t.text :memo, null: false, default: ''
@@ -10,5 +11,6 @@ class CreateOthers < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+    add_index :others, [:aid], unique: true
   end
 end

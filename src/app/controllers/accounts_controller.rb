@@ -12,7 +12,7 @@ class AccountsController < ApplicationController
   end
   def create_signup
     @account = Account.new(account_params)
-    @account.account_id = unique_random_id(Account, 'account_id')
+    @account.aid = generate_aid(Account, 'aid')
     if params[:account][:invitation_code] == ENV['INVITATION_CODE']
       if @account.save
         redirect_to login_path
@@ -40,11 +40,14 @@ class AccountsController < ApplicationController
   def login
   end
   def create_login
-    @account = find_account(params[:session][:name_id])
+    @account = Account.find_by(
+      name_id: params[:session][:name_id],
+      deleted: false
+    )
     if @account && @account.authenticate(params[:session][:password])
       log_in(@account)
       flash[:success] = 'ログインしました'
-      redirect_to account_path(@account.name_id)
+      redirect_to account_path(@account.aid)
     else
       @error_message = 'IDかパスワードが間違っています'
       @reform = {
@@ -80,7 +83,7 @@ class AccountsController < ApplicationController
     params.require(:account).permit(
       :name,
       :name_id,
-      :bio,
+      :description,
       :password,
       :password_confirmation
     )
@@ -93,10 +96,10 @@ class AccountsController < ApplicationController
     )
   end
   def set_account
-    @account = find_account(params[:name_id])
+    @account = find_account(params[:aid])
   end
   def correct_account
-    unless @current_account == find_account(params[:name_id])
+    unless @current_account == find_account(params[:aid])
       flash[:danger] = '正しいアカウントではありません'
       redirect_to root_path
     end

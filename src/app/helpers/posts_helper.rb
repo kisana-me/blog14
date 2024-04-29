@@ -25,16 +25,16 @@ module PostsHelper
       markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
       markdown.render(text).html_safe
   end
-  def find_post(post_name_id)
+  def find_post(aid)
     Post.find_by(
-      post_name_id: post_name_id,
+      aid: aid,
       draft: false,
       deleted: false
     )
   end
-  def find_correct_post(post_name_id)
+  def find_correct_post(aid)
     Post.find_by(
-      post_name_id: post_name_id,
+      aid: aid,
       deleted: false
     )
   end

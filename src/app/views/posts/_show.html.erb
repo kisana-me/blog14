@@ -1,8 +1,8 @@
 <div class="show-post">
-  <%= link_to(post_path(post.post_name_id)) do %>
+  <%= link_to(post_path(post.aid)) do %>
   <div class="show-post-container">
     <div class="show-post-thumbnail">
-      <% if post.thumbnail.present? %>
+      <% if false %>
       <div class="show-post-altspace">
         <div class="show-post-alttext">
           <% thumbnail = find_image(post.thumbnail) %>

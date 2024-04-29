@@ -2,7 +2,7 @@
 <% authors = '' %>
 <% provide(:title, @account.name) %>
 <% provide(:author, authors) %>
-<% provide(:description, @account.bio) %>
+<% provide(:description, @account.description) %>
 <% provide(:keywords, keywords) %>
 <% provide(:robots, 'noindex, nofollow') %>
 <% provide(:url, full_url("/")) %>
@@ -14,12 +14,12 @@
 <% provide(:layout_style, 'full') %>
 <% provide(:ga4, 'true') %>
 
-<h1><%= @account.name %></h1>
+<h1><%= @account.name %>@<%= @account.name_id %></h1>
 <div>
-  ID:<%= @account.name_id %>
+  ID:<%= @account.aid %>
 </div>
 <div>
-  BIO:<%= @account.bio %>
+  紹介文:<%= @account.description %>
 </div>
 <% if @current_account == @account %>
 <h2>全投稿(下書き含む)</h2>

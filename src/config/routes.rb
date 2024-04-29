@@ -11,10 +11,10 @@ Rails.application.routes.draw do
     delete 'logout' => 'accounts#logout'
   end
 
-  resources :accounts, param: :name_id, except: [:new, :create]
-  resources :images, param: :image_name_id
-  resources :posts, param: :post_name_id
-  resources :tags, param: :tag_name_id
+  resources :accounts, param: :aid, except: [:new, :create]
+  resources :images, param: :aid
+  resources :posts, param: :aid
+  resources :tags, param: :aid
 
   post 'comment' => 'comments#create'
 
