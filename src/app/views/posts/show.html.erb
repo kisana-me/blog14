@@ -57,7 +57,11 @@
   </div>
   <div class="post-toc">
     <span>目次</span>
-    <%= toc(@post.content) %>
+    <% if toc(@post.content).present? %>
+      <%= toc(@post.content) %>
+    <% else %>
+      <p>項目なし</p>
+    <% end %>
   </div>
   <div class="post-content">
     <%= markdown(@post.content) %>

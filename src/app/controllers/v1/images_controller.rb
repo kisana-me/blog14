@@ -23,8 +23,7 @@ class V1::ImagesController < V1::ApplicationController
       :name,
       :image_name_id,
       :nsfw,
-      :nsfw_message,
-      :public_visibility
+      :nsfw_message
     )
   end
   def content_type_to_extension(type)

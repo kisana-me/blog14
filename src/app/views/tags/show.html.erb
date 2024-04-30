@@ -5,7 +5,7 @@
 <% provide(:description, @tag.description) %>
 <% provide(:keywords, keywords) %>
 <% provide(:robots, 'index, follow') %>
-<% provide(:url, full_url("/tags/#{@tag.tag_name_id}")) %>
+<% provide(:url, full_url("/tags/#{@tag.aid}")) %>
 <% provide(:type, 'website') # website or article %>
 <% provide(:image, "/") %>
 <% provide(:card, 'summary') # summary,summary_large_image, app, player %>
@@ -16,7 +16,7 @@
 
 <h1><%= @tag.name %></h1>
 <div>
-  タグID:<%= @tag.tag_name_id %>
+  タグID:<%= @tag.aid %>
 </div>
 <div>
   紹介:<%= @tag.description %>

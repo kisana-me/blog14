@@ -1,16 +1,11 @@
 class ImagesController < ApplicationController
-  include Images
-  include ImagesHelper
   before_action :set_image, only: %i[ show edit update ]
   before_action :logged_in_account, only: %i[ new create edit update ]
   before_action :correct_account, only: %i[ edit update ]
   def index
-    @images = all_images
+    @images = Image.all
   end
   def show
-    send_noblob_stream(
-      @image.image, @image.resize_image('image')
-    )
   end
   def new
     @image = Image.new
@@ -45,8 +40,7 @@ class ImagesController < ApplicationController
     params.require(:image).permit(
       :image,
       :name,
-      :description,
-      :public_visibility
+      :description
     )
   end
   def set_image
@@ -54,14 +48,6 @@ class ImagesController < ApplicationController
       aid: params[:aid],
       deleted: false
     )
-  end
-  def content_type_to_extension(type)
-    case type
-      when 'image/jpeg' then 'jpg'
-      when 'image/png'  then 'png'
-      when 'image/gif'  then 'gif'
-      when 'image/webp' then 'webp'
-    end
   end
   def correct_account
     unless @current_account == Image.find_by(

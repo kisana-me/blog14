@@ -10,11 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 12) do
+ActiveRecord::Schema[7.1].define(version: 11) do
   create_table "account_posts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.bigint "post_id", null: false
-    t.boolean "administrator", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_account_posts_on_account_id"
@@ -90,7 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 12) do
     t.string "aid", null: false
     t.string "name", default: "", null: false
     t.string "description", default: "", null: false
-    t.boolean "public_visibility", default: true, null: false
+    t.boolean "public", default: true, null: false
     t.string "original_key", default: "", null: false
     t.text "variants", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.boolean "deleted", default: false, null: false
@@ -101,17 +100,19 @@ ActiveRecord::Schema[7.1].define(version: 12) do
     t.check_constraint "json_valid(`variants`)", name: "variants"
   end
 
-  create_table "others", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "inquiries", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "aid", default: "", null: false
-    t.string "others_type", default: "", null: false
+    t.string "subject", default: "", null: false
     t.text "content", default: "", null: false
+    t.string "name", default: "", null: false
+    t.string "address", default: "", null: false
     t.text "memo", default: "", null: false
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
     t.boolean "done", default: false, null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["aid"], name: "index_others_on_aid", unique: true
+    t.index ["aid"], name: "index_inquiries_on_aid", unique: true
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
   end
 
@@ -134,6 +135,7 @@ ActiveRecord::Schema[7.1].define(version: 12) do
   end
 
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "image_id"
     t.string "aid", null: false
     t.string "title", default: "", null: false
     t.text "summary", default: "", null: false
@@ -142,10 +144,13 @@ ActiveRecord::Schema[7.1].define(version: 12) do
     t.integer "comments_count", default: 0, null: false
     t.bigint "views_count", default: 0, null: false
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
+    t.datetime "published_at", null: false
+    t.datetime "edited_at", null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["aid"], name: "index_posts_on_aid", unique: true
+    t.index ["image_id"], name: "index_posts_on_image_id"
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
   end
 
@@ -173,15 +178,6 @@ ActiveRecord::Schema[7.1].define(version: 12) do
     t.index ["aid"], name: "index_tags_on_aid", unique: true
   end
 
-  create_table "thumbnails", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.bigint "post_id", null: false
-    t.bigint "image_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["image_id"], name: "index_thumbnails_on_image_id"
-    t.index ["post_id"], name: "index_thumbnails_on_post_id"
-  end
-
   add_foreign_key "account_posts", "accounts"
   add_foreign_key "account_posts", "posts"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -192,7 +188,6 @@ ActiveRecord::Schema[7.1].define(version: 12) do
   add_foreign_key "post_comments", "posts"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
+  add_foreign_key "posts", "images"
   add_foreign_key "sessions", "accounts"
-  add_foreign_key "thumbnails", "images"
-  add_foreign_key "thumbnails", "posts"
 end

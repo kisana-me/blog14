@@ -1,8 +1,12 @@
 module ImageTools
-  def process_image(variant_type: 'images', image_type: 'images')
-    variants =JSON.parse(self.variants)
+
+  private
+
+  def process_image(variant_type: 'images', image_type: 'images', column_name: 'variants', original_key: 'original_key')
+    variants =JSON.parse(self.send(column_name))
     if variants.include?(image_type)
-      return
+      #return
+      Rails.logger.info('=====含まれる====')
     end
     s3 = Aws::S3::Client.new(
       endpoint: ENV["S3_LOCAL_ENDPOINT"],
@@ -13,7 +17,7 @@ module ImageTools
     )
     downloaded_image = Tempfile.new(['downloaded_image'])
     converted_image = Tempfile.new(['converted_image'])
-    s3.get_object(bucket: ENV["S3_BUCKET"], key: self.original_key, response_target: downloaded_image.path)
+    s3.get_object(bucket: ENV["S3_BUCKET"], key: self.send(original_key), response_target: downloaded_image.path)
     image = MiniMagick::Image.open(downloaded_image.path)
     resize = "2048x2048>"
     extent = "" # 切り取る
@@ -60,8 +64,27 @@ module ImageTools
     image.write(converted_image.path)
     key = "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp"
     s3_upload(key: key, file: converted_image.path, content_type: 'image/webp')
-    add_mca_data(self, 'variants', [image_type])
+    add_mca_data(self, column_name, [image_type], true)
     downloaded_image.close
     converted_image.close
+  end
+
+  def delete_variants(column_name: 'variants', image_type: 'images')
+    arr = JSON.parse(self.send(column_name))
+    arr.each do |vrt|
+      s3_delete(key: "/variants/#{vrt}/#{image_type}/#{self.aid}.webp")
+    end
+    remove_mca_data(self, column_name, arr, false)
+  end
+
+  def varidate_image(column_name: 'image', required: true)
+    if self.send(column_name)
+      allowed_content_types = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
+      unless allowed_content_types.include?(self.send(column_name).content_type)
+        errors.add(column_name.to_sym, "未対応の形式です")
+      end
+    elsif self.new_record? && required
+      errors.add(column_name.to_sym, "画像がありません")
+    end
   end
 end

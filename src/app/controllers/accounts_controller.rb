@@ -70,7 +70,7 @@ class AccountsController < ApplicationController
   def update
     if @account.update(update_account_params)
       flash[:success] = '変更しました'
-      redirect_to account_path(@account.name_id)
+      redirect_to account_path(@account.aid)
     else
       flash.now[:danger] = '変更できませんでした'
       render 'edit'
@@ -79,8 +79,22 @@ class AccountsController < ApplicationController
 
   private
 
+  def find_account(aid)
+    Account.find_by(
+      aid: aid,
+      deleted: false
+    )
+  end
+  def all_accounts
+    Account.where(
+      deleted: false
+    ).order(
+      id: :desc
+    )
+  end
   def account_params
     params.require(:account).permit(
+      :icon,
       :name,
       :name_id,
       :description,
@@ -90,9 +104,10 @@ class AccountsController < ApplicationController
   end
   def update_account_params
     params.require(:account).permit(
+      :icon,
       :name,
       :name_id,
-      :bio
+      :description,
     )
   end
   def set_account

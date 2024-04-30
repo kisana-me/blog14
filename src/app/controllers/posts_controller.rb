@@ -40,7 +40,6 @@ class PostsController < ApplicationController
   end
 
   private
-
   def post_params
     params.require(:post).permit(
       :title,
@@ -50,13 +49,22 @@ class PostsController < ApplicationController
     )
   end
   def set_post
-    @post = find_post(params[:aid])
+    @post = Post.find_by(
+      aid: params[:aid],
+      draft: false,
+      deleted: false
+    )
+    return if @post
+    if logged_in?
+      @post = @current_account.posts.find_by(
+        aid: params[:aid]
+      )
+      flash.now[:danger] = '非公開の投稿です'
+    end
   end
   def set_correct_post
-    @post = find_correct_post(params[:aid])
-    unless @post.accounts.include?(@current_account)
-      flash[:danger] = '正しいアカウントではありません'
-      redirect_to root_path
-    end
+    @post = @current_account.posts.find_by(
+      aid: params[:aid]
+    )
   end
 end

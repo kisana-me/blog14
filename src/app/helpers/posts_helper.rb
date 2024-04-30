@@ -25,19 +25,6 @@ module PostsHelper
       markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
       markdown.render(text).html_safe
   end
-  def find_post(aid)
-    Post.find_by(
-      aid: aid,
-      draft: false,
-      deleted: false
-    )
-  end
-  def find_correct_post(aid)
-    Post.find_by(
-      aid: aid,
-      deleted: false
-    )
-  end
   def all_posts
     Post.where(
       draft: false,

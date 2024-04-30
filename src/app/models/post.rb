@@ -3,6 +3,7 @@ class Post < ApplicationRecord
   has_many :accounts, through: :account_posts
   has_many :post_tags
   has_many :tags, through: :post_tags
+  belongs_to :image
   #validates :aid,
   #  presence: true,
   #  length: { in: 5..50, allow_blank: true },

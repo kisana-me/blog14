@@ -1,9 +1,11 @@
-class CreateOthers < ActiveRecord::Migration[7.1]
+class CreateInquiries < ActiveRecord::Migration[7.1]
   def change
-    create_table :others do |t|
+    create_table :inquiries do |t|
       t.string :aid, null: false, default: ''
-      t.string :others_type, null: false, default: ''
+      t.string :subject, null: false, default: ''
       t.text :content, null: false, default: ''
+      t.string :name, null: false, default: ''
+      t.string :address, null: false, default: ''
       t.text :memo, null: false, default: ''
       t.json :metadata, null: false, default: []
       t.boolean :done, null: false, default: false
@@ -11,6 +13,6 @@ class CreateOthers < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
-    add_index :others, [:aid], unique: true
+    add_index :inquiries, [:aid], unique: true
   end
 end

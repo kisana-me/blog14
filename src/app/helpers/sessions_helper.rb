@@ -29,13 +29,14 @@ module SessionsHelper
     !@current_account.nil?
   end
   def current_account
+    return unless cookies.signed[:b_aid].present?
     begin
-      session = Session.find_by(
+      db_session = Session.find_by(
         aid: cookies.signed[:b_aid],
         deleted: false
       )
-      if BCrypt::Password.new(session.session_digest).is_password?(cookies.signed[:b_rtk])
-        @current_account = session.account
+      if BCrypt::Password.new(db_session.session_digest).is_password?(cookies.signed[:b_rtk])
+        @current_account = db_session.account
       end
     rescue
       @current_account = nil
@@ -49,8 +50,8 @@ module SessionsHelper
       aid: cookies.signed[:b_aid],
       deleted: false
     ).destroy
-    session.delete
-    cookies.delete
+    cookies.delete :b_aid
+    cookies.delete :b_rtk
     @current_account = nil
   end
 end

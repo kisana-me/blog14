@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  include AccountsHelper
   include SessionsHelper
   before_action :set_current_account
   private
@@ -13,8 +12,7 @@ class ApplicationController < ActionController::Base
   end
   def logged_in_account
     unless logged_in?
-      flash[:danger] = "ログインしてください"
-      redirect_to login_path
+      render :file => "#{Rails.root}/public/404.html",  layout: false, status: :not_found
     end
   end
   def logged_out_account

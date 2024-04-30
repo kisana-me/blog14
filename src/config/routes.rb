@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   get 'contact' => 'others#contact'
   post 'contact' => 'others#create_contact'
 
+  # Studio
+  get 'studio' => 'studio#index'
+
   # Administorator
   namespace :admin do
     root "studio#index"

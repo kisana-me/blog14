@@ -19,7 +19,7 @@
   <h2>画像名:<%= image.name %></h2>
   <p>ID:<%= image.aid %></p>
   <p>紹介文:<%= image.description %></p>
-  <%= image_tag image_url(aid: image.aid) %>
+  <%= image_tag(image.image_url()) %>
   <%= link_to('編集', edit_image_path(image.aid)) if image.account == @current_account %>
 </div>
 <% end %>

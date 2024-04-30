@@ -5,7 +5,7 @@ class CreateImages < ActiveRecord::Migration[7.1]
       t.string :aid, null: false
       t.string :name, null: false, default: ''
       t.string :description, null: false, default: ''
-      t.boolean :public_visibility, null: false, default: true
+      t.boolean :public, null: false, default: true
       t.string :original_key, null: false, default: ''
       t.json :variants, null: false, default: []
       t.boolean :deleted, null: false, default: false
