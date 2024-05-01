@@ -7,7 +7,7 @@
 <% provide(:robots, 'index, follow') %>
 <% provide(:url, full_url("/posts/#{@post.aid}")) %>
 <% provide(:type, 'article') # website or article %>
-<% provide(:image, full_url("/images/#{@post.aid}")) %>
+<% provide(:image, @post.thumbnail_url) %>
 <% provide(:card, 'summary') # summary,summary_large_image, app, player %>
 <% provide(:alt, @post.summary) %>
 <% provide(:id, @post.aid) %>
