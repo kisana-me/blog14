@@ -64,6 +64,9 @@ class AccountsController < ApplicationController
     redirect_to root_path
   end
   def show
+    unless logged_in?
+      @account.update(views_count: @account.views_count += 1)
+    end
   end
   def edit
   end

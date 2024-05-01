@@ -13,4 +13,14 @@ module Tools
       end
     end
   end
+  def generate_random_problem
+    num1 = rand(100)
+    num2 = rand(1..10)
+    operator = %w[+ - * /].sample
+    if operator == '/'
+      num1 = num1 - (num1 % num2)
+    end
+    problem = "#{num1} #{operator} #{num2}"
+    [problem, eval(problem)]
+  end
 end

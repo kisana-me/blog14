@@ -2,12 +2,12 @@
   <%= link_to(post_path(post.aid)) do %>
   <div class="show-mini-post-container">
     <div class="show-mini-post-thumbnail">
-      <% if false %>
-      <%= image_tag image_path(post.thumbnail) %>
+      <% if post.thumbnail? %>
+      <%= image_tag post.thumbnail_url(variant_type: 'tb-images') %>
       <% else %>
       <div class="show-mini-post-altspace">
         <div class="show-mini-post-alttext">
-          画像なし
+          サムネイル画像なし
         </div>
       </div>
       <% end %>

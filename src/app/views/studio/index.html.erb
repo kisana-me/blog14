@@ -4,6 +4,7 @@
 <h1>Studio</h1>
 <%= link_to('記事を新規作成', new_post_path, data: { turbo: false }) %>
 <%= link_to('プロフィール', account_path(@current_account.aid)) %>
+<%= button_to("ログアウト", logout_path, method: :delete) %>
 <h2>下書き</h2>
 <% @draft_posts.each do |post| %>
   <%= render 'posts/show_mini', post: post %>

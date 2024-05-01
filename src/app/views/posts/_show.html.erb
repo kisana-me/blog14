@@ -2,16 +2,8 @@
   <%= link_to(post_path(post.aid)) do %>
   <div class="show-post-container">
     <div class="show-post-thumbnail">
-      <% if false %>
-      <div class="show-post-altspace">
-        <div class="show-post-alttext">
-          <% thumbnail = find_image(post.thumbnail) %>
-          画像名:<%= thumbnail.name %>
-          <br />
-          画像説明:<%= thumbnail.name %>
-        </div>
-      </div>
-      <%= image_tag image_path(post.thumbnail) %>
+      <% if post.thumbnail? %>
+      <%= image_tag post.thumbnail_url %>
       <% else %>
       <div class="show-post-altspace">
         <div class="show-post-alttext">

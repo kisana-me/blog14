@@ -17,7 +17,7 @@
 <h1>アカウント一覧</h1>
 <% @accounts.each do |account| %>
 <div>
-  <h2><%= account.name %>@<%= account.name_id %></h2>
+  <h2><%= account.name %></h2>
   <p><%= link_to('プロフ', account_path(account.aid)) %></p>
   <p><%= account.description %></p>
 </div>

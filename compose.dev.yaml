@@ -6,6 +6,8 @@ services:
     environment:
       APP_NAME: 'BLOG14'
       APP_URL: 'http://localhost:3000/'
+      AUTHOR_NAME: 'KISANA:ME'
+      AUTHOR_ID: 'kisana_me'
       RAILS_ENV: development
       RAILS_SECURE_COOKIES: ''
       S3_LOCAL_ENDPOINT: 'http://minio:9000/'

@@ -1,7 +1,5 @@
 class OthersController < ApplicationController
-  include PostsHelper
   def index
-    @posts = all_posts
   end
   def terms
   end
@@ -10,18 +8,17 @@ class OthersController < ApplicationController
   def disclaimer
   end
   def contact
-    @other = Other.new
+    @inquiry = Inquiry.new
     @problem, session[:answer] = generate_random_problem
   end
   def create_contact
-    Rails.logger.info("#{session[:answer]}==#{params[:test1][:test]}")
-    Rails.logger.info(session[:answer].to_i == params[:test1][:test].to_i)
-    @other = Other.new(content: params[:other][:content])
+    @inquiry = Inquiry.new(inquiry_params)
+    @inquiry.aid = generate_aid(Inquiry, 'aid')
     if session[:answer].to_i == params[:test1][:test].to_i
-      if @other.save
+      if @inquiry.save
         session.delete(:answer)
-        flash[:success] = '送信しました'
-        redirect_to root_path
+        flash.now[:success] = '送信しました'
+        render 'submitted'
       else
         @problem, session[:answer] = generate_random_problem
         flash.now[:danger] = '送信できませんでした'
@@ -34,14 +31,12 @@ class OthersController < ApplicationController
     end
   end
   private
-  def generate_random_problem
-    num1 = rand(100)
-    num2 = rand(1..10)
-    operator = %w[+ - * /].sample
-    if operator == '/'
-      num1 = num1 - (num1 % num2)
-    end
-    problem = "#{num1} #{operator} #{num2}"
-    [problem, eval(problem)]
+  def inquiry_params
+    params.require(:inquiry).permit(
+      :subject,
+      :content,
+      :name,
+      :address
+    )
   end
 end

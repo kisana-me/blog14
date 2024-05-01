@@ -64,7 +64,7 @@ module ImageTools
     image.write(converted_image.path)
     key = "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp"
     s3_upload(key: key, file: converted_image.path, content_type: 'image/webp')
-    add_mca_data(self, column_name, [image_type], true)
+    add_mca_data(self, column_name, [variant_type], true)
     downloaded_image.close
     converted_image.close
   end

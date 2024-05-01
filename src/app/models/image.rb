@@ -22,13 +22,13 @@ class Image < ApplicationRecord
       image_upload()
     end
   end
-  def create_variant
-    process_image()
+  def create_variant(variant_type: 'images')
+    process_image(variant_type: variant_type)
   end
   def image_url(variant_type: 'images')
     if self.original_key.present?
       unless self.variants.include?(variant_type)
-        create_variant()
+        create_variant(variant_type: variant_type)
       end
       return object_url(key: "/variants/#{variant_type}/images/#{self.aid}.webp")
     else

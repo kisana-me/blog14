@@ -1,8 +1,8 @@
 <% keywords = 'お問い合わせ' %>
-<% authors = 'kisana.' %>
+<% authors = '' %>
 <% provide(:title, 'お問い合わせ') %>
 <% provide(:author, authors) %>
-<% provide(:description, 'BLOG14お問い合わせ') %>
+<% provide(:description, 'お問い合わせ') %>
 <% provide(:keywords, keywords) %>
 <% provide(:robots, 'index, follow') %>
 <% provide(:url, full_url("/")) %>
@@ -10,23 +10,35 @@
 <% provide(:image, full_url("/")) %>
 <% provide(:card, 'summary') # summary,summary_large_image, app, player %>
 <% provide(:alt, 'alt') %>
-<% provide(:id, 'kisana_me') %>
+<% provide(:id, '') %>
 <% provide(:layout_style, '') %>
 <% provide(:ga4, 'true') %>
 
 <h1>お問い合わせ</h1>
 <p>お手数ですが、計算問題を解き半角数字で入力してください。</p>
 <p>「*」は掛け算、「/」は割り算です。</p>
-<%= form_with(model: @other, url: contact_path, method: :post, data: { turbo: false }) do |f| %>
-  <%= render 'shared/error_messages', instead: @other %>
+<%= form_with(model: @inquiry, url: contact_path, method: :post, data: { turbo: false }) do |f| %>
+  <%= render 'shared/error_messages', instead: @inquiry %>
   <div class="inputs">
     <div class="input">
       <%= label :test1, :test, @problem %>
       <%= text_field :test1, :test, placeholder: '解答' %>
     </div>
-    <div class="input">
+    <div>
+      <%= f.label :subject, '件名' %>
+      <%= f.text_field :subject, placeholder: '件名' %>
+    </div>
+    <div>
       <%= f.label :content, '内容' %>
       <%= f.text_area :content, placeholder: '内容' %>
+    </div>
+    <div>
+      <%= f.label :name, 'お名前' %>
+      <%= f.text_area :name, placeholder: 'お名前' %>
+    </div>
+    <div>
+      <%= f.label :address, 'アドレス' %>
+      <%= f.text_area :address, placeholder: 'アドレス' %>
     </div>
   </div>
   <%= f.submit "送信" %>

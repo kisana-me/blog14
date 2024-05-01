@@ -30,7 +30,7 @@ module PostsHelper
       draft: false,
       deleted: false
     ).order(
-      id: :desc
+      created_at: :desc
     )
   end
   def posts_page
@@ -64,7 +64,7 @@ module PostsHelper
     ).limit(
       limit.to_i
     ).order(
-      created_at: :desc
+      views_count: :desc
     )
   end
   def new_posts(limit)

@@ -15,7 +15,6 @@ class ImagesController < ApplicationController
     @image.account = @current_account
     @image.aid = generate_aid(Image, 'aid')
     if @image.save
-      @image.process_image
       flash[:success] = "画像をアップロードしました"
       redirect_to images_path
     else

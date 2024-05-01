@@ -3,6 +3,7 @@ class Account < ApplicationRecord
   has_many :account_posts
   has_many :posts, through: :account_posts
   has_many :images, foreign_key: :account_id
+  has_many :comments
   has_secure_password
   validates :name_id,
     presence: true,
@@ -34,9 +35,9 @@ class Account < ApplicationRecord
       icon_upload()
     end
   end
-  def create_variant
+  def create_variant(variant_type: 'icons')
     process_image(
-      variant_type: 'icons',
+      variant_type: variant_type,
       image_type: 'icons',
       column_name: 'icon_variants',
       original_key: 'icon_original_key'
@@ -45,7 +46,7 @@ class Account < ApplicationRecord
   def icon_url(variant_type: 'icons')
     if self.icon_original_key.present?
       unless self.icon_variants.include?(variant_type)
-        create_variant()
+        create_variant(variant_type: variant_type)
       end
       return object_url(key: "/variants/#{variant_type}/icons/#{self.aid}.webp")
     else

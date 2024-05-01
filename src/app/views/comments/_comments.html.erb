@@ -1,0 +1,11 @@
+<div class="comments">
+  <% post.comments.where(
+    comment_id: nil,
+    #public: true,
+    deleted: false
+  ).order(
+    created_at: :desc
+  ).each do |comment| %>
+    <%= render 'comments/show', comment: comment, top: true %>
+  <% end %>
+</div>

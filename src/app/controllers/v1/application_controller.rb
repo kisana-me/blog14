@@ -14,7 +14,7 @@ class V1::ApplicationController < ApplicationController
     cookies['CSRF-TOKEN'] = {
       value: form_authenticity_token,
       domain: :all,
-      expires: 1.year.from_now}
+      expires: 1.month.from_now}
   end
   def set_csrf_token_header
     response.set_header('X-CSRF-Token', form_authenticity_token)

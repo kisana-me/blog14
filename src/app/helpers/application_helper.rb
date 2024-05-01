@@ -15,6 +15,4 @@ module ApplicationHelper
     page = where_to_go == 'next' ? [current_page + 1, 2].max : where_to_go == 'prev' ? [current_page - 1, 1].max : 2
     return page
   end
-
-  private
 end

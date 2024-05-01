@@ -9,6 +9,9 @@ class TagsController < ApplicationController
     )
   end
   def show
+    unless logged_in?
+      @tag.update(views_count: @tag.views_count += 1)
+    end
   end
   def new
     @tag = Tag.new

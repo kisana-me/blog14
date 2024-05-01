@@ -7,6 +7,8 @@ services:
     environment:
       APP_NAME: 'BLOG14'
       APP_URL: 'https://blog.amiverse.net/'
+      AUTHOR_NAME: 'KISANA:ME'
+      AUTHOR_ID: 'kisana_me'
       RAILS_ENV: production
       RAILS_SECURE_COOKIES: 'true'
       S3_LOCAL_ENDPOINT: 'http://minio:9000/'

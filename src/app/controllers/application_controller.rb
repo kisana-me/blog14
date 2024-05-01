@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include Tools
   include SessionsHelper
   before_action :set_current_account
   private

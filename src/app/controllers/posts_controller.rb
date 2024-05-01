@@ -3,20 +3,22 @@ class PostsController < ApplicationController
   before_action :set_correct_post, only: %i[ edit update ]
   before_action :logged_in_account, only: %i[ new create edit update ]
   include PostsHelper
+
   def index
     @posts = paged_posts(params[:page])
     @total = posts_page
   end
   def show
+    unless logged_in?
+      @post.update(views_count: @post.views_count += 1)
+    end
+    @problem, session[:answer] = generate_random_problem
   end
   def new
     @post = Post.new
   end
   def create
     @post = Post.new(post_params)
-    # 画像探してthumbnail作成
-    # or 
-    # 画像があればimage作成してthumbnail作成
     @post.aid = generate_aid(Post, 'aid')
     @post.accounts << @current_account
     if @post.save
@@ -42,10 +44,14 @@ class PostsController < ApplicationController
   private
   def post_params
     params.require(:post).permit(
+      :thumbnail,
       :title,
       :summary,
       :content,
-      :draft
+      :draft,
+      :published_at,
+      :edited_at,
+      selected_tags: []
     )
   end
   def set_post

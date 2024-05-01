@@ -2,15 +2,11 @@
   <%= render 'shared/error_messages', instead: tag %>
   <div class="login-inputs">
     <div class="login-input">
-      <%= f.label :tag_name_id, 'ID', class: 'login-input-label' %>
-      <%= f.text_field :tag_name_id, class: 'login-input-field', placeholder: 'ID' %>
+      <%= f.label :name, '名前' %>
+      <%= f.text_field :name, placeholder: '名前' %>
     </div>
     <div class="login-input">
-      <%= f.label :name, '名前', class: 'login-input-label' %>
-      <%= f.text_field :name, class: 'login-input-field', placeholder: 'サムネ' %>
-    </div>
-    <div class="login-input">
-      <%= f.label :description, '紹介', class: 'login-input-label' %>
+      <%= f.label :description, '紹介' %>
       <%= f.text_area :description, placeholder: '紹介' %>
     </div>
   </div>

@@ -16,12 +16,12 @@
 
 <div class="post">
   <div class="post-thumbnail">
-    <% if false %>
-    <%= image_tag image_path(@post.aid) %>
+    <% if @post.thumbnail? %>
+    <%= image_tag @post.thumbnail_url %>
     <% else %>
     <div class="post-altspace">
       <div class="post-alttext">
-        画像なし
+        サムネイル画像なし
       </div>
     </div>
     <% end %>
@@ -30,29 +30,29 @@
     <h1><%= @post.title.present? ? @post.title : 'タイトルなし' %></h1>
     <p><%= @post.summary %></p>
     <span>
-      <% if @post.created_at == @post.updated_at %>
-      公開:<%= @post.created_at.strftime('%Y/%m/%d %H:%M') %>
-      <% else %>
-      公開:<%= @post.created_at.strftime('%Y/%m/%d %H:%M') %>
-      更新:<%= @post.updated_at.strftime('%Y/%m/%d %H:%M') %>
+      <% if @post.published_at %>
+      公開:<%= @post.published_at.strftime('%Y/%m/%d %H:%M') %>
+      <% end %>
+      <% if @post.edited_at %>
+      更新:<%= @post.edited_at.strftime('%Y/%m/%d %H:%M') %>
       <% end %>
     </span>
     <div>
       作成者:
       <% @post.accounts.each do |account| %>
-        <%= link_to(account.name, account_path(account.name_id)) %>
+        <%= link_to(account.name, account_path(account.aid)) %>
       <% end %>
     </div>
     <div>
       タグ:
       <% @post.tags.each do |tag| %>
-        <%= link_to(tag.name, tag_path(tag.tag_name_id)) %>
+        <%= link_to(tag.name, tag_path(tag.aid)) %>
       <% end %>
     </div>
     <div class="post-meta">
       <button>共有</button>
       <button>コメント</button>
-      <%= button_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
+      <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
     </div>
   </div>
   <div class="post-toc">
@@ -60,10 +60,15 @@
     <% if toc(@post.content).present? %>
       <%= toc(@post.content) %>
     <% else %>
-      <p>項目なし</p>
+      <span>項目なし</span>
     <% end %>
   </div>
   <div class="post-content">
     <%= markdown(@post.content) %>
+  </div>
+  <hr class="ending-hr"/>
+  <div class="post-comments">
+  <%= render 'comments/form', comment: Comment.new, url: comment_path, post_aid: @post.aid %>
+  <%= render 'comments/comments', post: @post %>
   </div>
 </div>

@@ -1,0 +1,31 @@
+<div class="comment-form">
+  <%= form_with(model: comment, url: url, data: { turbo: false }) do |f| %>
+    <%= render 'shared/error_messages', instead: comment %>
+    <%= f.hidden_field :post_aid, value: post_aid %>
+    <% if (defined? initial_replied) %>
+      <%= f.hidden_field :replied, value: initial_replied %>
+      コメントID:<%= initial_replied %>への返信
+    <% end %>
+    <% if logged_in? %>
+      <%= @current_account.name %>としてコメント
+    <% end %>
+    <br />
+    <p>お手数ですが、計算問題を解き半角数字で入力してください。</p>
+    <p>「*」は掛け算、「/」は割り算です。</p>
+    <%= label :test1, :test, @problem %>
+    <%= text_field :test1, :test, placeholder: '解答' %>
+    <br />
+    <%= f.label :name, '名前' %>
+    <%= f.text_field :name, placeholder: '名前' %>
+    <br />
+    <%= f.label :content, 'コメント' %>
+    <%= f.text_area :content, placeholder: 'コメント' %>
+    <br />
+    <%= f.label :address, 'アドレス(非公開)' %>
+    <%= f.text_field :address, placeholder: 'アドレス(非公開)' %>
+    <br />
+    <span>投稿すると、当サイトの利用規約・免責事項・ポリシーに同意したとみなされます。</span>
+    <br />
+    <%= f.submit "投稿" %>
+  <% end %>
+</div>
