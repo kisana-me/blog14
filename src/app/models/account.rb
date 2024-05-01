@@ -22,7 +22,7 @@ class Account < ApplicationRecord
 
   def icon_upload
     extension = icon.original_filename.split('.').last.downcase
-    key = "/icon/#{self.aid}.#{extension}"
+    key = "/icons/#{self.aid}.#{extension}"
     self.icon_original_key = key
     s3_upload(key: key, file: self.icon.tempfile, content_type: self.icon.content_type)
   end

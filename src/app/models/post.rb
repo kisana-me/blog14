@@ -17,14 +17,14 @@ class Post < ApplicationRecord
   # Thumbnail
   def thumbnail_upload
     extension = thumbnail.original_filename.split('.').last.downcase
-    key = "/thumbnail/#{self.aid}.#{extension}"
+    key = "/thumbnails/#{self.aid}.#{extension}"
     self.thumbnail_original_key = key
     s3_upload(key: key, file: self.thumbnail.tempfile, content_type: self.thumbnail.content_type)
   end
   def update_thumbnail_upload
     if thumbnail
       if self.thumbnail_original_key.present?
-        delete_variants(column_name: 'thumbnail_variants', image_type: 'thumbnail')
+        delete_variants(column_name: 'thumbnail_variants', image_type: 'thumbnails')
         s3_delete(key: self.thumbnail_original_key)
       end
       thumbnail_upload()
@@ -33,7 +33,7 @@ class Post < ApplicationRecord
   def create_variant(variant_type: 'images')
     process_image(
       variant_type: variant_type,
-      image_type: 'thumbnail',
+      image_type: 'thumbnails',
       column_name: 'thumbnail_variants',
       original_key: 'thumbnail_original_key'
     )
@@ -43,7 +43,7 @@ class Post < ApplicationRecord
       unless self.thumbnail_variants.include?(variant_type)
         create_variant(variant_type: variant_type)
       end
-      return object_url(key: "/variants/#{variant_type}/thumbnail/#{self.aid}.webp")
+      return object_url(key: "/variants/#{variant_type}/thumbnails/#{self.aid}.webp")
     else
       return '/'
     end
