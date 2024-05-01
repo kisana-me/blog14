@@ -15,11 +15,11 @@
     <div class="show-mini-post-context">
       <div class="show-mini-post-title"><%= post.title.present? ? post.title : 'タイトルなし' %></div>
       <span>
-        <% if @post.published_at %>
-        公開:<%= @post.published_at.strftime('%Y/%m/%d %H:%M') %>
+        <% if post.published_at %>
+        公開:<%= post.published_at.strftime('%Y/%m/%d %H:%M') %>
         <% end %>
-        <% if @post.edited_at %>
-        更新:<%= @post.edited_at.strftime('%Y/%m/%d %H:%M') %>
+        <% if post.edited_at %>
+        更新:<%= post.edited_at.strftime('%Y/%m/%d %H:%M') %>
         <% end %>
       </span>
     </div>
