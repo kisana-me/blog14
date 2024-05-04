@@ -1,6 +1,6 @@
 class ImagesController < ApplicationController
   before_action :set_image, only: %i[ show edit update ]
-  before_action :logged_in_account, only: %i[ new create edit update ]
+  before_action :logged_in_account
   before_action :correct_account, only: %i[ edit update ]
   def index
     @images = Image.all

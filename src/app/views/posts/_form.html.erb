@@ -1,6 +1,6 @@
 <%= form_with(model: post, url: url, method: method, data: { turbo: false }) do |f| %>
   <%= render 'shared/error_messages', instead: post %>
-  <div class="login-inputs">
+  <div>
     <div>
       <%= f.label :thumbnail, 'サムネイル画像' %>
       <%= f.file_field :thumbnail, placeholder: 'サムネイル画像' %>
@@ -82,9 +82,10 @@
       return
     }
     const formData = new FormData()
-    const name = window.prompt("[任意]画像名を指定してください", "名前")
-    const description = window.prompt("[任意]画像を説明してください", "説明")
-    console.log("入力された値:", description)
+    const name = window.prompt("[任意]画像名を指定してください", "")
+    const description = window.prompt("[任意]画像を説明してください", "")
+    console.log("入力された名前:", name)
+    console.log("入力された説明:", description)
     formData.append('image[name]', name)
     formData.append('image[description]', description)
     formData.append('image[image]', file)

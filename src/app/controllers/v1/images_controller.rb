@@ -5,7 +5,7 @@ class V1::ImagesController < V1::ApplicationController
     @image.account = @current_account
     @image.aid = generate_aid(Image, 'aid')
     if @image.save
-      render json: {status: true, url: @image.image_url}
+      render json: {status: true, url: Image.find_by(aid: @image.aid).image_url}
     else
       render json: {status: false}
     end

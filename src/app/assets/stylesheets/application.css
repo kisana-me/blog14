@@ -148,6 +148,16 @@ h2 {
   font-size: 23px;
 }
 
+.misskey-share-button {
+  height: 20px;
+  line-height: 18px;
+  font-size: 11px;
+  padding: 0px 6px;
+  border-radius: 14px;
+  background: rgb(40 55 29);
+  color: rgb(180, 233, 0);
+  text-decoration: none;
+}
 
 @media (max-width: 528px) {
   /* 以下 */

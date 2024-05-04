@@ -2,13 +2,14 @@
 <% authors = @post.accounts.pluck(:name).join('/') %>
 <% provide(:title, @post.title) %>
 <% provide(:author, authors) %>
+<% provide(:author_id, 'kisana_me') %>
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
 <% provide(:robots, 'index, follow') %>
 <% provide(:url, full_url("/posts/#{@post.aid}")) %>
 <% provide(:type, 'article') # website or article %>
-<% provide(:image, full_url("/images/#{@post.aid}")) %>
-<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
+<% provide(:image, @post.thumbnail_url) %>
+<% provide(:card, 'summary_large_image') # summary,summary_large_image, app, player %>
 <% provide(:alt, @post.summary) %>
 <% provide(:id, @post.aid) %>
 <% provide(:layout_style, 'full') %>
@@ -31,10 +32,16 @@
     <p><%= @post.summary %></p>
     <span>
       <% if @post.published_at %>
-      公開:<%= @post.published_at.strftime('%Y/%m/%d %H:%M') %>
+      公開:
+      <time datetime="<%= @post.published_at %>" itemprop="datepublished">
+        <%= @post.published_at.strftime('%Y/%m/%d %H:%M') %>
+      </time>
       <% end %>
       <% if @post.edited_at %>
-      更新:<%= @post.edited_at.strftime('%Y/%m/%d %H:%M') %>
+      更新:
+      <time datetime="<%= @post.edited_at %>" itemprop="datemodified">
+        <%= @post.edited_at.strftime('%Y/%m/%d %H:%M') %>
+      </time>
       <% end %>
     </span>
     <div>
@@ -50,8 +57,8 @@
       <% end %>
     </div>
     <div class="post-meta">
-      <button>共有</button>
-      <button>コメント</button>
+      <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
       <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
     </div>
   </div>
@@ -66,7 +73,14 @@
   <div class="post-content">
     <%= markdown(@post.content) %>
   </div>
-  <hr class="ending-hr"/>
+  <div class="post-ending">
+    <div class="post-ending-meta">
+      <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
+      <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.accounts.include?(@current_account) %>
+    </div>
+    <hr class="ending-hr"/>
+  </div>
   <div class="post-comments">
   <%= render 'comments/form', comment: Comment.new, url: comment_path, post_aid: @post.aid %>
   <%= render 'comments/comments', post: @post %>

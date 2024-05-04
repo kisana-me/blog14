@@ -5,7 +5,7 @@
     <title><%= full_title(yield(:title)) %></title>
     <% site_name = ENV['APP_NAME'] %>
     <% author = yield(:author).present? ? yield(:author) : ENV['AUTHOR_NAME'] %>
-    <% id = yield(:author).present? ? yield(:author) : ENV['AUTHOR_ID'] %>
+    <% author_id = yield(:author_id).present? ? yield(:author_id) : ENV['AUTHOR_ID'] %>
     <meta name="theme-color" content="#ffa9c7" />
     <meta name="color-scheme" content="light" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -27,13 +27,13 @@
     <meta property="og:site_name" content=<%= site_name %> >
     <meta name="twitter:card" content=<%= yield(:card) %> />
     <meta name="twitter:site" content=<%= site_name %> />
-    <meta name="twitter:site:id" content=<%= id %> />
+    <meta name="twitter:site:id" content=<%= yield(:id) %> />
     <meta name="twitter:title" content=<%= yield(:title) %> />
     <meta name="twitter:description" content=<%= yield(:description) %> />
     <meta name="twitter:image" content=<%= yield(:image) %> />
     <meta name="twitter:image:alt" content=<%= yield(:alt) %> />
     <meta name="twitter:creator" content=<%= author %> />
-    <meta name="twitter:creator:id" content=<%= yield(:id) %> />
+    <meta name="twitter:creator:id" content=<%= author_id %> />
     <meta name="google-adsense-account" content="ca-pub-4578343381731958">
     <link rel="icon" href="/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
