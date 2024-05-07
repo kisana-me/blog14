@@ -10,9 +10,10 @@ class PostsController < ApplicationController
   end
   def show
     unless logged_in?
-      @post.update(views_count: @post.views_count += 1)
+      @post.update(views_count: @post.views_count + 1)
     end
     @problem, session[:answer] = generate_random_problem
+    not_found_page if @post.nil?
   end
   def new
     @post = Post.new
@@ -21,6 +22,7 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
     @post.aid = generate_aid(Post, 'aid')
     @post.accounts << @current_account
+    @post.tagging_update = true
     if @post.save
       flash[:success] = '作成しました'
       redirect_to post_path(@post.aid)
@@ -32,6 +34,7 @@ class PostsController < ApplicationController
   def edit
   end
   def update
+    @post.tagging_update = true
     if @post.update(post_params)
       flash[:success] = '編集しました'
       redirect_to post_path(@post.aid)

@@ -10,6 +10,7 @@ class Post < ApplicationRecord
   before_create :thumbnail_upload
   before_update :update_thumbnail_upload
   # Tag
+  attr_accessor :tagging_update
   attr_accessor :selected_tags
   after_create :tagging
   after_update :tagging
@@ -53,6 +54,7 @@ class Post < ApplicationRecord
   end
   # Tag
   def tagging
+    return unless tagging_update
     if selected_tags.blank?
       self.tags = []
     else

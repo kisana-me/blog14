@@ -67,6 +67,7 @@ class AccountsController < ApplicationController
     unless logged_in?
       @account.update(views_count: @account.views_count += 1)
     end
+    not_found_page if @account.nil?
   end
   def edit
   end

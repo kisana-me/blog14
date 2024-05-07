@@ -56,6 +56,12 @@
         <%= link_to(tag.name, tag_path(tag.aid)) %>
       <% end %>
     </div>
+    <% if logged_in? %>
+    <div>
+      閲覧:
+      <%= @post.views_count %>
+    </div>
+    <% end %>
     <div class="post-meta">
       <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
