@@ -1,6 +1,7 @@
 class TagsController < ApplicationController
-  before_action :set_tag, only: %i[ show edit update ]
   before_action :logged_in_account, only: %i[ new create edit update ]
+  before_action :set_tag, only: %i[ show ]
+  before_action :set_correct_tag, only: %i[ edit update ]
   def index
     @tags = Tag.where(
       deleted: false
@@ -12,6 +13,7 @@ class TagsController < ApplicationController
     unless logged_in?
       @tag.update(views_count: @tag.views_count += 1)
     end
+    @tag_posts = @tag.posts.where(public: true, deleted: false)
   end
   def new
     @tag = Tag.new
@@ -52,5 +54,14 @@ class TagsController < ApplicationController
       aid: params[:aid],
       deleted: false
     )
+    unless @tag
+      if logged_in?
+        return if @tag = Tag.find_by(aid: params[:aid])
+      end
+      return render_404
+    end
+  end
+  def set_correct_tag
+    render_404 unless @tag = Tag.find_by(aid: params[:aid])
   end
 end

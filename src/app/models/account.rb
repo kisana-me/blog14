@@ -1,8 +1,7 @@
 class Account < ApplicationRecord
-  has_many :sessions, foreign_key: :account_id
-  has_many :account_posts
-  has_many :posts, through: :account_posts
-  has_many :images, foreign_key: :account_id
+  has_many :sessions
+  has_many :posts
+  has_many :images
   has_many :comments
   has_secure_password
   validates :name_id,
@@ -14,39 +13,33 @@ class Account < ApplicationRecord
     presence: true,
     length: { in: 8..72, allow_blank: true },
     allow_nil: true
-  # == icon == #
   validate :icon_type_and_required
   before_create :icon_upload
-  before_update :update_icon_upload
+  before_update :icon_upload
   attr_accessor :icon
+  attr_accessor :invitation_code
 
   def icon_upload
-    extension = icon.original_filename.split('.').last.downcase
-    key = "/icons/#{self.aid}.#{extension}"
-    self.icon_original_key = key
-    s3_upload(key: key, file: self.icon.tempfile, content_type: self.icon.content_type)
-  end
-  def update_icon_upload
     if icon
       if self.icon_original_key.present?
         delete_variants(column_name: 'icon_variants', image_type: 'icons')
         s3_delete(key: self.icon_original_key)
       end
-      icon_upload()
+        extension = icon.original_filename.split('.').last.downcase
+        key = "/icons/#{self.aid}.#{extension}"
+        self.icon_original_key = key
+        s3_upload(key: key, file: self.icon.tempfile, content_type: self.icon.content_type)
     end
-  end
-  def create_variant(variant_type: 'icons')
-    process_image(
-      variant_type: variant_type,
-      image_type: 'icons',
-      column_name: 'icon_variants',
-      original_key: 'icon_original_key'
-    )
   end
   def icon_url(variant_type: 'icons')
     if self.icon_original_key.present?
       unless self.icon_variants.include?(variant_type)
-        create_variant(variant_type: variant_type)
+        process_image(
+          variant_type: variant_type,
+          image_type: 'icons',
+          column_name: 'icon_variants',
+          original_key: 'icon_original_key'
+        )
       end
       return object_url(key: "/variants/#{variant_type}/icons/#{self.aid}.webp")
     else
@@ -57,6 +50,6 @@ class Account < ApplicationRecord
   private
 
   def icon_type_and_required
-    varidate_image(column_name: 'icon')
+    varidate_image(column_name: 'icon', required: false)
   end
 end

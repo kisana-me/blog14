@@ -14,15 +14,19 @@
       <%= f.text_area :summary, placeholder: 'まとめ' %>
     </div>
     <div>
-      <%= f.label :draft, '下書き' %>
-      <%= f.check_box :draft %>
+      <%= f.label :public, '公開' %>
+      <%= f.check_box :public %>
     </div>
     <div>
-      <%= f.label :published_at, '公開' %>
+      <%= f.label :unlisted, '限定公開' %>
+      <%= f.check_box :unlisted %>
+    </div>
+    <div>
+      <%= f.label :published_at, '公開日時' %>
       <%= f.datetime_field :published_at %>
     </div>
     <div>
-      <%= f.label :edited_at, '編集' %>
+      <%= f.label :edited_at, '編集日時' %>
       <%= f.datetime_field :edited_at %>
     </div>
     <div>

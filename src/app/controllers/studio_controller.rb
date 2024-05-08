@@ -1,13 +1,12 @@
 class StudioController < ApplicationController
   before_action :logged_in_account
   def index
-    @draft_posts = @current_account.posts.where(
-      draft: true,
+    @unlisted_posts = @current_account.posts.where(
+      public: false,
       deleted: false
     )
     @deleted_posts = @current_account.posts.where(
       deleted: true
     )
   end
-  private
 end

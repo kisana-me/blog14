@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  before_action :logged_in_account, only: %i[ update ]
+
   def create
     @comment = Comment.new(comment_params)
     post = Post.find_by(aid: params[:comment][:post_aid])
@@ -24,12 +26,27 @@ class CommentsController < ApplicationController
       redirect_to post_path(post.aid)
     end
   end
+  def update
+    @comment = Comment.new(comment_params)
+    if @comment.save
+      flash[:success] = 'コメントを更新しました'
+      redirect_to post_path(@comment.post.aid)
+    else
+      flash[:danger] = "エラー:#{@comment.errors.full_messages.join(", ")}"
+      redirect_to post_path(@comment.post.aid)
+    end
+  end
   private
   def comment_params
     params.require(:comment).permit(
       :name,
       :content,
       :address
+    )
+  end
+  def update_comment_params
+    params.require(:comment).permit(
+      :public
     )
   end
 end

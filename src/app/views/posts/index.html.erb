@@ -18,4 +18,4 @@
 <% @posts.each do |post| %>
   <%= render 'posts/show', post: post %>
 <% end %>
-<%= render 'shared/paging', pages: @total, page: params[:page], page_to: 'posts' %>
+<%= render 'shared/paging', pages: @posts_page, page: params[:page], page_to: 'posts' %>

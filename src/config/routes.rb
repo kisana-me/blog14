@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   get "health" => "rails/health#show", as: :rails_health_check
   root "others#index"
 
-  scope :secret do
+  scope :secrets do
     get 'signup' => 'accounts#signup'
     post 'signup' => 'accounts#create_signup'
     get 'login' => 'accounts#login'
@@ -12,11 +12,10 @@ Rails.application.routes.draw do
   end
 
   resources :accounts, param: :aid, except: [:new, :create]
-  resources :images, param: :aid
   resources :posts, param: :aid
+  resources :images, param: :aid
+  resources :comments, param: :aid, only: [:create]
   resources :tags, param: :aid
-
-  post 'comment' => 'comments#create'
 
   # Others
   get 'terms' => 'others#terms'
@@ -37,4 +36,8 @@ Rails.application.routes.draw do
   namespace :v1 do
     post 'images/create' =>  'images#create'
   end
+
+  # Error
+  get '*not_found', to: 'application#routing_error'
+  post '*not_found', to: 'application#routing_error'
 end

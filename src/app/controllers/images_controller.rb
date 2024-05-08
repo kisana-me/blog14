@@ -1,7 +1,8 @@
 class ImagesController < ApplicationController
-  before_action :set_image, only: %i[ show edit update ]
   before_action :logged_in_account
-  before_action :correct_account, only: %i[ edit update ]
+  before_action :set_image, only: %i[ show ]
+  before_action :set_correct_image, only: %i[ edit update ]
+
   def index
     @images = Image.all
   end
@@ -25,7 +26,6 @@ class ImagesController < ApplicationController
   def edit
   end
   def update
-    Rails.logger.info(@image.id)
     if @image.update(image_params)
       flash[:success] = '変更しました'
       redirect_to images_path
@@ -39,22 +39,16 @@ class ImagesController < ApplicationController
     params.require(:image).permit(
       :image,
       :name,
-      :description
+      :description,
+      :public
     )
   end
   def set_image
-    @image = Image.find_by(
-      aid: params[:aid],
-      deleted: false
-    )
+    @image = Image.find_by(aid: params[:aid])
   end
-  def correct_account
-    unless @current_account == Image.find_by(
-      aid: params[:aid],
-      deleted: false
-    ).account
-      flash[:danger] = '正しいアカウントではありません'
-      redirect_to root_path
+  def set_correct_image
+    unless @current_account == Image.find_by(aid: params[:aid]).account
+      render_404
     end
   end
 end

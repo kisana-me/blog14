@@ -1,4 +1,5 @@
 module PostsHelper
+  # markdown
   def markdown(text)
     options = {
       hard_wrap: true,
@@ -25,17 +26,10 @@ module PostsHelper
       markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
       markdown.render(text).html_safe
   end
-  def all_posts
-    Post.where(
-      draft: false,
-      deleted: false
-    ).order(
-      created_at: :desc
-    )
-  end
+  # paging
   def posts_page
     total_posts = Post.where(
-      draft: false,
+      public: true,
       deleted: false
     ).count
     per_page = 10 # 表示件数
@@ -47,19 +41,20 @@ module PostsHelper
     limit_item = 10 # 表示件数
     offset_item = (page - 1) * limit_item
     return Post.where(
-      draft: false,
+      public: true,
       deleted: false
     ).offset(
       offset_item.to_i
     ).limit(
       limit_item.to_i
     ).order(
-      created_at: :desc
+      id: :desc
     )
   end
+  # posts
   def recommended_posts(limit)
     return Post.where(
-      draft: false,
+      public: true,
       deleted: false
     ).limit(
       limit.to_i
@@ -69,22 +64,22 @@ module PostsHelper
   end
   def new_posts(limit)
     return Post.where(
-      draft: false,
+      public: true,
       deleted: false
     ).limit(
       limit.to_i
     ).order(
-      created_at: :desc
+      id: :desc
     )
   end
   def whos_posts(who, limit)
     return who.posts.where(
-      draft: false,
+      public: true,
       deleted: false
     ).limit(
       limit.to_i
     ).order(
-      created_at: :desc
+      id: :desc
     )
   end
 end

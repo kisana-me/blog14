@@ -6,7 +6,7 @@
 <%= link_to('プロフィール', account_path(@current_account.aid)) %>
 <%= button_to("ログアウト", logout_path, method: :delete) %>
 <h2>下書き</h2>
-<% @draft_posts.each do |post| %>
+<% @unlisted_posts.each do |post| %>
   <%= render 'posts/show_mini', post: post %>
 <% end %>
 <h2>削除済み</h2>

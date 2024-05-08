@@ -21,6 +21,6 @@
 <div>
   紹介:<%= @tag.description %>
 </div>
-<% @tag.posts.each do |post| %>
+<% @tag_posts.each do |post| %>
   <%= render 'posts/show', post: post %>
 <% end %>

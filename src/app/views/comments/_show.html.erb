@@ -25,7 +25,7 @@
     <% end %>
     <details>
       <summary>スレッドに参加</summary>
-      <%= render 'comments/form', comment: Comment.new, url: comment_path, post_aid: @post.aid, initial_replied: comment.aid %>
+      <%= render 'comments/form', comment: Comment.new, url: comments_path, post_aid: @post.aid, initial_replied: comment.aid %>
     </details>
   <% end %>
 </div>

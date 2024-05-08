@@ -1,11 +1,16 @@
 class AccountsController < ApplicationController
-  before_action :set_account, only: %i[ show edit update ]
+  before_action :set_account, only: %i[ show ]
   before_action :logged_in_account, only: %i[ logout edit update ]
   before_action :logged_out_account, only: %i[ signup create_signup login create_login ]
-  before_action :admin_account, only: %i[  ]
-  before_action :correct_account, only: %i[ edit update ]
+  before_action :set_correct_account, only: %i[ edit update ]
+
   def index
-    @accounts = all_accounts
+    @accounts = Account.where(
+      public: true,
+      deleted: false
+    ).order(
+      id: :desc
+    )
   end
   def signup
     @account = Account.new
@@ -13,26 +18,17 @@ class AccountsController < ApplicationController
   def create_signup
     @account = Account.new(account_params)
     @account.aid = generate_aid(Account, 'aid')
-    if params[:account][:invitation_code] == ENV['INVITATION_CODE']
-      if @account.save
-        redirect_to login_path
-        flash[:success] = '作成しました'
-      else
-        @reform = {
-          invitation_code: params[:account][:invitation_code],
-          password: params[:account][:password],
-          password_confirmation: params[:account][:password_confirmation]
-        }
-        flash.now[:danger] = '作成できませんでした'
-        render 'signup'
-      end
+    unless @account.invitation_code == ENV['INVITATION_CODE']
+      reform()
+      @account.errors.add(:invitation_code, '招待コードが有効ではありません')
+      flash.now[:danger] = '作成できませんでした'
+      render 'signup'
+    end
+    if @account.save
+      redirect_to login_path
+      flash[:success] = '作成しました'
     else
-      @reform = {
-        invitation_code: params[:account][:invitation_code],
-        password: params[:account][:password],
-        password_confirmation: params[:account][:password_confirmation]
-      }
-      @account.errors.add(:base, '招待コードが違います')
+      reform()
       flash.now[:danger] = '作成できませんでした'
       render 'signup'
     end
@@ -59,15 +55,14 @@ class AccountsController < ApplicationController
     end
   end
   def logout
-    log_out
+    log_out()
     flash[:success] = 'ログアウトしました'
     redirect_to root_path
   end
   def show
     unless logged_in?
-      @account.update(views_count: @account.views_count += 1)
+      @account.update(views_count: @account.views_count + 1)
     end
-    not_found_page if @account.nil?
   end
   def edit
   end
@@ -80,21 +75,18 @@ class AccountsController < ApplicationController
       render 'edit'
     end
   end
+  def update_password
+    # 作成中
+  end
 
   private
 
-  def find_account(aid)
-    Account.find_by(
-      aid: aid,
-      deleted: false
-    )
-  end
-  def all_accounts
-    Account.where(
-      deleted: false
-    ).order(
-      id: :desc
-    )
+  def reform
+    @reform = {
+      invitation_code: params[:account][:invitation_code],
+      password: params[:account][:password],
+      password_confirmation: params[:account][:password_confirmation]
+    }
   end
   def account_params
     params.require(:account).permit(
@@ -103,7 +95,8 @@ class AccountsController < ApplicationController
       :name_id,
       :description,
       :password,
-      :password_confirmation
+      :password_confirmation,
+      :invitation_code
     )
   end
   def update_account_params
@@ -114,13 +107,29 @@ class AccountsController < ApplicationController
       :description,
     )
   end
-  def set_account
-    @account = find_account(params[:aid])
+  def update_password_params
+    params.require(:account).permit(
+      :password,
+      :password_confirmation
+    )
   end
-  def correct_account
-    unless @current_account == find_account(params[:aid])
-      flash[:danger] = '正しいアカウントではありません'
-      redirect_to root_path
+  def set_account
+    @account = Account.find_by(
+      aid: params[:aid],
+      public: true,
+      deleted: false
+    )
+    unless @account
+      if logged_in?
+        return if @account = Account.find_by(aid: params[:aid])
+      end
+      render_404
+    end
+  end
+  def set_correct_account
+    @account = Account.find_by(aid: params[:aid])
+    unless @current_account == @account
+      render_404
     end
   end
 end
