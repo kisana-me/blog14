@@ -45,7 +45,7 @@
     </span>
     <div>
       作成者:
-      <%= link_to( @post.account.name, account_path( @post.account.aid)) %>
+      <%= link_to( @post.account.name, account_path(@post.account.aid)) %>
     </div>
     <div>
       タグ:
@@ -85,7 +85,10 @@
     <hr class="ending-hr"/>
   </div>
   <div class="post-comments">
-  <%= render 'comments/form', comment: Comment.new, url: comments_path, post_aid: @post.aid %>
-  <%= render 'comments/comments', post: @post %>
+    <details>
+      <summary>コメントを残す</summary>
+      <%= render 'comments/form', comment: Comment.new, url: comments_path, post_aid: @post.aid %>
+    </details>
+    <%= render 'comments/comments', post: @post %>
   </div>
 </div>

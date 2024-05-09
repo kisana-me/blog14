@@ -7,8 +7,6 @@
         <%= f.hidden_field :replied, value: initial_replied %>
         コメントID:<%= initial_replied %>のスレッドへの返信
       </div>
-    <% else %>
-    <div>コメントを残す</div>
     <% end %>
     <% if logged_in? %>
       <div><%= @current_account.name %>としてコメント</div>
@@ -28,8 +26,9 @@
     <%= f.label :address, 'アドレス(非公開)' %>
     <%= f.text_field :address, placeholder: 'アドレス(非公開)' %>
     <br />
-    <span>投稿すると、当サイトの利用規約・ポリシー・免責事項に同意したとみなされます。</span>
     <br />
+    <p>投稿すると、当サイトの利用規約・ポリシー・免責事項に同意したとみなされます。</p>
+    <p>管理者に承認されると一般掲示されます。</p>
     <%= f.submit "投稿" %>
   <% end %>
 </div>

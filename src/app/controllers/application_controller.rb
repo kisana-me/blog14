@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
     @current_account = current_account
   end
   def admin_account
-    unless logged_in? && @current_account.role == 'admin'
+    unless logged_in? && @current_account.roles.include?('admin')
       render_404
     end
   end

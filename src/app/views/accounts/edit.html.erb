@@ -20,6 +20,10 @@
       <%= f.label :description, '紹介文', class: 'login-input-label' %>
       <%= f.text_area :description, class: 'login-input-field', placeholder: '紹介文' %>
     </div>
+    <div>
+      <%= f.label :public, "公開" %>
+      <%= f.check_box :public %>
+    </div>
   </div>
   <%= f.submit "変更" %>
 <% end %>

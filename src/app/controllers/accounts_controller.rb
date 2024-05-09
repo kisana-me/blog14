@@ -96,7 +96,8 @@ class AccountsController < ApplicationController
       :description,
       :password,
       :password_confirmation,
-      :invitation_code
+      :invitation_code,
+      :public
     )
   end
   def update_account_params
@@ -105,6 +106,7 @@ class AccountsController < ApplicationController
       :name,
       :name_id,
       :description,
+      :public
     )
   end
   def update_password_params

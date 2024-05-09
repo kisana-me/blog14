@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :accounts, param: :aid, except: [:new, :create]
   resources :posts, param: :aid
   resources :images, param: :aid
-  resources :comments, param: :aid, only: [:create]
+  resources :comments, param: :aid, only: [:create, :update]
   resources :tags, param: :aid
 
   # Others
@@ -30,6 +30,8 @@ Rails.application.routes.draw do
   # Administorator
   namespace :admin do
     root "studio#index"
+
+    resources :inquiries, param: :aid, only: [:index, :show, :update]
   end
 
   # API

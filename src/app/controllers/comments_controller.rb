@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   before_action :logged_in_account, only: %i[ update ]
+  before_action :set_comment, only: %i[ update ]
 
   def create
     @comment = Comment.new(comment_params)
@@ -16,6 +17,9 @@ class CommentsController < ApplicationController
         @comment.comment = comment
       end
     end
+    if logged_in?
+      @comment.account = @current_account
+    end
     @comment.aid = generate_aid(Comment, 'aid')
     @comment.post = post
     if @comment.save
@@ -27,8 +31,7 @@ class CommentsController < ApplicationController
     end
   end
   def update
-    @comment = Comment.new(comment_params)
-    if @comment.save
+    if @comment.update(update_comment_params)
       flash[:success] = 'コメントを更新しました'
       redirect_to post_path(@comment.post.aid)
     else
@@ -48,5 +51,8 @@ class CommentsController < ApplicationController
     params.require(:comment).permit(
       :public
     )
+  end
+  def set_comment
+    @comment = Comment.find_by(aid: params[:aid])
   end
 end

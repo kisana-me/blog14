@@ -1,0 +1,8 @@
+<h1>お問い合わせ一覧</h1>
+<% @inquiries.each do |inquiry| %>
+  <div>
+    <p>件名: <%= inquiry.subject %></p>
+    <p>名前: <%= inquiry.name %></p>
+    <%= link_to '詳細', admin_inquiry_path(inquiry.aid) %>
+  </div>
+<% end %>
