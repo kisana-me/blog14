@@ -7,6 +7,7 @@ class CreateComments < ActiveRecord::Migration[7.1]
       t.string :aid, null: false, default: ''
       t.string :name, null: false, default: ''
       t.text :content, null: false, default: ''
+      t.bigint :likes_count, null: false, default: 0
       t.string :address, null: false, default: ''
       t.boolean :public, null: false, default: false
       t.boolean :deleted, null: false, default: false

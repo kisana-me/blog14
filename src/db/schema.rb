@@ -19,6 +19,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.string "name", null: false
     t.text "description", default: "", null: false
     t.boolean "public", default: false, null: false
+    t.bigint "likes_count", default: 0, null: false
     t.bigint "views_count", default: 0, null: false
     t.integer "posts_count", default: 0, null: false
     t.text "settings", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
@@ -70,6 +71,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.string "aid", default: "", null: false
     t.string "name", default: "", null: false
     t.text "content", default: "", null: false
+    t.bigint "likes_count", default: 0, null: false
     t.string "address", default: "", null: false
     t.boolean "public", default: false, null: false
     t.boolean "deleted", default: false, null: false
@@ -132,6 +134,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.text "content", default: "", null: false
     t.boolean "public", default: false, null: false
     t.boolean "unlisted", default: false, null: false
+    t.bigint "likes_count", default: 0, null: false
     t.bigint "views_count", default: 0, null: false
     t.integer "comments_count", default: 0, null: false
     t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"

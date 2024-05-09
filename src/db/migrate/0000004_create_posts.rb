@@ -10,6 +10,7 @@ class CreatePosts < ActiveRecord::Migration[7.1]
       t.text :content, null: false, default: ''
       t.boolean :public, null: false, default: false
       t.boolean :unlisted, null: false, default: false
+      t.bigint :likes_count, null: false, default: 0
       t.bigint :views_count, null: false, default: 0
       t.integer :comments_count, null: false, default: 0
       t.json :metadata, null: false, default: []

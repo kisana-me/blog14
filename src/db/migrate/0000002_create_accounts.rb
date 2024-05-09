@@ -8,6 +8,7 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
       t.string :name, null: false
       t.text :description, null: false, default: ''
       t.boolean :public, null: false, default: false
+      t.bigint :likes_count, null: false, default: 0
       t.bigint :views_count, null: false, default: 0
       t.integer :posts_count, null: false, default: 0
       t.json :settings, null: false, default: []
