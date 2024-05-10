@@ -28,6 +28,9 @@ module SessionsHelper
   def logged_in?
     !@current_account.nil?
   end
+  def admin?
+    logged_in? && @current_account.roles.include?('admin')
+  end
   def current_account
     return unless cookies.signed[:b_aid].present?
     begin

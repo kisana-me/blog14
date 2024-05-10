@@ -15,6 +15,31 @@
 <% provide(:ga4, 'true') %>
 
 <div class="post">
+  <% if admin? || current_account?(@post.account) %>
+  <div style="color: red;">
+    あなたはこの記事の管理者です。
+  </div>
+  <div>
+    閲覧数:
+    <%= @post.views_count %>
+    <br />
+    記事の状態:
+    <% if @post.public %>
+    公開
+    <% elsif @post.unlisted %>
+    限定公開
+    <% elsif @post.deleted %>
+    削除
+    <% else %>
+    非公開
+    <% end %>
+    <br />
+    総コメント数:
+    <%= @post.comments.count %>
+    <br />
+    <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) %>
+  </div>
+  <% end %>
   <div class="post-thumbnail">
     <% if @post.thumbnail? %>
     <%= image_tag @post.thumbnail_url %>
@@ -53,16 +78,9 @@
         <%= link_to(tag.name, tag_path(tag.aid)) %>
       <% end %>
     </div>
-    <% if logged_in? %>
-    <div>
-      閲覧:
-      <%= @post.views_count %>
-    </div>
-    <% end %>
     <div class="post-meta">
       <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
-      <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.account == @current_account %>
     </div>
   </div>
   <div class="post-toc">
@@ -80,7 +98,6 @@
     <div class="post-ending-meta">
       <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
-      <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) if @post.account == @current_account %>
     </div>
     <hr class="ending-hr"/>
   </div>

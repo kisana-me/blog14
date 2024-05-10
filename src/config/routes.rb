@@ -4,14 +4,16 @@ Rails.application.routes.draw do
   root "others#index"
 
   scope :secrets do
-    get 'signup' => 'accounts#signup'
+    get '/' => 'others#secrets'
+
+    post '/'=> 'others#secrets_check', as: 'secrets_check'
     post 'signup' => 'accounts#create_signup'
-    get 'login' => 'accounts#login'
     post 'login' => 'accounts#create_login'
     delete 'logout' => 'accounts#logout'
   end
 
   resources :accounts, param: :aid, except: [:new, :create]
+  resources :session, params: :aid, only: []
   resources :posts, param: :aid
   resources :images, param: :aid
   resources :comments, param: :aid, only: [:create, :update]
@@ -29,8 +31,10 @@ Rails.application.routes.draw do
 
   # Administorator
   namespace :admin do
-    root "studio#index"
+    root 'studio#index'
 
+    resources :accounts, param: :aid, only: [:index, :edit, :update]
+    resources :posts, param: :aid, only: [:index, :edit, :update]
     resources :inquiries, param: :aid, only: [:index, :show, :update]
   end
 

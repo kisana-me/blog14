@@ -1,10 +1,11 @@
 <div class="comments">
-  <% if logged_in? %>
+  <% permission = admin? || current_account?(post.account) %>
+  <% if permission %>
     <% comments = post_all_comments(post) %>
   <% else %>
     <% comments = post_comments(post) %>
   <% end %>
   <% comments.each do |comment| %>
-    <%= render 'comments/show', comment: comment, top: true %>
+    <%= render 'comments/show', comment: comment, top: true, permission: permission %>
   <% end %>
 </div>

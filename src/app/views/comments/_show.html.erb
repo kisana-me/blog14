@@ -3,11 +3,11 @@
 <% else %>
 <div class="reply">
 <% end %>
-  <% if logged_in? %>
+  <% if permission %>
     <div>
       <%= form_with(model: comment, url: comment_path(comment.aid), method: :put, data: { turbo: false }) do |f| %>
-        <%= f.check_box :public %>
-        <%= f.label :public, "公開" %>
+        <%= f.check_box :public, id: "comment_#{comment.aid}" %>
+        <%= f.label comment.aid, "公開" %>
         <%= f.submit "更新" %>
       <% end %>
     </div>
@@ -23,8 +23,8 @@
   <div class="comment-content">
     <%= comment.content %>
   </div>
-  <% if defined? top %>
-    <% if logged_in? %>
+  <% if top %>
+    <% if permission %>
       <% replies = comment_all_replies(comment) %>
     <% else %>
       <% replies = comment_replies(comment) %>
@@ -34,7 +34,7 @@
       <summary>スレッドを表示</summary>
       <div class="replies">
         <% comment.comments.each do |cmt| %>
-          <%= render 'comments/show', comment: cmt %>
+          <%= render 'comments/show', comment: cmt, top: false, permission: permission %>
         <% end %>
       </div>
     </details>

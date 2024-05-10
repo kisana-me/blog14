@@ -14,6 +14,12 @@
 <% provide(:layout_style, 'full') %>
 <% provide(:ga4, 'true') %>
 
+<% if logged_in? %>
+<div>
+  <%= link_to('スタジオ', studio_path) %>
+  <%= link_to('admin', admin_root_path) if admin? %>
+</div>
+<% end %>
 <h1>記事一覧</h1>
 <h2>おすすめの記事</h2>
 <div>

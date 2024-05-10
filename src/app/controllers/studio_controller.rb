@@ -11,8 +11,5 @@ class StudioController < ApplicationController
       public: false,
       deleted: false
     )
-    @deleted_posts = @current_account.posts.where(
-      deleted: true
-    )
   end
 end

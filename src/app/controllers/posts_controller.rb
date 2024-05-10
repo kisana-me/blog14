@@ -65,6 +65,9 @@ class PostsController < ApplicationController
     unless @post
       if logged_in?
         return if @post = @current_account.posts.find_by(aid: params[:aid])
+        if admin?
+          return if @post = Post.find_by(aid: params[:aid])
+        end
       end
       render_404
     end
@@ -74,6 +77,9 @@ class PostsController < ApplicationController
       aid: params[:aid]
     )
     unless @post
+      if admin?
+        return if @post = Post.find_by(aid: params[:aid])
+      end
       render_404
     end
   end

@@ -1,0 +1,28 @@
+<%= instead.name %>
+<%= form_with model: instead, url: url do |f| %>
+  <% instead.class.columns.each do |column| %>
+    <% if column.name != "id" %>
+      <div class="field">
+        <%= f.label column.name %>
+        <% if column.type == :string %>
+          <%= f.text_field column.name %>
+        <% elsif column.type == :text %>
+          <%= f.text_area column.name %>
+        <% elsif column.type == :integer %>
+          <%= f.number_field column.name %>
+        <% elsif column.type == :float %>
+          <%= f.number_field column.name, step: "0.01" %>
+        <% elsif column.type == :boolean %>
+          <%= f.check_box column.name %>
+        <% elsif column.type == :date %>
+          <%= f.date_field column.name %>
+        <% elsif column.type == :datetime %>
+          <%= f.datetime_field column.name %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

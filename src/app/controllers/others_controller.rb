@@ -30,7 +30,30 @@ class OthersController < ApplicationController
       render 'contact'
     end
   end
+  def secrets_check
+    case params[:keyword]
+    when 'signup'
+      if logged_in?
+        flash[:danger] = "ログイン済みです"
+        redirect_to root_path
+        return
+      end
+      @account = Account.new
+      render 'accounts/signup'
+    when 'login'
+      if logged_in?
+        flash[:danger] = "ログイン済みです"
+        redirect_to root_path
+        return
+      end
+      render 'accounts/login'
+    else
+      render_404
+    end
+  end
+
   private
+
   def inquiry_params
     params.require(:inquiry).permit(
       :subject,

@@ -1,7 +1,7 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: %i[ show ]
   before_action :logged_in_account, only: %i[ logout edit update ]
-  before_action :logged_out_account, only: %i[ signup create_signup login create_login ]
+  before_action :logged_out_account, only: %i[ create_signup create_login ]
   before_action :set_correct_account, only: %i[ edit update ]
 
   def index
@@ -11,9 +11,6 @@ class AccountsController < ApplicationController
     ).order(
       id: :desc
     )
-  end
-  def signup
-    @account = Account.new
   end
   def create_signup
     @account = Account.new(account_params)
@@ -25,15 +22,13 @@ class AccountsController < ApplicationController
       render 'signup'
     end
     if @account.save
-      redirect_to login_path
+      redirect_to root_path
       flash[:success] = '作成しました'
     else
       reform()
       flash.now[:danger] = '作成できませんでした'
       render 'signup'
     end
-  end
-  def login
   end
   def create_login
     @account = Account.find_by(
@@ -129,8 +124,10 @@ class AccountsController < ApplicationController
     end
   end
   def set_correct_account
-    @account = Account.find_by(aid: params[:aid])
-    unless @current_account == @account
+    if @account = Account.find_by(aid: params[:aid])
+      return if current_account?(@account)
+      return if admin?
+    else
       render_404
     end
   end

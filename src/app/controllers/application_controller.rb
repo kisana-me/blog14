@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
     @current_account = current_account
   end
   def admin_account
-    unless logged_in? && @current_account.roles.include?('admin')
+    unless admin?
       render_404
     end
   end
@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
     end
   end
   def logged_out_account
-    unless !logged_in?
+    if logged_in?
       flash[:danger] = "ログイン済みです"
       redirect_to root_path
     end

@@ -1,0 +1,9 @@
+<h1>ポスト</h1>
+<h2>非公開</h2>
+<% @private_posts.each do |post| %>
+  <%= render 'posts/show_mini', post: post %>
+<% end %>
+<h2>限定公開</h2>
+<% @unlisted_posts.each do |post| %>
+  <%= render 'posts/show_mini', post: post %>
+<% end %>

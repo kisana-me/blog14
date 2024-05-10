@@ -1,12 +1,25 @@
-<h1>admin page</h1>
-<p>
-  <%= @current_account.name %>
-  <span>(@<%= @current_account.name_id %>)</span>
-  さん、こんにちは。
-</p>
-<%= link_to('プロフィールを変更', root_path) %>
+<h1>Admin Studio</h1>
+
+<h2>アカウント</h2>
+<%= link_to('⭕全て確認する', admin_accounts_path) %>
+
+<h2>セッション</h2>
+<%= link_to('❌全て確認する', admin_root_path) %>
+
+<h2>ポスト</h2>
+<%= link_to('▲全て確認する', admin_posts_path) %>
+
+<h2>画像</h2>
+<%= link_to('❌全て確認する', admin_root_path) %>
+
+<h2>コメント</h2>
+<%= link_to('❌全て確認する', admin_root_path) %>
+
+<h2>タグ</h2>
+<%= link_to('❌全て確認する', admin_root_path) %>
+
+<h2>ポスト・タグ関連付け</h2>
+<%= link_to('❌全て確認する', admin_root_path) %>
 
 <h2>お問い合わせ</h2>
-<%= link_to('全て確認する', admin_inquiries_path) %>
-<h2>コメントを確認</h2>
-<%= link_to('未実装', root_path) %>
+<%= link_to('⭕全て確認する', admin_inquiries_path) %>
