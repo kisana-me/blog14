@@ -147,6 +147,11 @@ h2 {
   margin: 3px 0 8px;
   font-size: 23px;
 }
+iframe {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: 100%;
+}
 
 .misskey-share-button {
   height: 20px;
