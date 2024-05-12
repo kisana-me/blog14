@@ -1,36 +1,32 @@
-<% keywords = '' %>
-<% authors = '' %>
-<% provide(:title, @account.name) %>
-<% provide(:author, authors) %>
+<% provide(:title, "筆者紹介 - #{@account.name}") %>
+<% provide(:author, @account.name) %>
 <% provide(:description, @account.description) %>
-<% provide(:keywords, keywords) %>
-<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:keywords, '筆者紹介') %>
+<% provide(:robots, 'index, follow') %>
 <% provide(:url, full_url("/")) %>
 <% provide(:type, 'website') # website or article %>
-<% provide(:image, "/") %>
+<% provide(:image, @account.icon_url) %>
 <% provide(:card, 'summary') # summary,summary_large_image, app, player %>
 <% provide(:alt, '') %>
 <% provide(:id, '') %>
 <% provide(:layout_style, 'full') %>
 <% provide(:ga4, 'true') %>
 
-<h1><%= @account.name %></h1>
-<div>
-  <%= image_tag(@account.icon_url) %>
-  <%= @account.icon_url %>
-  ID:<%= @account.aid %>
+<h1>筆者紹介</h1>
+<div class="account-top">
+  <div class="account-icon-container">
+    <%= image_tag(@account.icon_url, class: 'account-icon') %>
+  </div>
+  <div class="account-name">
+    <%= @account.name %>
+  </div>
 </div>
-<div>
+<div class="account-profile">
+  ID:<%= @account.aid %>
+  <br />
   紹介文:<%= @account.description %>
 </div>
-<% if @current_account == @account %>
-<h2>全投稿(下書き含む)</h2>
-<% @account.posts.each do |post| %>
-  <%= render 'posts/show', post: post %>
-<% end %>
-<% else %>
-<h2>投稿(最新10つ)</h2>
+<h2>最新の投稿</h2>
 <% whos_posts(@account, 10).each do |post| %>
   <%= render 'posts/show', post: post %>
-<% end %>
 <% end %>

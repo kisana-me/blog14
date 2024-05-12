@@ -16,5 +16,14 @@
 
 <h1>タグ一覧</h1>
 <% @tags.each do |tag| %>
-  <%= render 'tags/show', tag: tag %>
+  <%= link_to tag_path(tag.aid), class: 'tag-path' do %>
+    <div class="tag-top">
+      <div class="tag-name">
+        <%= tag.name %>
+      </div>
+      <div class="tag-description">
+        <%= tag.description %>
+      </div>
+    </div>
+  <% end %>
 <% end %>

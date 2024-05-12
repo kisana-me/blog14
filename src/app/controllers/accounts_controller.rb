@@ -9,7 +9,7 @@ class AccountsController < ApplicationController
       public: true,
       deleted: false
     ).order(
-      id: :desc
+      id: :asc
     )
   end
   def create_signup

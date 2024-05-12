@@ -1,4 +1,4 @@
 <% provide(:title, '編集') %>
 <% provide(:layout_style, '') %>
 
-<%= render 'tags/form', tag: @tag, url: tag_path(@tag.tag_name_id), method: :patch %>
+<%= render 'tags/form', tag: @tag, url: tag_path(@tag.aid), method: :patch %>

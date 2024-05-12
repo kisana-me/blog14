@@ -82,4 +82,14 @@ module PostsHelper
       id: :desc
     )
   end
+  def tags_posts(tag, limit)
+    return tag.posts.where(
+      public: true,
+      deleted: false
+    ).limit(
+      limit.to_i
+    ).order(
+      id: :desc
+    )
+  end
 end

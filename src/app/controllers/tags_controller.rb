@@ -13,7 +13,6 @@ class TagsController < ApplicationController
     unless logged_in?
       @tag.update(views_count: @tag.views_count += 1)
     end
-    @tag_posts = @tag.posts.where(public: true, deleted: false)
   end
   def new
     @tag = Tag.new
@@ -34,7 +33,7 @@ class TagsController < ApplicationController
   def update
     if @tag.update(tag_params)
       flash[:success] = '編集しました'
-      redirect_to post_path(@tag.aid)
+      redirect_to tag_path(@tag.aid)
     else
       flash.now[:danger] = '編集できませんでした'
       render 'new'

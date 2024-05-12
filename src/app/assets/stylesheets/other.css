@@ -1,0 +1,39 @@
+.comment-form {
+  padding: 7px;
+  border: 1px solid;
+  border-radius: 5px;
+}
+.comment {
+  padding: 7px;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+.comment-info {
+  font-size: 14px;
+  line-height: 14px;
+}
+
+/* tag */
+
+.tag-top {
+  display: flex;
+}
+.tag-path {
+  color: inherit;
+  text-decoration: none;
+  margin: 5px;
+  display: block;
+}
+.tag-name {
+  height: 50px;
+  line-height: 50px;
+  font-size: 26px;
+  flex-shrink: 0;
+  padding: 0 7px;
+}
+.tag-description {
+  max-height: 50px;
+  line-height: 25px;
+  overflow: hidden;
+}

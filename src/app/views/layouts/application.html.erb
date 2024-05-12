@@ -43,13 +43,11 @@
     <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
-    <% if yield(:ga4).present? %>
-    <% if Rails.env.production? %>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4578343381731958"
-    crossorigin="anonymous"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMJR3TFCRD"></script>
-    <% end %>
+    <% if yield(:ga4).present? && Rails.env.production? %>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4578343381731958"
+      crossorigin="anonymous"></script>
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMJR3TFCRD"></script>
     <% end %>
 
   </head>
@@ -58,12 +56,15 @@
     <header>
       <div class="app-name"><%= link_to(ENV['APP_NAME'], root_path) %></div>
       <nav>
-        <%= link_to(posts_path) do %>
-          記事一覧
-        <% end %>
-        <%= link_to(tags_path) do %>
-          タグ一覧
-        <% end %>
+        <div class="nav-link">
+          <%= link_to('記事', posts_path) %>
+        </div>
+        <div class="nav-link">
+          <%= link_to('筆者', accounts_path) %>
+        </div>
+        <div class="nav-link">
+          <%= link_to('タグ', tags_path) %>
+        </div>
       </nav>
     </header>
     <main class="wf-roundedmplus1c">
@@ -98,8 +99,9 @@
         <div class="footer-actions">
           <ul>
             <li><%= link_to('お問い合わせ', contact_path) %></li>
+            <li><%= link_to('管理者', accounts_path) %></li>
             <% if logged_in? %>
-            <li><%= link_to('スタジオ', studio_path) %></li>
+            <li><%= link_to('スタジオ', studio_path, data: { turbo: false }) %></li>
             <% end %>
           </ul>
         </div>

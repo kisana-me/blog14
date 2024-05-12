@@ -16,8 +16,8 @@
 
 <% if logged_in? %>
 <div>
-  <%= link_to('スタジオ', studio_path) %>
-  <%= link_to('admin', admin_root_path) if admin? %>
+  <%= link_to('スタジオ', studio_path, data: { turbo: false }) %>
+  <%= link_to('admin', admin_root_path, data: { turbo: false }) if admin? %>
 </div>
 <% end %>
 <h1>記事一覧</h1>

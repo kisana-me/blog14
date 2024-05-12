@@ -45,7 +45,7 @@ nav {
   display: flex;
   justify-content: space-evenly;
 }
-nav a {
+.nav-link {
   border-radius: 3px;
   background: #fff7;
   padding: 0 10px;
@@ -161,6 +161,13 @@ h2 {
 
 @media (max-width: 528px) {
   /* 以下 */
+  .nav-link {
+    padding: 0 5px;
+    font-size: 12px;
+  }
+  .app-name {
+    font-size: 28px;
+  }
 }
 @media (max-width: 999px) {
   /* 以下 */

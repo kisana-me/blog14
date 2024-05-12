@@ -14,13 +14,16 @@
 <% provide(:layout_style, 'full') %>
 <% provide(:ga4, 'true') %>
 
-<h1><%= @tag.name %></h1>
-<div>
-  タグID:<%= @tag.aid %>
+<h1>タグ紹介</h1>
+<div class="tag-name">
+  <%= @tag.name %>
 </div>
-<div>
-  紹介:<%= @tag.description %>
+<div class="tag-info">
+  ID:<%= @tag.aid %>
+  <br />
+  紹介文:<%= @tag.description %>
 </div>
-<% @tag_posts.each do |post| %>
+<h2>最新の投稿</h2>
+<% tags_posts(@tag, 10).each do |post| %>
   <%= render 'posts/show', post: post %>
 <% end %>

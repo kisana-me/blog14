@@ -1,10 +1,10 @@
 <% keywords = @post.tags.pluck(:name).join(', ') %>
 <% provide(:title, @post.title) %>
 <% provide(:author,  @post.account.name) %>
-<% provide(:author_id, 'kisana_me') %>
+<% provide(:author_id, @post.account.aid) %>
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
-<% provide(:robots, 'index, follow') %>
+<% provide(:robots, @post.public ? 'index,follow' : 'noindex,nofollow') %>
 <% provide(:url, full_url("/posts/#{@post.aid}")) %>
 <% provide(:type, 'article') # website or article %>
 <% provide(:image, @post.thumbnail_url) %>
@@ -68,14 +68,21 @@
       </time>
       <% end %>
     </span>
-    <div>
-      作成者:
-      <%= link_to( @post.account.name, account_path(@post.account.aid)) %>
+    <div class="post-account">
+      <%= link_to account_path(@post.account.aid), class: 'post-account-path' do %>
+        <div class="post-account-top">
+          <div class="post-account-icon-container">
+            <%= image_tag(@post.account.icon_url, class: 'post-account-icon') %>
+          </div>
+          <div class="post-account-name">
+            <%= @post.account.name %>
+          </div>
+        </div>
+      <% end %>
     </div>
-    <div>
-      タグ:
+    <div class="post-tags">
       <% @post.tags.each do |tag| %>
-        <%= link_to(tag.name, tag_path(tag.aid)) %>
+        <%= link_to(tag.name, tag_path(tag.aid), class: 'post-tag') %>
       <% end %>
     </div>
     <div class="post-meta">
@@ -83,14 +90,12 @@
       <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
     </div>
   </div>
-  <div class="post-toc">
-    <span>目次</span>
-    <% if toc(@post.content).present? %>
-      <%= toc(@post.content) %>
-    <% else %>
-      <span>項目なし</span>
-    <% end %>
-  </div>
+  <% if toc(@post.content).present? %>
+    <div class="post-toc">
+      <span>目次</span>
+        <%= toc(@post.content) %>
+    </div>
+  <% end %>
   <div class="post-content">
     <%= markdown(@post.content) %>
   </div>

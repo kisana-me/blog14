@@ -37,7 +37,7 @@ class Post < ApplicationRecord
       end
       return object_url(key: "/variants/#{variant_type}/thumbnails/#{self.aid}.webp")
     else
-      return '/'
+      return nil
     end
   end
   def thumbnail?

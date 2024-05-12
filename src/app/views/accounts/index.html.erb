@@ -1,10 +1,8 @@
-<% keywords = '' %>
-<% authors = '' %>
-<% provide(:title, 'アカウント一覧') %>
-<% provide(:author, authors) %>
-<% provide(:description, 'アカウント一覧') %>
-<% provide(:keywords, keywords) %>
-<% provide(:robots, 'noindex, nofollow') %>
+<% provide(:title, '筆者一覧') %>
+<% provide(:author, '') %>
+<% provide(:description, '筆者一覧') %>
+<% provide(:keywords, '筆者一覧') %>
+<% provide(:robots, 'index, follow') %>
 <% provide(:url, full_url("/")) %>
 <% provide(:type, 'website') # website or article %>
 <% provide(:image, "/") %>
@@ -14,11 +12,19 @@
 <% provide(:layout_style, 'full') %>
 <% provide(:ga4, 'true') %>
 
-<h1>アカウント一覧</h1>
+<h1>筆者一覧</h1>
 <% @accounts.each do |account| %>
-<div>
-  <h2><%= account.name %></h2>
-  <p><%= link_to('プロフ', account_path(account.aid)) %></p>
-  <p><%= account.description %></p>
-</div>
+  <%= link_to account_path(account.aid), class: 'account-path' do %>
+    <div class="account-top">
+      <div class="account-icon-container">
+        <%= image_tag(account.icon_url, class: 'account-icon') %>
+      </div>
+      <div class="account-name">
+        <%= account.name %>
+      </div>
+      <div class="account-description">
+        <%= account.description %>
+      </div>
+    </div>
+  <% end %>
 <% end %>
