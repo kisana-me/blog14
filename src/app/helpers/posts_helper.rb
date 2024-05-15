@@ -1,4 +1,8 @@
 module PostsHelper
+  require 'rouge/plugins/redcarpet'
+  class HTMLwithRouge < Redcarpet::Render::HTML
+    include Rouge::Plugins::Redcarpet
+  end
   # markdown
   def markdown(text)
     options = {
@@ -18,11 +22,11 @@ module PostsHelper
       quote: true,
       footnotes: true
     }
-    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(options), extensions)
+    markdown = Redcarpet::Markdown.new(HTMLwithRouge.new(options), extensions)
     markdown.render(text).html_safe
   end
   def toc(text)
-      renderer = Redcarpet::Render::HTML_TOC.new(nesting_level: 3)
+      renderer = Redcarpet::Render::HTML_TOC.new(nesting_level: 6)
       markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
       markdown.render(text).html_safe
   end

@@ -19,6 +19,8 @@ gem 'mini_magick'
 gem "aws-sdk-s3", require: false
 gem "redcarpet"
 gem 'rubyzip', '2.3.0'
+gem 'rouge'
+gem 'sass-rails'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
