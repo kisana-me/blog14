@@ -5,8 +5,7 @@ module ImageTools
   def process_image(variant_type: 'images', image_type: 'images', column_name: 'variants', original_key: 'original_key')
     variants =JSON.parse(self.send(column_name))
     if variants.include?(image_type)
-      #return
-      Rails.logger.info('=====含まれる====')
+      return
     end
     s3 = Aws::S3::Client.new(
       endpoint: ENV["S3_LOCAL_ENDPOINT"],
@@ -18,7 +17,6 @@ module ImageTools
     downloaded_image = Tempfile.new(['downloaded_image'])
     converted_image = Tempfile.new(['converted_image'])
     s3.get_object(bucket: ENV["S3_BUCKET"], key: self.send(original_key), response_target: downloaded_image.path)
-    image = MiniMagick::Image.open(downloaded_image.path)
     resize = "2048x2048>"
     extent = "" # 切り取る
     case variant_type
@@ -49,19 +47,24 @@ module ImageTools
     when 'tb-emojis'
       resize = "50x50>"
     end
-    image.format('webp')
-    image.coalesce
-    image.combine_options do |img|
-      img.gravity "center"
-      img.quality 85
-      img.auto_orient
-      img.strip # EXIF削除
-      img.resize resize
-      unless extent == ''
-        img.extent extent
+    processed = ImageProcessing::MiniMagick
+    .source(downloaded_image.path)
+    .loader(page: nil)
+    .coalesce
+    .gravity("center")
+    .resize(resize)
+    .then do |chain|
+      if extent.present?
+        chain.extent(extent)
+      else
+        chain
       end
     end
-    image.write(converted_image.path)
+    .strip
+    .auto_orient
+    .quality(85)
+    .convert("webp")
+    .call(destination: converted_image.path)
     key = "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp"
     s3_upload(key: key, file: converted_image.path, content_type: 'image/webp')
     add_mca_data(self, column_name, [variant_type], true)
