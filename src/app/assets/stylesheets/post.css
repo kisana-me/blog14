@@ -169,7 +169,7 @@
   margin: 5px;
 }
 .post-tag {
-  background: linear-gradient(210deg, rgb(151 247 199) 0%, rgb(232 247 205) 74%);
+  background: linear-gradient(210deg, rgb(151, 247, 199) 0%, rgb(232, 247, 205) 74%);
   color: inherit;
   text-decoration: none;
   border: 1px solid #9ef6ff;
