@@ -37,7 +37,7 @@ module PostsHelper
       deleted: false
     ).count
     per_page = 10 # 表示件数
-    return total_posts > 0 ? (total_posts.to_i / per_page).ceil : 0
+    return total_posts > 0 ? (total_posts.to_f / per_page.to_f).ceil : 0
   end
   def paged_posts(param)
     param = param.to_i

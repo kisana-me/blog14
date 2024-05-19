@@ -1,18 +1,7 @@
-<% keywords = @tag.name %>
-<% authors = '' %>
 <% provide(:title, @tag.name) %>
-<% provide(:author, authors) %>
 <% provide(:description, @tag.description) %>
-<% provide(:keywords, keywords) %>
-<% provide(:robots, 'index, follow') %>
-<% provide(:url, full_url("/tags/#{@tag.aid}")) %>
-<% provide(:type, 'website') # website or article %>
-<% provide(:image, "/") %>
-<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
-<% provide(:alt, '') %>
-<% provide(:id, '') %>
+<% provide(:keywords, @tag.name) %>
 <% provide(:layout_style, 'full') %>
-<% provide(:ga4, 'true') %>
 
 <h1>タグ紹介</h1>
 <div class="tag-name">

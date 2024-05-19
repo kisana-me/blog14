@@ -21,8 +21,9 @@ Rails.application.routes.draw do
 
   # Others
   get 'terms' => 'others#terms'
-  get 'policy' => 'others#policy'
+  get 'privacy_policy' => 'others#privacy_policy'
   get 'disclaimer' => 'others#disclaimer'
+  get 'sitemap' => 'others#sitemap'
   get 'contact' => 'others#contact'
   post 'contact' => 'others#create_contact'
 

@@ -4,15 +4,12 @@
 <% provide(:author_id, @post.account.aid) %>
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
-<% provide(:robots, @post.public ? 'index,follow' : 'noindex,nofollow') %>
-<% provide(:url, full_url("/posts/#{@post.aid}")) %>
-<% provide(:type, 'article') # website or article %>
+<% provide(:robots, @post.public ? '' : 'false') %>
+<% provide(:type, 'article') %>
 <% provide(:image, @post.thumbnail_url) %>
-<% provide(:card, 'summary_large_image') # summary,summary_large_image, app, player %>
-<% provide(:alt, @post.summary) %>
-<% provide(:id, @post.aid) %>
+<% provide(:card, 'summary_large_image') %>
+<% provide(:alt, @post.title) %>
 <% provide(:layout_style, 'full') %>
-<% provide(:ga4, 'true') %>
 
 <div class="post">
   <% if admin? || current_account?(@post.account) %>

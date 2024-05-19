@@ -1,16 +1,7 @@
 <% provide(:title, '筆者一覧') %>
-<% provide(:author, '') %>
 <% provide(:description, '筆者一覧') %>
 <% provide(:keywords, '筆者一覧') %>
-<% provide(:robots, 'index, follow') %>
-<% provide(:url, full_url("/")) %>
-<% provide(:type, 'website') # website or article %>
-<% provide(:image, "/") %>
-<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
-<% provide(:alt, '') %>
-<% provide(:id, '') %>
 <% provide(:layout_style, 'full') %>
-<% provide(:ga4, 'true') %>
 
 <h1>筆者一覧</h1>
 <% @accounts.each do |account| %>

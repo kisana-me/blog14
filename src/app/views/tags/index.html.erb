@@ -1,18 +1,7 @@
-<% keywords = 'タグ一覧' %>
-<% authors = '' %>
 <% provide(:title, 'タグ一覧') %>
-<% provide(:author, authors) %>
 <% provide(:description, 'タグ一覧') %>
-<% provide(:keywords, keywords) %>
-<% provide(:robots, 'index, follow') %>
-<% provide(:url, full_url("/tags/")) %>
-<% provide(:type, 'website') # website or article %>
-<% provide(:image, "/") %>
-<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
-<% provide(:alt, '') %>
-<% provide(:id, '') %>
+<% provide(:keywords, 'タグ一覧') %>
 <% provide(:layout_style, 'full') %>
-<% provide(:ga4, 'true') %>
 
 <h1>タグ一覧</h1>
 <% @tags.each do |tag| %>

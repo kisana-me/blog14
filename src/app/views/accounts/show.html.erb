@@ -2,15 +2,8 @@
 <% provide(:author, @account.name) %>
 <% provide(:description, @account.description) %>
 <% provide(:keywords, '筆者紹介') %>
-<% provide(:robots, 'index, follow') %>
-<% provide(:url, full_url("/")) %>
-<% provide(:type, 'website') # website or article %>
 <% provide(:image, @account.icon_url) %>
-<% provide(:card, 'summary') # summary,summary_large_image, app, player %>
-<% provide(:alt, '') %>
-<% provide(:id, '') %>
 <% provide(:layout_style, 'full') %>
-<% provide(:ga4, 'true') %>
 
 <h1>筆者紹介</h1>
 <div class="account-top">

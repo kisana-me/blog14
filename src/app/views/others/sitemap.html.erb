@@ -1,0 +1,29 @@
+<% provide(:title, 'サイトマップ') %>
+<% provide(:description, 'サイトマップ') %>
+<% provide(:keywords, 'サイトマップ') %>
+<% provide(:layout_style, '') %>
+<% provide(:ga4, 'true') %>
+
+<h1>サイトマップ</h1>
+
+<h2>メインコンテンツ</h2>
+<h3>投稿記事の一覧</h3>
+<%= link_to '/posts', posts_path %>
+<h3>筆者の一覧</h3>
+<%= link_to '/accounts', accounts_path %>
+<h3>タグの一覧</h3>
+<%= link_to '/tags', tags_path %>
+
+<h2>サブコンテンツ</h2>
+<h3>利用規約</h3>
+<%= link_to '/terms', terms_path %>
+<h3>プライバシーポリシー</h3>
+<%= link_to '/privacy_policy', privacy_policy_path %>
+<h3>免責事項</h3>
+<%= link_to '/disclaimer', disclaimer_path %>
+<h3>お問い合わせ</h3>
+<%= link_to '/contact', contact_path %>
+<h3>サイトマップ</h3>
+<%= link_to '/sitemap', sitemap_path %>
+<h3>管理者</h3>
+<%= link_to '/accounts', accounts_path %>

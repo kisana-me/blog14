@@ -35,6 +35,10 @@ header {
 header a {
   color: inherit;
   text-decoration: none;
+  
+  display: block;
+  box-sizing: content-box;
+  padding: 0 10px;
 }
 .app-name {
   font-size: 38px;
@@ -48,7 +52,6 @@ nav {
 .nav-link {
   border-radius: 3px;
   background: #fff7;
-  padding: 0 10px;
 }
 main {
   min-height: calc(100svh - 158px);
@@ -172,6 +175,13 @@ iframe {
   }
   .app-name {
     font-size: 28px;
+  }
+  
+  .footer-links {
+    font-size: 12px;
+  }
+  .footer-actions {
+    font-size: 12px;
   }
 }
 @media (max-width: 999px) {

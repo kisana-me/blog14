@@ -3,9 +3,11 @@ class OthersController < ApplicationController
   end
   def terms
   end
-  def policy
+  def privacy_policy
   end
   def disclaimer
+  end
+  def sitemap
   end
   def contact
     @inquiry = Inquiry.new
