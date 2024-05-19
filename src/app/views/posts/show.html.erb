@@ -35,6 +35,9 @@
     <%= @post.comments.count %>
     <br />
     <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) %>
+    <% if admin? %>
+      <%= button_to('variants削除', thumbnail_variants_delete_path(@post.aid), data: { turbo: false }, method: :delete) %>
+    <% end %>
   </div>
   <% end %>
   <div class="post-thumbnail">

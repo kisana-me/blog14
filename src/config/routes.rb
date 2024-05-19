@@ -15,7 +15,12 @@ Rails.application.routes.draw do
   resources :accounts, param: :aid, except: [:new, :create]
   resources :session, params: :aid, only: []
   resources :posts, param: :aid
-  resources :images, param: :aid
+  delete 'posts/:aid/thumbnail_variants_delete' => 'posts#thumbnail_variants_delete', as: 'thumbnail_variants_delete'
+  resources :images, param: :aid, except: [:delete]
+  get 'images/:aid/variants_show' => 'images#variants_show', as: 'variants_show'
+  post 'images/:aid/variants_create' => 'images#variants_create', as: 'variants_create'
+  delete 'images/:aid/variants_delete' => 'images#variants_delete', as: 'variants_delete'
+  delete 'images/:aid/image_delete' => 'images#image_delete', as: 'image_delete'
   resources :comments, param: :aid, only: [:create, :update]
   resources :tags, param: :aid
 

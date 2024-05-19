@@ -1,0 +1,41 @@
+<% provide(:title, '画像') %>
+<% provide(:layout_style, '') %>
+
+<h1>画像</h1>
+<div>
+  <h2>画像名:<%= @image.name %></h2>
+  <p>ID:<%= @image.aid %></p>
+  <p>紹介文:<%= @image.description %></p>
+  <p>original_key:<%= @image.original_key %></p>
+  <p>variants:<%= @image.variants %></p>
+  <p>
+    <%= form_with url: variants_create_path(@image.aid), method: :post, data: { turbo: false } do %>
+      <div>
+        <%= label_tag :variant, "variant" %>
+        <%= select_tag :variant, options_for_select(['images', 'tb-images']) %>
+      </div>
+      <div>
+        <%= submit_tag "送信" %>
+      </div>
+    <% end %>
+  </p>
+  <p>
+    <% if @image.variants.include?('images') %>
+      imagesがあります
+      <%= image_tag(@image.image_url(variant_type: 'images')) %>
+    <% else %>
+      imagesはない
+    <% end %>
+    <% if @image.variants.include?('tb-images') %>
+      tb-imagesがあります
+      <%= image_tag(@image.image_url(variant_type: 'tb-images')) %>
+    <% else %>
+      tb-imagesはない
+    <% end %>
+  </p>
+  <p>
+    <%= link_to('編集', edit_image_path(@image.aid)) %>
+    <%= button_to('variantsを削除', variants_delete_path(@image.aid), method: :delete, data: { turbo: false }) %>
+    <%= button_to('画像を削除', image_delete_path(@image.aid), method: :delete, data: { turbo: false }) %>
+  </p>
+</div>

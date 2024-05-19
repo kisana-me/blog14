@@ -2,9 +2,9 @@ module ImageTools
 
   private
 
-  def process_image(variant_type: 'images', image_type: 'images', column_name: 'variants', original_key: 'original_key')
-    variants =JSON.parse(self.send(column_name))
-    if variants.include?(image_type)
+  def process_image(variant_type: 'images', image_type: 'images', variants_column: 'variants', original_key_column: 'original_key')
+    variants =JSON.parse(self.send(variants_column))
+    if variants.include?(variant_type)
       return
     end
     s3 = Aws::S3::Client.new(
@@ -16,7 +16,7 @@ module ImageTools
     )
     downloaded_image = Tempfile.new(['downloaded_image'])
     converted_image = Tempfile.new(['converted_image'])
-    s3.get_object(bucket: ENV["S3_BUCKET"], key: self.send(original_key), response_target: downloaded_image.path)
+    s3.get_object(bucket: ENV["S3_BUCKET"], key: self.send(original_key_column), response_target: downloaded_image.path)
     resize = "2048x2048>"
     extent = "" # 切り取る
     case variant_type
@@ -47,37 +47,61 @@ module ImageTools
     when 'tb-emojis'
       resize = "50x50>"
     end
-    processed = ImageProcessing::MiniMagick
-    .source(downloaded_image.path)
-    .loader(page: nil)
-    .coalesce
-    .gravity("center")
-    .resize(resize)
-    .then do |chain|
-      if extent.present?
-        chain.extent(extent)
-      else
-        chain
+    image = MiniMagick::Image.open(downloaded_image.path)
+    if image.frames.count > 1
+      processed = ImageProcessing::MiniMagick
+        .source(downloaded_image.path)
+        .loader(page: nil)
+        .coalesce
+        .gravity("center")
+        .resize(resize)
+        .then do |chain|
+          if extent.present?
+            chain.extent(extent)
+          else
+            chain
+          end
+        end
+        .strip
+        .auto_orient
+        .quality(85)
+        .convert("webp")
+        .call(destination: converted_image.path)
+    else
+      image = MiniMagick::Image.open(downloaded_image.path)
+      image.format('webp')
+      image = image.coalesce
+      image.combine_options do |img|
+        img.gravity "center"
+        img.quality 85
+        #img.auto_orient
+        img.strip # EXIF削除
+        img.resize resize
+        unless extent == ''
+          img.extent extent
+        end
       end
+      image.write(converted_image.path)
     end
-    .strip
-    .auto_orient
-    .quality(85)
-    .convert("webp")
-    .call(destination: converted_image.path)
     key = "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp"
     s3_upload(key: key, file: converted_image.path, content_type: 'image/webp')
-    add_mca_data(self, column_name, [variant_type], true)
+    add_mca_data(self, variants_column, [variant_type], true)
     downloaded_image.close
     converted_image.close
   end
 
-  def delete_variants(column_name: 'variants', image_type: 'images')
-    arr = JSON.parse(self.send(column_name))
-    arr.each do |vrt|
-      s3_delete(key: "/variants/#{vrt}/#{image_type}/#{self.aid}.webp")
+  def delete_variants(variants_column: 'variants', image_type: 'images')
+    arr = JSON.parse(self.send(variants_column))
+    arr.each do |variant_type|
+      s3_delete(key: "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp")
     end
-    remove_mca_data(self, column_name, arr, false)
+    remove_mca_data(self, variants_column, arr, false)
+  end
+
+  def delete_image(original_key_column: 'original_key', variants_column: 'variants', image_type: 'images')
+    delete_variants(variants_column: variants_column, image_type: image_type)
+    s3_delete(key: self.send(original_key_column))
+    self.update(original_key_column.to_sym => '')
   end
 
   def varidate_image(column_name: 'image', required: true)

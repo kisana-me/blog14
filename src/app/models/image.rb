@@ -8,7 +8,7 @@ class Image < ApplicationRecord
   def image_upload
     if image
       if self.original_key.present?
-        delete_variants(column_name: 'variants', image_type: 'images')
+        delete_variants()
         s3_delete(key: self.original_key)
       end
         extension = image.original_filename.split('.').last.downcase
@@ -26,6 +26,14 @@ class Image < ApplicationRecord
     else
       return '/'
     end
+  end
+  def variants_delete
+    delete_variants()
+    self.save
+  end
+  def image_delete
+    delete_image()
+    self.save
   end
 
   private

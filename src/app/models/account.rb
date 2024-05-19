@@ -22,7 +22,7 @@ class Account < ApplicationRecord
   def icon_upload
     if icon
       if self.icon_original_key.present?
-        delete_variants(column_name: 'icon_variants', image_type: 'icons')
+        delete_variants(variants_column: 'icon_variants', image_type: 'icons')
         s3_delete(key: self.icon_original_key)
       end
         extension = icon.original_filename.split('.').last.downcase
@@ -37,8 +37,8 @@ class Account < ApplicationRecord
         process_image(
           variant_type: variant_type,
           image_type: 'icons',
-          column_name: 'icon_variants',
-          original_key: 'icon_original_key'
+          variants_column: 'icon_variants',
+          original_key_column: 'icon_original_key'
         )
       end
       return object_url(key: "/variants/#{variant_type}/icons/#{self.aid}.webp")

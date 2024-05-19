@@ -1,12 +1,16 @@
 class PostsController < ApplicationController
-  before_action :logged_in_account, only: %i[ new create edit update ]
+  before_action :logged_in_account, only: %i[ new create edit update thumbnail_variants_delete ]
   before_action :set_post, only: %i[ show ]
-  before_action :set_correct_post, only: %i[ edit update ]
+  before_action :set_correct_post, only: %i[ edit update thumbnail_variants_delete ]
   include PostsHelper
 
   def index
-    @posts = paged_posts(params[:page])
-    @posts_page = posts_page
+    all_posts = Post.where(
+      public: true,
+      deleted: false
+    )
+    @posts = paged_objects(params[:page], all_posts)
+    @posts_page = total_page(all_posts)
   end
   def show
     unless logged_in?
@@ -40,6 +44,15 @@ class PostsController < ApplicationController
     else
       flash.now[:danger] = '編集できませんでした'
       render 'new'
+    end
+  end
+  def thumbnail_variants_delete
+    if @post.thumbnail_variants_delete
+      flash[:success] = 'variantsを削除しました'
+      redirect_to privacy_policy_path
+    else
+      flash[:danger] = 'variantsの削除ができませんでした'
+      redirect_to privacy_policy_path
     end
   end
 

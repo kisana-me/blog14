@@ -16,7 +16,7 @@ class Post < ApplicationRecord
   def thumbnail_upload
     if thumbnail
       if self.thumbnail_original_key.present?
-        delete_variants(column_name: 'thumbnail_variants', image_type: 'thumbnails')
+        delete_variants(variants_column: 'thumbnail_variants', image_type: 'thumbnails')
         s3_delete(key: self.thumbnail_original_key)
       end
         extension = thumbnail.original_filename.split('.').last.downcase
@@ -31,14 +31,18 @@ class Post < ApplicationRecord
         process_image(
           variant_type: variant_type,
           image_type: 'thumbnails',
-          column_name: 'thumbnail_variants',
-          original_key: 'thumbnail_original_key'
+          variants_column: 'thumbnail_variants',
+          original_key_column: 'thumbnail_original_key'
         )
       end
       return object_url(key: "/variants/#{variant_type}/thumbnails/#{self.aid}.webp")
     else
       return nil
     end
+  end
+  def thumbnail_variants_delete
+    delete_variants(variants_column: 'thumbnail_variants', image_type: 'thumbnails')
+    self.save
   end
   def thumbnail?
     thumbnail_original_key.present?

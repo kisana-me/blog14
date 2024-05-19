@@ -7,7 +7,15 @@
   <h2>画像名:<%= image.name %></h2>
   <p>ID:<%= image.aid %></p>
   <p>紹介文:<%= image.description %></p>
-  <%= image_tag(image.image_url) %>
-  <%= link_to('編集', edit_image_path(image.aid)) if image.account == @current_account %>
+  <%# image_tag(image.image_url) %>
+  <%= link_to('見る', image_path(image.aid)) %>
+  <%= link_to('編集', edit_image_path(image.aid)) %>
+  <% if image.variants.include?('images') %>
+    imagesがあります
+    <%= image_tag(image.image_url(variant_type: 'images')) %>
+  <% else %>
+    imagesはない
+  <% end %>
 </div>
 <% end %>
+<%= render 'shared/paging', pages: @images_page, page: params[:page], page_to: 'images' %>
