@@ -25,6 +25,8 @@ module ApplicationHelper
       offset_item.to_i
     ).limit(
       limit_item.to_i
+    ).order(
+      id: :desc
     )
   end
 end
