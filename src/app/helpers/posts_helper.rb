@@ -73,7 +73,19 @@ module PostsHelper
     ).limit(
       limit.to_i
     ).order(
-      id: :desc
+      published_at: :desc
+    )
+  end
+  def edited_posts(limit)
+    return Post.where.not(
+      edited_at: nil
+    ).where(
+      public: true,
+      deleted: false
+    ).limit(
+      limit.to_i
+    ).order(
+      edited_at: :desc
     )
   end
   def whos_posts(who, limit)

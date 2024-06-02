@@ -26,7 +26,7 @@ module ApplicationHelper
     ).limit(
       limit_item.to_i
     ).order(
-      id: :desc
+      published_at: :desc
     )
   end
 end

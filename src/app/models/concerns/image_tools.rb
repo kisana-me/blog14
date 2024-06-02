@@ -105,10 +105,16 @@ module ImageTools
   end
 
   def varidate_image(column_name: 'image', required: true)
-    if self.send(column_name)
-      allowed_content_types = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
-      unless allowed_content_types.include?(self.send(column_name).content_type)
-        errors.add(column_name.to_sym, "未対応の形式です")
+    file = self.send(column_name)
+    if file
+      begin
+        image = MiniMagick::Image.read(file)
+        allowed_content_types = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
+        unless allowed_content_types.include?(image.mime_type)
+          errors.add(column_name.to_sym, "未対応の形式です")
+        end
+      rescue MiniMagick::Invalid
+        errors.add(column_name.to_sym, "無効な画像ファイルです")
       end
     elsif self.new_record? && required
       errors.add(column_name.to_sym, "画像がありません")

@@ -22,3 +22,9 @@
     <%= render 'posts/show', post: post %>
   <% end %>
 </div>
+<h2>更新のあった記事</h2>
+<div>
+  <% edited_posts(5).each do |post| %>
+    <%= render 'posts/show', post: post %>
+  <% end %>
+</div>

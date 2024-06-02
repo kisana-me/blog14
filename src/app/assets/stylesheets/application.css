@@ -167,6 +167,13 @@ iframe {
   text-decoration: none;
 }
 
+.highlight {
+  overflow-x: auto;
+}
+.highlight pre {
+  margin: 0;
+  padding: 10px;
+}
 @media (max-width: 528px) {
   /* 以下 */
   .nav-link {
