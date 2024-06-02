@@ -1,4 +1,6 @@
 <% provide(:title, '編集') %>
+<% provide(:robots, 'false') %>
 <% provide(:layout_style, '') %>
+<% provide(:ga4, 'false') %>
 
 <%= render 'posts/form', post: @post, url: post_path(@post.aid), method: :patch %>

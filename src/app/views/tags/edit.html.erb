@@ -1,4 +1,6 @@
 <% provide(:title, '編集') %>
+<% provide(:robots, 'false') %>
 <% provide(:layout_style, '') %>
+<% provide(:ga4, 'false') %>
 
 <%= render 'tags/form', tag: @tag, url: tag_path(@tag.aid), method: :patch %>

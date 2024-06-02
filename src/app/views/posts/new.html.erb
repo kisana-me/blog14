@@ -1,4 +1,6 @@
 <% provide(:title, '作成') %>
+<% provide(:robots, 'false') %>
 <% provide(:layout_style, '') %>
+<% provide(:ga4, 'false') %>
 
 <%= render 'posts/form', post: @post, url: posts_path, method: :post %>
