@@ -48,7 +48,7 @@
     <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
-    <% if yield(:ga4).blank? && Rails.env.production? %>
+    <% if @current_account.nil? && yield(:ga4).blank? && Rails.env.production? %>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4578343381731958"
       crossorigin="anonymous"></script>
       <!-- Google tag (gtag.js) -->
