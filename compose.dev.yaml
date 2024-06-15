@@ -17,6 +17,7 @@ services:
       S3_REGION: 'blog14'
       S3_BUCKET: 'development'
       INVITATION_CODE: 'test'
+      GA4_ID: ''
     working_dir: /app
     volumes:
       - ./src:/app
