@@ -22,7 +22,7 @@ class Post < ApplicationRecord
         extension = thumbnail.original_filename.split('.').last.downcase
         key = "/thumbnails/#{self.aid}.#{extension}"
         self.thumbnail_original_key = key
-        s3_upload(key: key, file: self.thumbnail.tempfile, content_type: self.thumbnail.content_type)
+        s3_upload(key: key, file: self.thumbnail.path, content_type: self.thumbnail.content_type)
     end
   end
   def thumbnail_url(variant_type: 'images')

@@ -14,7 +14,7 @@ class Image < ApplicationRecord
         extension = image.original_filename.split('.').last.downcase
         key = "/images/#{self.aid}.#{extension}"
         self.original_key = key
-        s3_upload(key: key, file: self.image.tempfile, content_type: self.image.content_type)
+        s3_upload(key: key, file: self.image.path, content_type: self.image.content_type)
     end
   end
   def image_url(variant_type: 'images')

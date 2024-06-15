@@ -28,7 +28,7 @@ class Account < ApplicationRecord
         extension = icon.original_filename.split('.').last.downcase
         key = "/icons/#{self.aid}.#{extension}"
         self.icon_original_key = key
-        s3_upload(key: key, file: self.icon.tempfile, content_type: self.icon.content_type)
+        s3_upload(key: key, file: self.icon.path, content_type: self.icon.content_type)
     end
   end
   def icon_url(variant_type: 'icons')
