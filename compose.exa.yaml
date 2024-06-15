@@ -18,7 +18,7 @@ services:
       S3_REGION: 'blog14'
       S3_BUCKET: 'production'
       INVITATION_CODE: 'zettainibarenaiko-dowosiyousitekudasai'
-      GA4_ID: '2PND2STXF8'
+      GA4_ID: ''
     working_dir: /app
     volumes:
       - ./src:/app
