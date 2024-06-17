@@ -5,7 +5,7 @@ class ImagesController < ApplicationController
 
   def index
     all_images = Image.all
-    @images = paged_objects(params[:page], all_images)
+    @images = paged_objects(params[:page], all_images, created_at: :desc)
     @images_page = total_page(all_images)
   end
   def show

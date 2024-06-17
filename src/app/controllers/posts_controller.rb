@@ -9,7 +9,7 @@ class PostsController < ApplicationController
       public: true,
       deleted: false
     )
-    @posts = paged_objects(params[:page], all_posts)
+    @posts = paged_objects(params[:page], all_posts, published_at: :desc)
     @posts_page = total_page(all_posts)
   end
   def show
@@ -49,10 +49,10 @@ class PostsController < ApplicationController
   def thumbnail_variants_delete
     if @post.thumbnail_variants_delete
       flash[:success] = 'variantsを削除しました'
-      redirect_to privacy_policy_path
+      redirect_to privacy_path
     else
       flash[:danger] = 'variantsの削除ができませんでした'
-      redirect_to privacy_policy_path
+      redirect_to privacy_path
     end
   end
 

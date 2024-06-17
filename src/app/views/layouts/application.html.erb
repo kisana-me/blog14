@@ -83,6 +83,28 @@
           <% recommended_posts(5).each do |post| %>
             <%= render 'posts/show_mini', post: post %>
           <% end %>
+          <h3>新着の記事</h3>
+          <% new_posts(5).each do |post| %>
+            <%= render 'posts/show_mini', post: post %>
+          <% end %>
+          <% if @post %>
+            <h3>筆者</h3>
+            <div class="post-account">
+              <%= link_to account_path(@post.account.aid), class: 'post-account-path' do %>
+                <div class="post-account-top">
+                  <div class="post-account-icon-container">
+                    <%= image_tag(@post.account.icon_url, class: 'post-account-icon') %>
+                  </div>
+                  <div class="post-account-name">
+                    <%= @post.account.name %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <div>
+              <%= @post.account.description %>
+            </div>
+          <% end %>
         </div>
       </div>
       <% end %>
@@ -97,8 +119,7 @@
         <div class="footer-links">
           <ul>
             <li><%= link_to('利用規約', terms_path) %></li>
-            <li><%= link_to('プライバシーポリシー', privacy_policy_path) %></li>
-            <li><%= link_to('免責事項', disclaimer_path) %></li>
+            <li><%= link_to('プライバシーポリシー', privacy_path) %></li>
           <ul>
         </div>
         <div class="footer-actions">

@@ -1,9 +1,9 @@
-class OthersController < ApplicationController
+class PagesController < ApplicationController
   def index
   end
   def terms
   end
-  def privacy_policy
+  def privacy
   end
   def disclaimer
   end

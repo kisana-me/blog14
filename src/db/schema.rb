@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 9) do
-  create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "aid", null: false
     t.string "name_id", null: false
     t.string "icon_original_key", default: "", null: false
@@ -36,7 +36,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.check_constraint "json_valid(`settings`)", name: "settings"
   end
 
-  create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -46,7 +46,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "active_storage_blobs", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -58,13 +58,13 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "post_id", null: false
     t.bigint "account_id"
     t.bigint "comment_id"
@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.index ["post_id"], name: "index_comments_on_post_id"
   end
 
-  create_table "images", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "images", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.string "aid", null: false
     t.string "name", default: "", null: false
@@ -99,7 +99,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.check_constraint "json_valid(`variants`)", name: "variants"
   end
 
-  create_table "inquiries", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "inquiries", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "aid", default: "", null: false
     t.string "subject", default: "", null: false
     t.text "content", default: "", null: false
@@ -115,7 +115,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.check_constraint "json_valid(`metadata`)", name: "metadata"
   end
 
-  create_table "post_tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "post_tags", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "post_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
@@ -124,7 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.index ["tag_id"], name: "index_post_tags_on_tag_id"
   end
 
-  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "account_id"
     t.string "aid", null: false
     t.string "thumbnail_original_key", default: "", null: false
@@ -149,7 +149,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.check_constraint "json_valid(`thumbnail_variants`)", name: "thumbnail_variants"
   end
 
-  create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.string "aid", null: false
     t.string "name", default: "", null: false
@@ -161,7 +161,7 @@ ActiveRecord::Schema[7.1].define(version: 9) do
     t.index ["aid"], name: "index_sessions_on_aid", unique: true
   end
 
-  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "aid", null: false
     t.string "name", default: "", null: false
     t.text "description", default: "", null: false

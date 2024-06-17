@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
 
   get "health" => "rails/health#show", as: :rails_health_check
-  root "others#index"
+  root "pages#index"
 
   scope :secrets do
-    get '/' => 'others#secrets'
-
-    post '/'=> 'others#secrets_check', as: 'secrets_check'
+    get '/' => 'pages#secrets'
+    post '/'=> 'pages#secrets_check', as: 'secrets_check'
     post 'signup' => 'accounts#create_signup'
     post 'login' => 'accounts#create_login'
     delete 'logout' => 'accounts#logout'
@@ -24,13 +23,13 @@ Rails.application.routes.draw do
   resources :comments, param: :aid, only: [:create, :update]
   resources :tags, param: :aid
 
-  # Others
-  get 'terms' => 'others#terms'
-  get 'privacy_policy' => 'others#privacy_policy'
-  get 'disclaimer' => 'others#disclaimer'
-  get 'sitemap' => 'others#sitemap'
-  get 'contact' => 'others#contact'
-  post 'contact' => 'others#create_contact'
+  # Pages
+  get 'terms' => 'pages#terms'
+  get 'privacy' => 'pages#privacy'
+  get 'disclaimer' => 'pages#disclaimer'
+  get 'sitemap' => 'pages#sitemap'
+  get 'contact' => 'pages#contact'
+  post 'contact' => 'pages#create_contact'
 
   # Studio
   get 'studio' => 'studio#index'
