@@ -90,7 +90,7 @@
           <% if @post %>
             <h3>筆者</h3>
             <div class="post-account">
-              <%= link_to account_path(@post.account.aid), class: 'post-account-path' do %>
+              <%= link_to account_path(@post.account.aid), class: 'post-account-path', data: {turbo_prefetch: false} do %>
                 <div class="post-account-top">
                   <div class="post-account-icon-container">
                     <%= image_tag(@post.account.icon_url, class: 'post-account-icon') %>
@@ -126,7 +126,6 @@
           <ul>
             <li><%= link_to('お問い合わせ', contact_path) %></li>
             <li><%= link_to('サイトマップ', sitemap_path) %></li>
-            <li><%= link_to('管理者', accounts_path) %></li>
           </ul>
         </div>
     </footer>
