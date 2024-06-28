@@ -26,7 +26,6 @@ Rails.application.routes.draw do
   # Pages
   get 'terms' => 'pages#terms'
   get 'privacy' => 'pages#privacy'
-  get 'disclaimer' => 'pages#disclaimer'
   get 'sitemap' => 'pages#sitemap'
   get 'contact' => 'pages#contact'
   post 'contact' => 'pages#create_contact'

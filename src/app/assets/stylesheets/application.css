@@ -63,6 +63,7 @@ img {
   width: 100%;
 }
 .main-container {
+  max-width: 780px;
   margin: 14px;
   background-color: #f7f5f5;
   padding: 10px;
@@ -194,24 +195,28 @@ iframe {
     font-size: 12px;
   }
 }
-@media (max-width: 999px) {
+@media (max-width: 1000px) {
   /* 以下 */
   main {
     flex-wrap: wrap;
   }
   .main-container {
     width: 100%;
+    max-width: none;
   }
   .sub-container {
     max-width: 100%;
     width: 100%;
   }
+  .sub-content {
+    max-height: none;
+  }
 }
-@media (min-width: 1000px) {
+@media (min-width: 1300px) {
   /* 以上 */
   main {
   }
   .main-container {
-    max-width: 780px;
+    max-width: 1000px;
   }
 }
