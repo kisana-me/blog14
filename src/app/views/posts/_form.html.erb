@@ -86,12 +86,11 @@
       return
     }
     const formData = new FormData()
-    const name = window.prompt("[任意]画像名を指定してください", "")
-    const description = window.prompt("[任意]画像を説明してください", "")
-    console.log("入力された名前:", name)
-    console.log("入力された説明:", description)
+    let name = window.prompt("[任意]画像名を指定してください。空ならファイル名。", "")
+    if (name === '') {
+      name = file.name
+    }
     formData.append('image[name]', name)
-    formData.append('image[description]', description)
     formData.append('image[image]', file)
     fetch("<%= full_url('/v1/images/create') %>", {
       method: 'POST',
