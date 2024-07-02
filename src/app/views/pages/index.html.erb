@@ -9,22 +9,38 @@
   <%= link_to('admin', admin_root_path, data: { turbo: false }) if admin? %>
 </div>
 <% end %>
-<h1>記事一覧</h1>
-<h2>おすすめの記事</h2>
+<h1>IVECOLOR</h1>
+<p>こんにちは！当ブログでは以下のコンテンツを主に扱っています。</p>
+<ul>
+  <li>WEBプログラミングの知識共有</li>
+  <li>マイクラ関連</li>
+  <li>スマホやPCとその周辺機器のガジェットを紹介</li>
+  <li>TWICEやIVEなどK-POP関連</li>
+  <li>映画ドラマ読書アニメなど</li>
+</ul>
+<p><a href="https://ivecolor.com/posts/ui02q7zbl43snmga5">こちらの記事</a>に、このブログを書いている人のプロフィールを細かく書いています！</p>
+<h2>最新の記事</h2>
 <div>
-  <% recommended_posts(5).each do |post| %>
-    <%= render 'posts/show', post: post %>
+  <% new_posts(10).each do |post| %>
+    <%= render 'posts/show_mini', post: post %>
   <% end %>
 </div>
-<h2>新着の記事</h2>
+<%= link_to('もっと見る', posts_path) %>
+<h2>旧ブログのアーカイブ</h2>
 <div>
-  <% new_posts(5).each do |post| %>
-    <%= render 'posts/show', post: post %>
+  <% tag = Tag.find_by(aid: '4uz2t509khw1idgmj') %>
+  <% if tag %>
+    <% tags_posts(tag, 10).each do |post| %>
+      <%= render 'posts/show_mini', post: post %>
+    <% end %>
+  <% else %>
+    ありません
   <% end %>
 </div>
-<h2>更新のあった記事</h2>
+<%= link_to('もっと見る', tag_path('4uz2t509khw1idgmj')) %>
+<h2>更新された記事</h2>
 <div>
   <% edited_posts(5).each do |post| %>
-    <%= render 'posts/show', post: post %>
+    <%= render 'posts/show_mini', post: post %>
   <% end %>
 </div>

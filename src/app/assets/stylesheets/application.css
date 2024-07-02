@@ -140,19 +140,32 @@ footer li {
 
 /* 詳細設定 */
 h1, h2, h3, h4, h5, h6, p {
-  margin: 0;
+  padding: 0 0 0 5px;
+  margin: 5px 0;
 }
 h1 {
-  font-size: 28px;
-  padding: 0 0 0 5px;
-  border-left: 4px solid #a9dbc1;
-  margin: 5px 0 10px;
+  font-size: 23px;
+  border-left: 7px solid #ff9b9b;
 }
 h2 {
-  padding: 0 0 0 5px;
-  border-left: 3px solid #e5acd0;
-  margin: 3px 0 8px;
-  font-size: 23px;
+  font-size: 20px;
+  border-left: 6px solid #b894f3;
+}
+h3 {
+  font-size: 19px;
+  border-left: 5px solid #82c3e9;
+}
+h4 {
+  font-size: 18px;
+  border-left: 4px solid #a7cc45;
+}
+h5 {
+  font-size: 17px;
+  border-left: 3px solid #a9dbc1;
+}
+h6 {
+  font-size: 16px;
+  border-left: 2px solid #e5acd0;
 }
 iframe {
   aspect-ratio: 16 / 9;
@@ -170,7 +183,23 @@ iframe {
   color: rgb(180, 233, 0);
   text-decoration: none;
 }
-
+.x-share-button {
+  height: 20px;
+  line-height: 18px;
+  font-size: 11px;
+  padding: 0px 6px;
+  border-radius: 14px;
+  background: #000;
+  color: #FFF;
+  text-decoration: none;
+}
+.sub-heading {
+  padding: 0 0 0 5px;
+  margin: 5px 0;
+  font-size: 20px;
+  border-left: 3px solid #b1ebff;
+  font-weight: bold;
+}
 .highlight {
   overflow-x: auto;
 }

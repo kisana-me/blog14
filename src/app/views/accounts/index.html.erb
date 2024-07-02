@@ -8,7 +8,7 @@
   <%= link_to account_path(account.aid), class: 'account-path', data: {turbo_prefetch: false} do %>
     <div class="account-top">
       <div class="account-icon-container">
-        <%= image_tag(account.icon_url, class: 'account-icon') %>
+        <%= image_tag(account.icon_url, class: 'account-icon', alt: "#{account.name}のアイコン") %>
       </div>
       <div class="account-name">
         <%= account.name %>

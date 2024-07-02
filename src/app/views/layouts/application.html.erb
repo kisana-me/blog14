@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
-    <meta charSet="UTF-8" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="ja">
     <title><%= full_title(yield(:title)) %></title>
     <% site_name = ENV['APP_NAME'] %>
     <% author = yield(:author).present? ? yield(:author) : ENV['AUTHOR_NAME'] %>
@@ -79,21 +80,21 @@
       <% if yield(:layout_style) == 'full'%>
       <div class="sub-container">
         <div class="sub-content">
-          <h3>おすすめの記事</h3>
+          <div class="sub-heading">おすすめの記事</div>
           <% recommended_posts(5).each do |post| %>
             <%= render 'posts/show_mini', post: post %>
           <% end %>
-          <h3>新着の記事</h3>
+          <div class="sub-heading">新着の記事</div>
           <% new_posts(5).each do |post| %>
             <%= render 'posts/show_mini', post: post %>
           <% end %>
           <% if @post %>
-            <h3>筆者</h3>
+            <div class="sub-heading">筆者</div>
             <div class="post-account">
               <%= link_to account_path(@post.account.aid), class: 'post-account-path', data: {turbo_prefetch: false} do %>
                 <div class="post-account-top">
                   <div class="post-account-icon-container">
-                    <%= image_tag(@post.account.icon_url, class: 'post-account-icon') %>
+                    <%= image_tag(@post.account.icon_url, class: 'post-account-icon', alt: "#{@post.account.name}のアイコン") %>
                   </div>
                   <div class="post-account-name">
                     <%= @post.account.name %>
@@ -120,7 +121,7 @@
           <ul>
             <li><%= link_to('利用規約', terms_path) %></li>
             <li><%= link_to('プライバシーポリシー', privacy_path) %></li>
-          <ul>
+          </ul>
         </div>
         <div class="footer-actions">
           <ul>

@@ -24,13 +24,13 @@
   <p>
     <% if @image.variants.include?('images') %>
       imagesがあります
-      <%= image_tag(@image.image_url(variant_type: 'images')) %>
+      <%= image_tag(@image.image_url(variant_type: 'images'), alt: "#{@image.name}") %>
     <% else %>
       imagesはない
     <% end %>
     <% if @image.variants.include?('tb-images') %>
       tb-imagesがあります
-      <%= image_tag(@image.image_url(variant_type: 'tb-images')) %>
+      <%= image_tag(@image.image_url(variant_type: 'tb-images'), alt: "#{@image.name}") %>
     <% else %>
       tb-imagesはない
     <% end %>

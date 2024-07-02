@@ -188,6 +188,9 @@
   border-radius: 7px;
   margin-bottom: 7px;
 }
+.post-toc ul {
+  padding-left: 28px;
+}
 .post-toc a {
   color: inherit;
   text-decoration: none;

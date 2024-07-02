@@ -42,7 +42,7 @@
   <% end %>
   <div class="post-thumbnail">
     <% if @post.thumbnail? %>
-    <%= image_tag @post.thumbnail_url %>
+    <%= image_tag @post.thumbnail_url, alt: "#{@post.title}のサムネイル" %>
     <% else %>
     <div class="post-altspace">
       <div class="post-alttext">
@@ -72,7 +72,7 @@
       <%= link_to account_path(@post.account.aid), class: 'post-account-path', data: {turbo_prefetch: false} do %>
         <div class="post-account-top">
           <div class="post-account-icon-container">
-            <%= image_tag(@post.account.icon_url, class: 'post-account-icon') %>
+            <%= image_tag(@post.account.icon_url, class: 'post-account-icon', alt: "#{@post.account.name}のアイコン") %>
           </div>
           <div class="post-account-name">
             <%= @post.account.name %>
@@ -86,8 +86,8 @@
       <% end %>
     </div>
     <div class="post-meta">
-      <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-      <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
+      <a href="https://x.com/share?text=<%= URI.encode_www_form_component(full_title(@post.title)) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="x-share-button" target="_blank">Xに共有</a>
+      <a href="https://misskey-hub.net/share?text=<%= URI.encode_www_form_component(full_title(@post.title)) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
     </div>
   </div>
   <% if toc(@post.content).present? %>
@@ -101,8 +101,8 @@
   </div>
   <div class="post-ending">
     <div class="post-ending-meta">
-      <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">X(旧:Twitter)に共有</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-      <a href="https://misskey-hub.net/share/?text=<%= full_title(@post.title) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
+      <a href="https://x.com/share?text=<%= URI.encode_www_form_component(full_title(@post.title)) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="x-share-button" target="_blank">Xに共有</a>
+      <a href="https://misskey-hub.net/share?text=<%= URI.encode_www_form_component(full_title(@post.title)) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
     </div>
     <hr class="ending-hr"/>
   </div>

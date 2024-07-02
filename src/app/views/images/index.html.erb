@@ -14,7 +14,7 @@
   <%= link_to('編集', edit_image_path(image.aid)) %>
   <% if image.variants.include?('images') %>
     imagesがあります
-    <%= image_tag(image.image_url(variant_type: 'images')) %>
+    <%= image_tag(image.image_url(variant_type: 'images'), alt: "#{image.name}") %>
   <% else %>
     imagesはない
   <% end %>

@@ -95,7 +95,7 @@ module PostsHelper
     ).limit(
       limit.to_i
     ).order(
-      id: :desc
+      published_at: :desc
     )
   end
   def tags_posts(tag, limit)
@@ -105,7 +105,7 @@ module PostsHelper
     ).limit(
       limit.to_i
     ).order(
-      id: :desc
+      published_at: :desc
     )
   end
 end
