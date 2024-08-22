@@ -2,6 +2,10 @@ class Admin::PostsController < Admin::ApplicationController
   before_action :set_post, only: %i[ edit update ]
 
   def index
+    @published_posts = Post.where(
+      public: true,
+      deleted: false
+    )
     @unlisted_posts = Post.where(
       unlisted: true,
       public: false,

@@ -31,8 +31,8 @@
     非公開
     <% end %>
     <br />
-    総コメント数:
-    <%= @post.comments.count %>
+    コメント数:
+    <%= @post.comments.where(public: false).count %>/<%= @post.comments.count %>
     <br />
     <%= link_to('編集', edit_post_path(@post.aid), data: { turbo: false }, method: :get) %>
     <% if admin? %>
