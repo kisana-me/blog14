@@ -19,7 +19,7 @@ jobs:
           script: |
             cd ~/blog14
             docker compose down
-            git remote set-url origin https://Kisana528:${{ secrets.GH_TOKEN }}@github.com/Kisana528/blog14.git
+            git remote set-url origin https://kisana-me:${{ secrets.GH_TOKEN }}@github.com/kisana-me/blog14.git
             git fetch origin main
             git reset --hard origin/main
             docker compose up -d --build
