@@ -1,4 +1,5 @@
 <% provide(:title, '編集') %>
+<% provide(:robots, 'false') %>
 <% provide(:layout_style, '') %>
 
 <%= form_with(model: @account, url: account_path(@account.aid), method: :patch, data: { turbo: false }) do |f| %>

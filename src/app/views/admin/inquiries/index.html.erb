@@ -3,6 +3,8 @@
   <div>
     <p>件名: <%= inquiry.subject %></p>
     <p>名前: <%= inquiry.name %></p>
+    <p>日時: <%= inquiry.created_at.strftime('%Y/%m/%d %H:%M') %></p>
+    <p>フラグ: <%= inquiry.done ? '済' : '未' %></p>
     <%= link_to '詳細', admin_inquiry_path(inquiry.aid) %>
   </div>
 <% end %>
