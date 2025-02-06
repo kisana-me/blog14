@@ -41,6 +41,7 @@
     <meta name="twitter:creator" content="<%= author %>" />
     <meta name="twitter:creator:id" content="<%= author_id %>" />
     <meta name="google-adsense-account" content="ca-pub-4578343381731958">
+    <meta name="turbo-prefetch" content="false">
     <link rel="icon" href="/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
     <%= csrf_meta_tags %>
@@ -62,6 +63,12 @@
       <nav>
         <div class="nav-link">
           <%= link_to('記事', posts_path) %>
+        </div>
+        <div class="nav-link">
+          <%= link_to('筆者', accounts_path) %>
+        </div>
+        <div class="nav-link">
+          <%= link_to('タグ', tags_path) %>
         </div>
       </nav>
     </header>
