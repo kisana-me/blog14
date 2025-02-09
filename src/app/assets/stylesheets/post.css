@@ -238,6 +238,7 @@
 }
 .post-account-icon {
   width: 32px;
+  height: 32px;
   border-radius: 5px;
   aspect-ratio: 1 / 1;
   display: block;
