@@ -12,6 +12,7 @@ module PostsHelper
     extensions = {
       tables: true,
       fenced_code_blocks: true,
+      disable_indented_code_blocks: true,
       autolink: true,
       strikethrough: true,
       lax_spacing: true,
@@ -22,7 +23,9 @@ module PostsHelper
       quote: true,
       footnotes: true
     }
-    markdown = Redcarpet::Markdown.new(HTMLwithRouge.new(options), extensions)
+    renderer = CustomMarkdownRenderer.new(self, options)
+    markdown = Redcarpet::Markdown.new(renderer, extensions)
+    # markdown = Redcarpet::Markdown.new(HTMLwithRouge.new(options), extensions)
     markdown.render(text).html_safe
   end
   def toc(text)
