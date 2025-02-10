@@ -1,4 +1,5 @@
 module PostsHelper
+  require 'rouge/plugins/redcarpet'
   def markdown(text)
     options = {
       hard_wrap: true,

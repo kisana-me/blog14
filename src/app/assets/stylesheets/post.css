@@ -57,6 +57,7 @@
   background: inherit;
 }
 .show-post-context p {
+  margin: 0;
   max-height: 60px;
   line-height: 20px;
   overflow: hidden;
