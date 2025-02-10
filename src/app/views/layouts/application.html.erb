@@ -9,12 +9,14 @@
     <% author_id = yield(:author_id).present? ? yield(:author_id) : ENV['AUTHOR_ID'] %>
     <% type = yield(:type).present? ? yield(:type) : 'website' # website or article %>
     <% robots = yield(:robots).present? ? 'noindex, nofollow' : 'index, follow' %>
-    <% image = yield(:image).present? ? yield(:image) : '/image' %>
-    <% alt = yield(:alt).present? ? yield(:alt) : 'サイトの画像' %>
+    <% image = yield(:image).present? ? yield(:image) : '/img-2.webp' %>
+    <% alt = yield(:alt).present? ? yield(:alt) : ENV['APP_NAME'] %>
     <% card = yield(:card).present? ? yield(:card) : 'summary' # summary, summary_large_image, app, player %>
     <meta name="theme-color" content="#ffa9c7" />
     <meta name="color-scheme" content="light" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="/img-1.png" type="image/png">
     <meta name="author" content="<%= author %>" />
     <meta name="generator" content="<%= site_name %>" />
     <meta name="description" content="<%= yield(:description) %>" />
@@ -42,7 +44,6 @@
     <meta name="twitter:creator:id" content="<%= author_id %>" />
     <meta name="google-adsense-account" content="ca-pub-4578343381731958">
     <meta name="turbo-prefetch" content="false">
-    <link rel="icon" href="/favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -58,20 +59,7 @@
   </head>
 
   <body>
-    <header>
-      <div class="app-name"><%= link_to(ENV['APP_NAME'], root_path) %></div>
-      <nav>
-        <div class="nav-link">
-          <%= link_to('記事', posts_path) %>
-        </div>
-        <div class="nav-link">
-          <%= link_to('筆者', accounts_path) %>
-        </div>
-        <div class="nav-link">
-          <%= link_to('タグ', tags_path) %>
-        </div>
-      </nav>
-    </header>
+    <%= render 'layouts/header' %>
     <main class="wf-roundedmplus1c">
       <div class="main-container">
         <%= yield %>
@@ -112,22 +100,6 @@
     <% flash.each do |message_type, message| %>
       <div class="flash <%= message_type %>"><%= message %></div>
     <% end %>
-    <footer>
-        <div class="footer-app-name">
-        <%= link_to(ENV['APP_NAME'], root_path) %>
-        </div>
-        <div class="footer-links">
-          <ul>
-            <li><%= link_to('利用規約', terms_path) %></li>
-            <li><%= link_to('プライバシーポリシー', privacy_path) %></li>
-          </ul>
-        </div>
-        <div class="footer-actions">
-          <ul>
-            <li><%= link_to('お問い合わせ', contact_path) %></li>
-            <li><%= link_to('サイトマップ', sitemap_path) %></li>
-          </ul>
-        </div>
-    </footer>
+    <%= render 'layouts/footer' %>
   </body>
 </html>

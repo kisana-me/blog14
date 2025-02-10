@@ -1,4 +1,5 @@
 class CustomMarkdownRenderer < Redcarpet::Render::HTML
+  include Rouge::Plugins::Redcarpet
   include ActionView::Helpers::TagHelper
   include ActionView::Context
   include Rails.application.routes.url_helpers

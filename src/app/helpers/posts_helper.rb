@@ -1,9 +1,4 @@
 module PostsHelper
-  require 'rouge/plugins/redcarpet'
-  class HTMLwithRouge < Redcarpet::Render::HTML
-    include Rouge::Plugins::Redcarpet
-  end
-  # markdown
   def markdown(text)
     options = {
       hard_wrap: true,
@@ -25,7 +20,6 @@ module PostsHelper
     }
     renderer = CustomMarkdownRenderer.new(self, options)
     markdown = Redcarpet::Markdown.new(renderer, extensions)
-    # markdown = Redcarpet::Markdown.new(HTMLwithRouge.new(options), extensions)
     markdown.render(text).html_safe
   end
   def toc(text)

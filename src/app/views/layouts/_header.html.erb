@@ -1,0 +1,14 @@
+<header>
+  <div class="app-name"><%= link_to(ENV['APP_NAME'], root_path) %></div>
+  <nav>
+    <div class="nav-link">
+      <%= link_to('記事', posts_path) %>
+    </div>
+    <div class="nav-link">
+      <%= link_to('筆者', accounts_path) %>
+    </div>
+    <div class="nav-link">
+      <%= link_to('タグ', tags_path) %>
+    </div>
+  </nav>
+</header>

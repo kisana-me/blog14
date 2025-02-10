@@ -54,6 +54,7 @@
   max-height: 34px;
   line-height: 34px;
   overflow: hidden;
+  background: inherit;
 }
 .show-post-context p {
   max-height: 60px;
@@ -161,9 +162,15 @@
   margin: 0;
   font-size: 27px;
   margin-bottom: 7px;
+  background-color: inherit;
 }
 .post-content span {
   font-size: 12px;
+}
+.post-content .show-mini-post {
+  border: 1px solid #cdcdcd;
+  border-radius: 7px;
+  box-sizing: border-box;
 }
 .post-tags {
   margin: 5px;
@@ -187,9 +194,6 @@
   border: 2px solid #b9dad7;
   border-radius: 7px;
   margin-bottom: 7px;
-}
-.post-toc ul {
-  padding-left: 28px;
 }
 .post-toc a {
   color: inherit;

@@ -25,33 +25,8 @@ body {
 a {
   color: rgba(221, 36, 118, 1);
 }
-header {
-  display: flex;
-  padding: 10px;
-  height: 38px;
-  line-height: 38px;
-  background: linear-gradient(210deg, rgba(151,247,245,1) 0%, rgba(247,205,225,1) 74%);
-}
-header a {
-  color: inherit;
-  text-decoration: none;
-  
-  display: block;
-  box-sizing: content-box;
-  padding: 0 10px;
-}
-.app-name {
-  font-size: 38px;
-  display: inline-block;
-}
-nav {
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-}
-.nav-link {
-  border-radius: 3px;
-  background: #fff7;
+ul {
+  padding-left: 24px;
 }
 main {
   min-height: calc(100svh - 158px);
@@ -89,38 +64,6 @@ img {
   box-sizing: border-box;
   overflow-y: auto;
 }
-footer {
-  display: flex;
-  justify-content: space-evenly;
-  height: 100px;
-  background: linear-gradient(195deg, rgba(188,236,255,1) 0%, rgba(194,187,255,1) 83%);
-}
-.footer-app-name {
-  height: 80px;
-  padding: 10px;
-  display: inline-block;
-}
-.footer-app-name a {
-  color: inherit;
-  text-decoration: none;
-}
-.footer-links {
-  height: 80px;
-  padding: 10px;
-  display: inline-block;
-}
-.footer-actions {
-  height: 80px;
-  padding: 10px;
-  display: inline-block;
-}
-footer ul {
-  margin: 0;
-  padding: 0;
-}
-footer li {
-  list-style-type: none;
-}
 .flash {
   position: fixed;
   right: 37px;
@@ -141,31 +84,37 @@ footer li {
 /* 詳細設定 */
 h1, h2, h3, h4, h5, h6, p {
   padding: 0 0 0 5px;
-  margin: 5px 0;
+  margin: 12px 0;
 }
 h1 {
-  font-size: 23px;
+  font-size: 21px;
   border-left: 7px solid #ff9b9b;
+  background-color: #ff9b9b77;
 }
 h2 {
   font-size: 20px;
   border-left: 6px solid #b894f3;
+  background-color: #b894f377;
 }
 h3 {
   font-size: 19px;
   border-left: 5px solid #82c3e9;
+  background-color: #82c3e977;
 }
 h4 {
   font-size: 18px;
   border-left: 4px solid #a7cc45;
+  background-color: #a7cc4577;
 }
 h5 {
   font-size: 17px;
   border-left: 3px solid #a9dbc1;
+  background-color: #a9dbc177;
 }
 h6 {
   font-size: 16px;
   border-left: 2px solid #e5acd0;
+  background-color: #e5acd077;
 }
 iframe {
   aspect-ratio: 16 / 9;
