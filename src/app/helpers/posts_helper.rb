@@ -30,21 +30,17 @@ module PostsHelper
   end
   # paging
   def posts_page
-    total_posts = Post.where(
-      public: true,
-      deleted: false
-    ).count
-    per_page = 10 # 表示件数
+    total_posts = Post.where(status: :published).count
+    per_page = 20 # 表示件数
     return total_posts > 0 ? (total_posts.to_f / per_page.to_f).ceil : 0
   end
   def paged_posts(param)
     param = param.to_i
     page = param < 1 ? 1 : param
-    limit_item = 10 # 表示件数
+    limit_item = 20 # 表示件数
     offset_item = (page - 1) * limit_item
     return Post.where(
-      public: true,
-      deleted: false
+      status: :published
     ).offset(
       offset_item.to_i
     ).limit(
@@ -56,8 +52,7 @@ module PostsHelper
   # posts
   def recommended_posts(limit)
     return Post.where(
-      public: true,
-      deleted: false
+      status: :published
     ).limit(
       limit.to_i
     ).order(
@@ -66,8 +61,7 @@ module PostsHelper
   end
   def new_posts(limit)
     return Post.where(
-      public: true,
-      deleted: false
+      status: :published
     ).limit(
       limit.to_i
     ).order(
@@ -78,8 +72,7 @@ module PostsHelper
     return Post.where.not(
       edited_at: nil
     ).where(
-      public: true,
-      deleted: false
+      status: :published
     ).limit(
       limit.to_i
     ).order(
@@ -88,8 +81,7 @@ module PostsHelper
   end
   def whos_posts(who, limit)
     return who.posts.where(
-      public: true,
-      deleted: false
+      status: :published
     ).limit(
       limit.to_i
     ).order(
@@ -98,8 +90,7 @@ module PostsHelper
   end
   def tags_posts(tag, limit)
     return tag.posts.where(
-      public: true,
-      deleted: false
+      status: :published
     ).limit(
       limit.to_i
     ).order(

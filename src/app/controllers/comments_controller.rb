@@ -7,7 +7,7 @@ class CommentsController < ApplicationController
     post = Post.find_by(aid: params[:comment][:post_aid])
     unless session[:answer].to_i == params[:test1][:test].to_i
       @problem, session[:answer] = generate_random_problem
-      flash[:danger] = '解答が間違っています'
+      flash[:alert] = '解答が間違っています'
       redirect_to post_path(post.aid)
       return
     end
@@ -23,19 +23,19 @@ class CommentsController < ApplicationController
     @comment.aid = generate_aid(Comment, 'aid')
     @comment.post = post
     if @comment.save
-      flash[:success] = 'コメントを書き込みました'
+      flash[:notice] = 'コメントを書き込みました'
       redirect_to post_path(post.aid)
     else
-      flash[:danger] = "エラー:#{@comment.errors.full_messages.join(", ")}"
+      flash[:alert] = "エラー:#{@comment.errors.full_messages.join(", ")}"
       redirect_to post_path(post.aid)
     end
   end
   def update
     if @comment.update(update_comment_params)
-      flash[:success] = 'コメントを更新しました'
+      flash[:notice] = 'コメントを更新しました'
       redirect_to post_path(@comment.post.aid)
     else
-      flash[:danger] = "エラー:#{@comment.errors.full_messages.join(", ")}"
+      flash[:alert] = "エラー:#{@comment.errors.full_messages.join(", ")}"
       redirect_to post_path(@comment.post.aid)
     end
   end

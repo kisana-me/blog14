@@ -7,7 +7,7 @@
 
 <%= form_with(scope: :session, url: login_path, data: { turbo: false }) do |f| %>
   <% if @error_message.present? %>
-    <div class="alert alert-danger">
+    <div class="alert alert-alert">
       <%= @error_message %>
     </div>
   <% end %>

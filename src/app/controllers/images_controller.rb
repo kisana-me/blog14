@@ -21,7 +21,7 @@ class ImagesController < ApplicationController
     when 'tb-images'
       url = @image.image_url(variant_type: 'tb-images')
     end
-    flash[:success] = "画像を生成しました#{selected_variant},#{url}"
+    flash[:notice] = "画像を生成しました#{selected_variant},#{url}"
     redirect_to image_path(@image.aid)
   end
   def new
@@ -32,10 +32,10 @@ class ImagesController < ApplicationController
     @image.account = @current_account
     @image.aid = generate_aid(Image, 'aid')
     if @image.save
-      flash[:success] = "画像をアップロードしました"
+      flash[:notice] = "画像をアップロードしました"
       redirect_to images_path
     else
-      flash.now[:danger] = "画像をアップロードできませんでした"
+      flash.now[:alert] = "画像をアップロードできませんでした"
       render 'new'
     end
   end
@@ -43,28 +43,28 @@ class ImagesController < ApplicationController
   end
   def update
     if @image.update(image_params)
-      flash[:success] = '変更しました'
+      flash[:notice] = '変更しました'
       redirect_to images_path
     else
-      flash.now[:danger] = '変更できませんでした'
+      flash.now[:alert] = '変更できませんでした'
       render 'edit'
     end
   end
   def variants_delete
     if @image.variants_delete
-      flash[:success] = 'variantsを削除しました'
+      flash[:notice] = 'variantsを削除しました'
       redirect_to image_path(@image.aid)
     else
-      flash.now[:danger] = 'variantsの削除ができませんでした'
+      flash.now[:alert] = 'variantsの削除ができませんでした'
       render 'show'
     end
   end
   def image_delete
     if @image.image_delete
-      flash[:success] = '画像を削除しました'
+      flash[:notice] = '画像を削除しました'
       redirect_to image_path(@image.aid)
     else
-      flash.now[:danger] = '画像の削除ができませんでした'
+      flash.now[:alert] = '画像の削除ができませんでした'
       render 'show'
     end
   end

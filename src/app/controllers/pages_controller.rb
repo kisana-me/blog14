@@ -19,16 +19,16 @@ class PagesController < ApplicationController
     if session[:answer].to_i == params[:test1][:test].to_i
       if @inquiry.save
         session.delete(:answer)
-        flash.now[:success] = '送信しました'
+        flash.now[:notice] = '送信しました'
         render 'submitted'
       else
         @problem, session[:answer] = generate_random_problem
-        flash.now[:danger] = '送信できませんでした'
+        flash.now[:alert] = '送信できませんでした'
         render 'contact'
       end
     else
       @problem, session[:answer] = generate_random_problem
-      flash.now[:danger] = '解答が間違っています'
+      flash.now[:alert] = '解答が間違っています'
       render 'contact'
     end
   end
@@ -36,7 +36,7 @@ class PagesController < ApplicationController
     case params[:keyword]
     when 'signup'
       if logged_in?
-        flash[:danger] = "ログイン済みです"
+        flash[:alert] = "ログイン済みです"
         redirect_to root_path
         return
       end
@@ -44,7 +44,7 @@ class PagesController < ApplicationController
       render 'accounts/signup'
     when 'login'
       if logged_in?
-        flash[:danger] = "ログイン済みです"
+        flash[:alert] = "ログイン済みです"
         redirect_to root_path
         return
       end

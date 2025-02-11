@@ -1,0 +1,8 @@
+ja:
+  activerecord:
+    attributes:
+      post:
+        status:
+          draft: "下書き"
+          unlisted: "限定公開"
+          published: "公開"

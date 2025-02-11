@@ -8,10 +8,10 @@ class Admin::InquiriesController < Admin::ApplicationController
   def update
     @inquiry = Inquiry.find_by(aid: params[:aid])
     if @inquiry.update(inquiry_params)
-      flash[:success] = '変更しました'
+      flash[:notice] = '変更しました'
       redirect_to admin_inquiry_path(@inquiry.aid)
     else
-      flash.now[:danger] = '変更できませんでした'
+      flash.now[:alert] = '変更できませんでした'
       render 'show'
     end
   end

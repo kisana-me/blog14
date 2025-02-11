@@ -14,12 +14,8 @@
       <%= f.text_area :summary, placeholder: 'まとめ' %>
     </div>
     <div>
-      <%= f.label :public, '公開' %>
-      <%= f.check_box :public %>
-    </div>
-    <div>
-      <%= f.label :unlisted, '限定公開' %>
-      <%= f.check_box :unlisted %>
+      <%= f.label :status, "ステータス" %>
+      <%= f.select :status, Post.statuses.keys.map { |key| [t("activerecord.attributes.post.status.#{key}"), key] } %>
     </div>
     <div>
       <%= f.label :published_at, '公開日時' %>
@@ -38,6 +34,7 @@
         <% end %>
       </details>
     </div>
+    <%= f.submit "アップロード" %>
     <div>
       <%= f.label :content, '内容' %>
       <%= f.text_area :content, placeholder: '内容', id: 'my-text-area' %>

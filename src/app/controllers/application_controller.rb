@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
   def logged_out_account
     if logged_in?
-      flash[:danger] = "ログイン済みです"
+      flash[:alert] = "ログイン済みです"
       redirect_to root_path
     end
   end

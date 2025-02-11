@@ -1,5 +1,5 @@
 <div class="show-mini-post">
-  <%= link_to(post_path(post.aid), data: {turbo_prefetch: false}) do %>
+  <%= link_to(post_path(post.aid)) do %>
   <div class="show-mini-post-container">
     <div class="show-mini-post-thumbnail">
       <% if post.thumbnail? %>

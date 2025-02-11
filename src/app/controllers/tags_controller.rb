@@ -21,10 +21,10 @@ class TagsController < ApplicationController
     @tag = Tag.new(tag_params)
     @tag.aid = generate_aid(Tag, 'aid')
     if @tag.save
-      flash[:success] = '作成しました'
+      flash[:notice] = '作成しました'
       redirect_to tag_path(@tag.aid)
     else
-      flash.now[:danger] = '作成できませんでした'
+      flash.now[:alert] = '作成できませんでした'
       render 'new'
     end
   end
@@ -32,10 +32,10 @@ class TagsController < ApplicationController
   end
   def update
     if @tag.update(tag_params)
-      flash[:success] = '編集しました'
+      flash[:notice] = '編集しました'
       redirect_to tag_path(@tag.aid)
     else
-      flash.now[:danger] = '編集できませんでした'
+      flash.now[:alert] = '編集できませんでした'
       render 'new'
     end
   end

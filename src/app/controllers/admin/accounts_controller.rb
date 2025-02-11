@@ -8,10 +8,10 @@ class Admin::AccountsController < Admin::ApplicationController
   end
   def update
     if @account.update(account_params)
-      flash[:success] = '変更しました'
+      flash[:notice] = '変更しました'
       redirect_to admin_account_path(@account.aid)
     else
-      flash.now[:danger] = '変更できませんでした'
+      flash.now[:alert] = '変更できませんでした'
       render 'edit'
     end
   end

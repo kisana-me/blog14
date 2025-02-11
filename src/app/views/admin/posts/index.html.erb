@@ -1,13 +1,20 @@
 <h1>ポスト</h1>
-<h2>非公開</h2>
-<% @private_posts.each do |post| %>
-  <%= render 'posts/show_mini', post: post, show_comments_count: true %>
-<% end %>
-<h2>限定公開</h2>
-<% @unlisted_posts.each do |post| %>
-  <%= render 'posts/show_mini', post: post, show_comments_count: true %>
-<% end %>
-<h2>公開</h2>
-<% @published_posts.each do |post| %>
-  <%= render 'posts/show_mini', post: post, show_comments_count: true %>
+<%= form_with url: admin_update_multiple_posts_path, method: :patch, data: { turbo: false } do %>
+  <h2>下書き</h2>
+  <% @draft_posts.each do |post| %>
+    <%= check_box_tag "post_aids[]", post.aid %>
+    <%= render 'posts/show_mini', post: post, show_comments_count: true %>
+  <% end %>
+  <h2>限定公開</h2>
+  <% @unlisted_posts.each do |post| %>
+    <%= check_box_tag "post_aids[]", post.aid %>
+    <%= render 'posts/show_mini', post: post, show_comments_count: true %>
+  <% end %>
+  <h2>公開</h2>
+  <% @published_posts.each do |post| %>
+    <%= check_box_tag "post_aids[]", post.aid %>
+    <%= render 'posts/show_mini', post: post, show_comments_count: true %>
+  <% end %>
+  <%= select_tag "status", options_for_select(Post.statuses.keys.map { |key| [t("activerecord.attributes.post.status.#{key}"), key] }) %>
+  <%= submit_tag "更新" %>
 <% end %>

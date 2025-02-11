@@ -18,15 +18,15 @@ class AccountsController < ApplicationController
     unless @account.invitation_code == ENV['INVITATION_CODE']
       reform()
       @account.errors.add(:invitation_code, '招待コードが有効ではありません')
-      flash.now[:danger] = '作成できませんでした'
+      flash.now[:alert] = '作成できませんでした'
       render 'signup'
     end
     if @account.save
       redirect_to root_path
-      flash[:success] = '作成しました'
+      flash[:notice] = '作成しました'
     else
       reform()
-      flash.now[:danger] = '作成できませんでした'
+      flash.now[:alert] = '作成できませんでした'
       render 'signup'
     end
   end
@@ -37,7 +37,7 @@ class AccountsController < ApplicationController
     )
     if @account && @account.authenticate(params[:session][:password])
       log_in(@account)
-      flash[:success] = 'ログインしました'
+      flash[:notice] = 'ログインしました'
       redirect_to account_path(@account.aid)
     else
       @error_message = 'IDかパスワードが間違っています'
@@ -45,13 +45,13 @@ class AccountsController < ApplicationController
         name_id: params[:session][:name_id],
         password: params[:session][:password]
       }
-      flash.now[:danger] = 'ログインできませんでした'
+      flash.now[:alert] = 'ログインできませんでした'
       render 'login'
     end
   end
   def logout
     log_out()
-    flash[:success] = 'ログアウトしました'
+    flash[:notice] = 'ログアウトしました'
     redirect_to root_path
   end
   def show
@@ -63,10 +63,10 @@ class AccountsController < ApplicationController
   end
   def update
     if @account.update(update_account_params)
-      flash[:success] = '変更しました'
+      flash[:notice] = '変更しました'
       redirect_to account_path(@account.aid)
     else
-      flash.now[:danger] = '変更できませんでした'
+      flash.now[:alert] = '変更できませんでした'
       render 'edit'
     end
   end

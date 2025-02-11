@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     root 'studio#index'
 
     resources :accounts, param: :aid, only: [:index, :edit, :update]
+    patch 'posts/update_multiple', to: 'posts#update_multiple', as: :update_multiple_posts
     resources :posts, param: :aid, only: [:index, :edit, :update]
     resources :inquiries, param: :aid, only: [:index, :show, :update]
   end

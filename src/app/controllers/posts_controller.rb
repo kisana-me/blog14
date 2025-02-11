@@ -5,10 +5,7 @@ class PostsController < ApplicationController
   include PostsHelper
 
   def index
-    all_posts = Post.where(
-      public: true,
-      deleted: false
-    )
+    all_posts = Post.where(status: :published)
     @posts = paged_objects(params[:page], all_posts, published_at: :desc)
     @posts_page = total_page(all_posts)
   end
@@ -27,10 +24,10 @@ class PostsController < ApplicationController
     @post.account = @current_account
     @post.tagging
     if @post.save
-      flash[:success] = '作成しました'
+      flash[:notice] = '作成しました'
       redirect_to post_path(@post.aid)
     else
-      flash.now[:danger] = '作成できませんでした'
+      flash.now[:alert] = '作成できませんでした'
       render 'new'
     end
   end
@@ -39,19 +36,19 @@ class PostsController < ApplicationController
   def update
     @post.tagging(arr: params[:post][:selected_tags])
     if @post.update(post_params)
-      flash[:success] = '編集しました'
+      flash[:notice] = '編集しました'
       redirect_to post_path(@post.aid)
     else
-      flash.now[:danger] = '編集できませんでした'
+      flash.now[:alert] = '編集できませんでした'
       render 'new'
     end
   end
   def thumbnail_variants_delete
     if @post.thumbnail_variants_delete
-      flash[:success] = 'variantsを削除しました'
+      flash[:notice] = 'variantsを削除しました'
       redirect_to privacy_path
     else
-      flash[:danger] = 'variantsの削除ができませんでした'
+      flash[:alert] = 'variantsの削除ができませんでした'
       redirect_to privacy_path
     end
   end
@@ -63,21 +60,17 @@ class PostsController < ApplicationController
       :title,
       :summary,
       :content,
-      :public,
-      :unlisted,
+      :status,
       :published_at,
       :edited_at,
       selected_tags: []
     )
   end
   def set_post
-    @post = Post.where(public: true).or(Post.where(unlisted: true)).find_by(
-      aid: params[:aid],
-      deleted: false
-    )
+    @post = Post.where(status: :published).find_by(aid: params[:aid])
     unless @post
       if logged_in?
-        return if @post = @current_account.posts.find_by(aid: params[:aid])
+        return if @post = @current_account.posts.find_by(aid: params[:aid])# deleted以外にする
         if admin?
           return if @post = Post.find_by(aid: params[:aid])
         end
@@ -86,9 +79,7 @@ class PostsController < ApplicationController
     end
   end
   def set_correct_post
-    @post = @current_account.posts.find_by(
-      aid: params[:aid]
-    )
+    @post = @current_account.posts.find_by(aid: params[:aid])
     unless @post
       if admin?
         return if @post = Post.find_by(aid: params[:aid])

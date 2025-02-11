@@ -4,7 +4,7 @@
 <% provide(:author_id, @post.account.aid) %>
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
-<% provide(:robots, @post.public ? '' : 'false') %>
+<% provide(:robots, @post.published? ? '' : 'false') %>
 <% provide(:type, 'article') %>
 <% provide(:image, @post.thumbnail_url) %>
 <% provide(:card, 'summary_large_image') %>
@@ -20,16 +20,7 @@
     閲覧数:
     <%= @post.views_count %>
     <br />
-    記事の状態:
-    <% if @post.public %>
-    公開
-    <% elsif @post.unlisted %>
-    限定公開
-    <% elsif @post.deleted %>
-    削除
-    <% else %>
-    非公開
-    <% end %>
+    記事の状態: <%= t("activerecord.attributes.post.status.#{@post.status}") %>
     <br />
     コメント数:
     <%= @post.comments.where(public: false).count %>/<%= @post.comments.count %>
