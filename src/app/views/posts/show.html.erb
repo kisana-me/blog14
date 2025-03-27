@@ -72,7 +72,7 @@
       <% end %>
     </div>
     <div class="post-tags">
-      <% @post.tags.each do |tag| %>
+      <% @post.tags.where(deleted: false).each do |tag| %>
         <%= link_to(tag.name, tag_path(tag.aid), class: 'post-tag') %>
       <% end %>
     </div>

@@ -1,13 +1,17 @@
 <%= form_with(model: tag, url: url, method: method, data: { turbo: false }) do |f| %>
   <%= render 'shared/error_messages', instead: tag %>
-  <div class="login-inputs">
-    <div class="login-input">
+  <div class="">
+    <div class="">
       <%= f.label :name, '名前' %>
       <%= f.text_field :name, placeholder: '名前' %>
     </div>
-    <div class="login-input">
+    <div class="">
       <%= f.label :description, '紹介' %>
       <%= f.text_area :description, placeholder: '紹介' %>
+    </div>
+    <div class="">
+      <%= f.label :deleted, '削除' %>
+      <%= f.check_box :deleted, placeholder: '削除' %>
     </div>
   </div>
   <%= f.submit "アップロード" %>

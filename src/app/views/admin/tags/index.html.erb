@@ -1,0 +1,19 @@
+<% provide(:title, 'タグ一覧(admin)') %>
+<% provide(:robots, 'false') %>
+<% provide(:description, 'タグ一覧(admin)') %>
+<% provide(:keywords, 'タグ一覧(admin)') %>
+<% provide(:layout_style, 'full') %>
+
+<h1>タグ一覧(admin)</h1>
+<% @tags.each do |tag| %>
+  <%= link_to edit_tag_path(tag.aid), class: 'tag-path', data: {turbo_prefetch: false} do %>
+    <div class="tag-top">
+      <div class="tag-name">
+        <%= tag.name %>
+      </div>
+      <div class="tag-description">
+        <%= tag.description %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
