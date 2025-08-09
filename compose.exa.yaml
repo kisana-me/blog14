@@ -4,26 +4,13 @@ services:
     tty: true
     stdin_open: true
     restart: always
-    environment:
-      APP_NAME: 'BLOG14'
-      APP_URL: 'https://blog.amiverse.net/'
-      AUTHOR_NAME: 'KISANA:ME'
-      AUTHOR_ID: 'kisana_me'
-      RAILS_ENV: production
-      RAILS_SECURE_COOKIES: 'true'
-      S3_LOCAL_ENDPOINT: 'http://minio:9000/'
-      S3_PUBLIC_ENDPOINT: 'https://blog.amiverse.net/'
-      S3_USER: 'minioroot'
-      S3_PASSWORD: 'minioroot'
-      S3_REGION: 'blog14'
-      S3_BUCKET: 'production'
-      INVITATION_CODE: 'zettainibarenaiko-dowosiyousitekudasai'
-      GA4_ID: ''
+    env_file:
+      - .exa.env
     working_dir: /app
     volumes:
       - ./src:/app
     ports:
-      - '3000:3000'
+      - 3000:3000
     depends_on:
       - db
       - minio
@@ -32,7 +19,6 @@ services:
       rm -rf /app/public/assets &&
       gem cleanup &&
       bundle install -j4 &&
-      rails db:migrate &&
       RAILS_ENV=production rails assets:precompile &&
       rails s -b 0.0.0.0"
 
@@ -41,27 +27,25 @@ services:
     tty: true
     stdin_open: true
     restart: always
-    environment:
-      TZ: 'Asia/Tokyo'
-      MARIADB_ROOT_PASSWORD: 'mdbroot'
+    env_file:
+      - .exa.env
     volumes:
       - db-vol:/var/lib/mysql
     ports:
-      - '3306:3306'
+      - 3306:3306
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     tty: true
     stdin_open: true
     restart: always
-    environment:
-      MINIO_ROOT_USER: 'minioroot'
-      MINIO_ROOT_PASSWORD: 'minioroot'
+    env_file:
+      - .exa.env
     volumes:
       - minio-vol:/data
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - 9000:9000
+      - 9001:9001
     command: server /data --console-address ":9001"
 
   phpmyadmin:
@@ -69,12 +53,12 @@ services:
     tty: true
     stdin_open: true
     restart: always
-    environment:
-      PMA_HOSTS: 'db'
+    env_file:
+      - .exa.env
     depends_on:
       - db
     ports:
-      - '8080:80'
+      - 8080:80
 
 volumes:
   db-vol:
