@@ -3,21 +3,8 @@ services:
     build: .
     tty: true
     stdin_open: true
-    environment:
-      APP_NAME: 'BLOG14'
-      APP_URL: 'http://localhost:3000/'
-      AUTHOR_NAME: 'KISANA:ME'
-      AUTHOR_ID: 'kisana_me'
-      RAILS_ENV: development
-      RAILS_SECURE_COOKIES: ''
-      S3_LOCAL_ENDPOINT: 'http://minio:9000/'
-      S3_PUBLIC_ENDPOINT: 'http://localhost:9000/'
-      S3_USER: 'minioroot'
-      S3_PASSWORD: 'minioroot'
-      S3_REGION: 'blog14'
-      S3_BUCKET: 'development'
-      INVITATION_CODE: 'test'
-      GA4_ID: ''
+    env_file:
+      - .dev.env
     working_dir: /app
     volumes:
       - ./src:/app
@@ -28,7 +15,7 @@ services:
       - minio
     command: >
       bash -c "rm -f /app/tmp/pids/server.pid &&
-      rm -f /app/public/assets &&
+      rm -rf /app/public/assets &&
       gem cleanup &&
       bundle install -j4 &&
       rails s -b 0.0.0.0"
@@ -37,21 +24,19 @@ services:
     image: mariadb:latest
     tty: true
     stdin_open: true
-    environment:
-      TZ: 'Asia/Tokyo'
-      MARIADB_ROOT_PASSWORD: 'mdbroot'
+    env_file:
+      - .dev.env
     volumes:
       - db-vol:/var/lib/mysql
     ports:
       - '3306:3306'
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     tty: true
     stdin_open: true
-    environment:
-      MINIO_ROOT_USER: 'minioroot'
-      MINIO_ROOT_PASSWORD: 'minioroot'
+    env_file:
+      - .dev.env
     volumes:
       - minio-vol:/data
     ports:
@@ -63,8 +48,8 @@ services:
     image: phpmyadmin:latest
     tty: true
     stdin_open: true
-    environment:
-      PMA_HOSTS: 'db'
+    env_file:
+      - .dev.env
     depends_on:
       - db
     ports:
