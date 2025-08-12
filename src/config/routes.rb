@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   resources :session, params: :aid, only: []
   resources :posts, param: :aid
   delete 'posts/:aid/thumbnail_variants_delete' => 'posts#thumbnail_variants_delete', as: 'thumbnail_variants_delete'
-  resources :images, param: :aid, except: [:delete]
+  resources :images, param: :aid, except: [:destroy]
   get 'images/:aid/variants_show' => 'images#variants_show', as: 'variants_show'
   post 'images/:aid/variants_create' => 'images#variants_create', as: 'variants_create'
   delete 'images/:aid/variants_delete' => 'images#variants_delete', as: 'variants_delete'

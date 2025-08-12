@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-  enum status: { draft: 0, unlisted: 1, published: 2, deleted: 3 }
+  enum :status, { draft: 0, unlisted: 1, published: 2, deleted: 3 }
   belongs_to :account
   has_many :post_tags
   has_many :tags, through: :post_tags
