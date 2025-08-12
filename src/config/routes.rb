@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   # Administorator
   namespace :admin do
     root 'studio#index'
-
+    get 'export' => 'studio#export'
     resources :accounts, param: :aid, only: [:index, :edit, :update]
     patch 'posts/update_multiple', to: 'posts#update_multiple', as: :update_multiple_posts
     resources :posts, param: :aid, only: [:index, :edit, :update]

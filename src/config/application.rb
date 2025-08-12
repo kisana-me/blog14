@@ -7,6 +7,7 @@ module App
     config.load_defaults 7.1
     config.time_zone = 'Tokyo'
     config.autoload_lib(ignore: %w(assets tasks))
+    config.eager_load_paths << Rails.root.join("app/services")
     config.middleware.delete Rack::Runtime
     config.session_store :cookie_store, key: 'b_ses'
     config.i18n.default_locale = :ja
