@@ -1,10 +1,17 @@
 class ApplicationRecord < ActiveRecord::Base
+  primary_abstract_class
   require 'aws-sdk-s3'
   include ImageTools
-  BASE_64_URL_REGEX  = /\A[a-zA-Z0-9_-]*\z/
-  primary_abstract_class
+  include TokenTools
 
   private
+
+  NAME_ID_REGEX = /\A[a-zA-Z0-9_]+\z/
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+
+  def set_aid
+    self.aid ||= SecureRandom.base36(14)
+  end
 
   #object.update(column.to_sym => mca_array.to_json)
   def add_mca_data(object, column, add_mca_array, save = false)

@@ -10,30 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_11_035022) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_11_035022) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
-    t.string "aid", null: false
-    t.string "name_id", null: false
-    t.string "icon_original_key", default: "", null: false
-    t.text "icon_variants", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
+    t.string "anyur_id"
+    t.string "anyur_access_token"
+    t.string "anyur_refresh_token"
+    t.datetime "anyur_token_fetched_at"
+    t.string "aid", limit: 14, null: false
     t.string "name", null: false
+    t.string "name_id", null: false
+    t.bigint "icon_id"
     t.text "description", default: "", null: false
-    t.boolean "public", default: false, null: false
-    t.bigint "likes_count", default: 0, null: false
-    t.bigint "views_count", default: 0, null: false
-    t.integer "posts_count", default: 0, null: false
-    t.text "settings", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
-    t.text "metadata", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
-    t.text "roles", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
-    t.string "password_digest", null: false
+    t.integer "visibility", limit: 1, default: 0, null: false
+    t.string "password_digest", default: "", null: false
+    t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
+    t.integer "status", limit: 1, default: 0, null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["aid", "name_id"], name: "index_accounts_on_aid_and_name_id", unique: true
-    t.check_constraint "json_valid(`icon_variants`)", name: "icon_variants"
-    t.check_constraint "json_valid(`metadata`)", name: "metadata"
-    t.check_constraint "json_valid(`roles`)", name: "roles"
-    t.check_constraint "json_valid(`settings`)", name: "settings"
+    t.index ["aid"], name: "index_accounts_on_aid", unique: true
+    t.index ["anyur_id"], name: "index_accounts_on_anyur_id", unique: true
+    t.index ["name_id"], name: "index_accounts_on_name_id", unique: true
+    t.check_constraint "json_valid(`meta`)", name: "meta"
   end
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
@@ -149,15 +147,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_11_035022) do
   end
 
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
+    t.string "aid", limit: 14, null: false
     t.bigint "account_id", null: false
-    t.string "aid", null: false
     t.string "name", default: "", null: false
-    t.string "session_digest", null: false
+    t.string "token_lookup", null: false
+    t.string "token_digest", null: false
+    t.datetime "token_expires_at", default: -> { "current_timestamp(6)" }, null: false
+    t.datetime "token_generated_at", default: -> { "current_timestamp(6)" }, null: false
+    t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
+    t.integer "status", limit: 1, default: 0, null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_sessions_on_account_id"
     t.index ["aid"], name: "index_sessions_on_aid", unique: true
+    t.index ["token_lookup"], name: "index_sessions_on_token_lookup", unique: true
+    t.check_constraint "json_valid(`meta`)", name: "meta"
   end
 
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|

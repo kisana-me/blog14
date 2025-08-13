@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :logged_in_account, only: %i[ update ]
+  before_action :require_signin, only: %i[ update ]
   before_action :set_comment, only: %i[ update ]
 
   def create

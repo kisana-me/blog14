@@ -1,14 +1,12 @@
 class ApplicationController < ActionController::Base
-  include Tools
-  include ApplicationHelper
-  include SessionsHelper
-  before_action :set_current_account
+  include ErrorsManagement
+  include SessionManagement
 
-  unless Rails.env.development?
-    rescue_from Exception,                      with: :render_500
-    rescue_from ActiveRecord::RecordNotFound,   with: :render_404
-    rescue_from ActionController::RoutingError, with: :render_404
-  end
+  include Tools
+
+  before_action :current_account
+
+  helper_method :admin?
 
   def routing_error
     raise ActionController::RoutingError, params[:path]
@@ -16,29 +14,32 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def render_404
-    render 'errors/404', status: :not_found
+  def require_signin
+    return if @current_account
+    store_location
+    flash[:alert] = "サインインしてください"
+    redirect_to root_path
   end
-  def render_500
-    render 'errors/500', status: :internal_server_error
+
+  def require_signout
+    return unless @current_account
+    flash[:alert] = "サインイン済みです"
+    redirect_to root_path
   end
-  def set_current_account
-    @current_account = current_account
+
+  def require_admin
+    render_404 unless admin?
   end
-  def admin_account
-    unless admin?
-      render_404
-    end
+
+  def admin?
+    @current_account&.admin?
   end
-  def logged_in_account
-    unless logged_in?
-      render_404
-    end
+
+  def store_location
+    session[:forwarding_url] = request.original_url if request.get?
   end
-  def logged_out_account
-    if logged_in?
-      flash[:alert] = "ログイン済みです"
-      redirect_to root_path
-    end
+
+  def redirect_back_or(default = root_path, **options)
+    redirect_to(session.delete(:forwarding_url) || default, **options)
   end
 end

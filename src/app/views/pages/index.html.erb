@@ -1,9 +1,6 @@
-<% provide(:title, '') %>
-<% provide(:description, 'IVECOLOR トップページ') %>
-<% provide(:keywords, 'IVECOLOR') %>
-<% provide(:layout_style, 'full') %>
+<% provide(:title, "") %>
 
-<% if logged_in? %>
+<% if @current_account %>
 <div>
   <%= link_to('スタジオ', studio_path, data: { turbo: false }) %>
   <%= link_to('admin', admin_root_path, data: { turbo: false }) if admin? %>

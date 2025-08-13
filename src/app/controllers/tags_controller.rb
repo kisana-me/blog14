@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :logged_in_account, only: %i[ new create edit update ]
+  before_action :require_signin, only: %i[ new create edit update ]
   before_action :set_tag, only: %i[ show ]
   before_action :set_correct_tag, only: %i[ edit update ]
   def index

@@ -1,68 +1,20 @@
 class AccountsController < ApplicationController
+  before_action :require_signin, only: %i[ edit update destroy ]
   before_action :set_account, only: %i[ show ]
-  before_action :logged_in_account, only: %i[ logout edit update ]
-  before_action :logged_out_account, only: %i[ create_signup create_login ]
-  before_action :set_correct_account, only: %i[ edit update ]
+  before_action :set_correct_account, only: %i[ edit update destroy ]
 
   def index
-    @accounts = Account.where(
-      public: true,
-      deleted: false
-    ).order(
-      id: :asc
-    )
+    @accounts = Account.order(id: :asc)
   end
-  def create_signup
-    @account = Account.new(account_params)
-    @account.aid = generate_aid(Account, 'aid')
-    unless @account.invitation_code == ENV['INVITATION_CODE']
-      reform()
-      @account.errors.add(:invitation_code, '招待コードが有効ではありません')
-      flash.now[:alert] = '作成できませんでした'
-      render 'signup'
-    end
-    if @account.save
-      redirect_to root_path
-      flash[:notice] = '作成しました'
-    else
-      reform()
-      flash.now[:alert] = '作成できませんでした'
-      render 'signup'
-    end
-  end
-  def create_login
-    @account = Account.find_by(
-      name_id: params[:session][:name_id],
-      deleted: false
-    )
-    if @account && @account.authenticate(params[:session][:password])
-      log_in(@account)
-      flash[:notice] = 'ログインしました'
-      redirect_to account_path(@account.aid)
-    else
-      @error_message = 'IDかパスワードが間違っています'
-      @reform = {
-        name_id: params[:session][:name_id],
-        password: params[:session][:password]
-      }
-      flash.now[:alert] = 'ログインできませんでした'
-      render 'login'
-    end
-  end
-  def logout
-    log_out()
-    flash[:notice] = 'ログアウトしました'
-    redirect_to root_path
-  end
+
   def show
-    unless logged_in?
-      @account.update(views_count: @account.views_count + 1)
-    end
   end
-  def edit
+
+  def edit#settingsへ移行しろ
   end
+
   def update
-    if @account.update(update_account_params)
+    if @account.update(account_params)
       flash[:notice] = '変更しました'
       redirect_to account_path(@account.aid)
     else
@@ -70,19 +22,12 @@ class AccountsController < ApplicationController
       render 'edit'
     end
   end
-  def update_password
-    # 作成中
+
+  def destroy
   end
 
   private
 
-  def reform
-    @reform = {
-      invitation_code: params[:account][:invitation_code],
-      password: params[:account][:password],
-      password_confirmation: params[:account][:password_confirmation]
-    }
-  end
   def account_params
     params.require(:account).permit(
       :icon,
@@ -91,44 +36,16 @@ class AccountsController < ApplicationController
       :description,
       :password,
       :password_confirmation,
-      :invitation_code,
       :public
     )
   end
-  def update_account_params
-    params.require(:account).permit(
-      :icon,
-      :name,
-      :name_id,
-      :description,
-      :public
-    )
-  end
-  def update_password_params
-    params.require(:account).permit(
-      :password,
-      :password_confirmation
-    )
-  end
+
   def set_account
-    @account = Account.find_by(
-      aid: params[:aid],
-      public: true,
-      deleted: false
-    )
-    unless @account
-      if logged_in?
-        return if @account = Account.find_by(aid: params[:aid])
-      end
-      render_404
-    end
+    render_404 unless @account = Account.find_by(aid: params[:aid])
   end
+
   def set_correct_account
-    if @account = Account.find_by(aid: params[:aid])
-      return if current_account?(@account)
-      return if admin?
-    else
-      render_404
-    end
+    render_404 unless @current_account
+    @account = Account.find_by(aid: @current_account.aid)
   end
 end

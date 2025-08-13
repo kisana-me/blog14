@@ -1,5 +1,5 @@
 class ImagesController < ApplicationController
-  before_action :logged_in_account
+  before_action :require_signin
   before_action :set_image, only: %i[ show ]
   before_action :set_correct_image, only: %i[ edit update variants_show variants_create variants_delete image_delete ]
 

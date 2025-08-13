@@ -1,18 +1,4 @@
 module Tools
-  def digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ?
-      BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
-    BCrypt::Password.create(string, cost: cost)
-  end
-  def generate_aid(model, column)
-    loop do
-      aid = ('a'..'z').to_a.concat(('0'..'9').to_a).shuffle[1..17].join
-      if !model.exists?(column.to_sym => aid)
-        return aid
-        break
-      end
-    end
-  end
   def generate_random_problem
     num1 = rand(100)
     num2 = rand(1..10)
@@ -23,12 +9,14 @@ module Tools
     problem = "#{num1} #{operator} #{num2}"
     [problem, eval(problem)]
   end
-  # paging
+
+  # Pagination
   def total_page(objects)
     total = objects.count
     per_page = 10 # 表示件数
     return total.to_i > 0 ? (total.to_f / per_page.to_f).ceil : 0
   end
+
   def paged_objects(param, objects, order)
     limit_item = 10 # 表示件数
     param = param.to_i

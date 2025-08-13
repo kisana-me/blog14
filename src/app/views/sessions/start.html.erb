@@ -1,0 +1,7 @@
+<% provide(:title, 'Studio') %>
+<% provide(:robots, 'false') %>
+<% provide(:layout_style, '') %>
+<% provide(:ga4, 'false') %>
+
+<h1>サインイン/サインアップ</h1>
+<%= button_to "ANYURで続行", oauth_path, method: :post, data: { turbo: false } %>

@@ -8,7 +8,7 @@
         コメントID:<%= initial_replied %>のスレッドへの返信
       </div>
     <% end %>
-    <% if logged_in? %>
+    <% if @current_account %>
       <div><%= @current_account.name %>としてコメント</div>
     <% end %>
     <br />

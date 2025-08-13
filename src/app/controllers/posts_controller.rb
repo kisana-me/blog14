@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :logged_in_account, only: %i[ new create edit update thumbnail_variants_delete ]
+  before_action :require_signin, only: %i[ new create edit update thumbnail_variants_delete ]
   before_action :set_post, only: %i[ show ]
   before_action :set_correct_post, only: %i[ edit update thumbnail_variants_delete ]
   include PostsHelper
@@ -46,10 +46,10 @@ class PostsController < ApplicationController
   def thumbnail_variants_delete
     if @post.thumbnail_variants_delete
       flash[:notice] = 'variantsを削除しました'
-      redirect_to privacy_path
+      redirect_to privacy_policy_path
     else
       flash[:alert] = 'variantsの削除ができませんでした'
-      redirect_to privacy_path
+      redirect_to privacy_policy_path
     end
   end
 

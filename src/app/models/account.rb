@@ -3,21 +3,43 @@ class Account < ApplicationRecord
   has_many :posts
   has_many :images
   has_many :comments
-  has_secure_password
+
+  attribute :meta, :json, default: {}
+  enum :status, { normal: 0, locked: 1 }
+  attr_accessor :icon
+  attr_accessor :invitation_code
+
+  before_save :icon_upload
+  before_create :set_aid
+
+  validates :anyur_id,
+    allow_nil: true,
+    uniqueness: { case_sensitive: false }
+  validates :name,
+    presence: true,
+    length: { in: 1..50, allow_blank: true }
   validates :name_id,
     presence: true,
     length: { in: 5..50, allow_blank: true },
-    format: { with: BASE_64_URL_REGEX, allow_blank: true },
-    uniqueness: { case_sensitive: false }
+    format: { with: NAME_ID_REGEX, allow_blank: true },
+    uniqueness: { case_sensitive: false, allow_blank: true }
+  validates :description,
+    allow_blank: true,
+    length: { in: 1..500 }
+  has_secure_password validations: false
   validates :password,
-    presence: true,
-    length: { in: 8..72, allow_blank: true },
-    allow_nil: true
+    allow_blank: true,
+    length: { in: 8..30 },
+    confirmation: true
   validate :icon_type_and_required
-  before_create :icon_upload
-  before_update :icon_upload
-  attr_accessor :icon
-  attr_accessor :invitation_code
+
+  default_scope { where(deleted: false) }
+
+  def admin?
+    self.meta["roles"]&.include?("admin")
+  end
+
+
 
   def icon_upload
     if icon

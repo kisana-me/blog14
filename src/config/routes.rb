@@ -1,18 +1,26 @@
 Rails.application.routes.draw do
-
-  get "health" => "rails/health#show", as: :rails_health_check
   root "pages#index"
 
-  scope :secrets do
-    get '/' => 'pages#secrets'
-    post '/'=> 'pages#secrets_check', as: 'secrets_check'
-    post 'signup' => 'accounts#create_signup'
-    post 'login' => 'accounts#create_login'
-    delete 'logout' => 'accounts#logout'
-  end
+  # Pages
+  get "terms-of-service" => "pages#terms_of_service"
+  get "privacy-policy" => "pages#privacy_policy"
+  get "contact" => "pages#contact"
+  get "sitemap" => "pages#sitemap"
+
+  # Sessions
+  get "sessions/start"
+  delete "signout" => "sessions#signout"
+  resources :sessions, except: [:new, :create], param: :aid
+
+  # Signup
+  get "signup" => "signup#new"
+  post "signup" => "signup#create"
+
+  # OAuth
+  post "oauth" => "oauth#start"
+  get "callback" => "oauth#callback"
 
   resources :accounts, param: :aid, except: [:new, :create]
-  resources :session, params: :aid, only: []
   resources :posts, param: :aid
   delete 'posts/:aid/thumbnail_variants_delete' => 'posts#thumbnail_variants_delete', as: 'thumbnail_variants_delete'
   resources :images, param: :aid, except: [:destroy]
@@ -22,13 +30,6 @@ Rails.application.routes.draw do
   delete 'images/:aid/image_delete' => 'images#image_delete', as: 'image_delete'
   resources :comments, param: :aid, only: [:create, :update]
   resources :tags, param: :aid
-
-  # Pages
-  get 'terms' => 'pages#terms'
-  get 'privacy' => 'pages#privacy'
-  get 'sitemap' => 'pages#sitemap'
-  get 'contact' => 'pages#contact'
-  post 'contact' => 'pages#create_contact'
 
   # Studio
   get 'studio' => 'studio#index'
@@ -49,7 +50,9 @@ Rails.application.routes.draw do
     post 'images/create' =>  'images#create'
   end
 
-  # Error
-  get '*not_found', to: 'application#routing_error'
-  post '*not_found', to: 'application#routing_error'
+  # Others
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Errors
+  match "*path", to: "application#routing_error", via: :all
 end
