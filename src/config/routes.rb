@@ -34,6 +34,13 @@ Rails.application.routes.draw do
   # Studio
   get 'studio' => 'studio#index'
 
+  # Settings
+  get "settings" => "settings#index"
+  get "settings/account" => "settings#account"
+  get "settings/icon" => "settings#icon"
+  patch "settings/account" => "settings#post_account"
+  delete "settings/leave" => "settings#leave"
+
   # Administorator
   namespace :admin do
     root 'studio#index'
