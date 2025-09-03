@@ -1,16 +1,15 @@
-class CreateTags < ActiveRecord::Migration[7.1]
+class CreateTags < ActiveRecord::Migration[8.0]
   def change
     create_table :tags do |t|
-      t.string :aid, null: false
-      t.string :name, null: false, default: ''
-      t.text :description, null: false, default: ''
-      t.boolean :public, null: false, default: false
-      t.integer :posts_count, null: false, default: 0
-      t.bigint :views_count, null: false, default: 0
-      t.boolean :deleted, null: false, default: false
+      t.string :aid, null: false, limit: 14
+      t.string :name, null: false, default: ""
+      t.text :description, null: false, default: ""
+      t.text :description_cache, null: false, default: ""
+      t.json :meta, null: false, default: {}
+      t.integer :status, null: false, limit: 1, default: 0
 
       t.timestamps
     end
-    add_index :tags, [:aid], unique: true
+    add_index :tags, :aid, unique: true
   end
 end
