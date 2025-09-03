@@ -1,19 +1,19 @@
 module SessionManagement
-  # 単一サインイン版 ver 1.0.1
+  # 単一サインイン版 ver 1.0.2
   # models/token_toolsが必須
   # Sessionに必要なカラム差分(名前 型)
   # - account references
   # Accountに必要なカラム(名前 型)
-  # - deleted boolean
+  # - status enum { normal: 0, locked: 1, deleted: 2 }
 
-  COOKIE_NAME = "bealive"
+  COOKIE_NAME = "ivecolor"
   COOKIE_EXPIRES = 1.month # 2592000
 
   def current_account()
     @current_account = nil
     return unless token = cookies.encrypted[COOKIE_NAME.to_sym]
     db_session = Session.find_by_token("token", token)
-    if db_session&.account && !db_session.account.deleted
+    if db_session&.account && db_session.account.normal?
       @current_account = db_session.account
     else
       cookies.delete(COOKIE_NAME.to_sym)
@@ -41,6 +41,6 @@ module SessionManagement
     return unless db_session
     cookies.delete(COOKIE_NAME.to_sym)
     @current_account = nil
-    db_session.update(deleted: true)
+    db_session.update(status: :deleted)
   end
 end

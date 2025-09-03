@@ -5,11 +5,11 @@ class Account < ApplicationRecord
   has_many :comments
 
   attribute :meta, :json, default: {}
-  enum :status, { normal: 0, locked: 1 }
-  attr_accessor :icon
-  attr_accessor :invitation_code
+  enum :status, { normal: 0, locked: 1, deleted: 2 }
 
-  before_save :icon_upload
+  attr_accessor :icon
+
+  before_save :icon_save
   before_create :set_aid
 
   validates :anyur_id,
@@ -33,26 +33,14 @@ class Account < ApplicationRecord
     confirmation: true
   validate :icon_type_and_required
 
-  default_scope { where(deleted: false) }
+  default_scope { where(status: :normal) }
+
+
 
   def admin?
     self.meta["roles"]&.include?("admin")
   end
 
-
-
-  def icon_upload
-    if icon
-      if self.icon_original_key.present?
-        delete_variants(variants_column: 'icon_variants', image_type: 'icons')
-        s3_delete(key: self.icon_original_key)
-      end
-        extension = icon.original_filename.split('.').last.downcase
-        key = "/icons/#{self.aid}.#{extension}"
-        self.icon_original_key = key
-        s3_upload(key: key, file: self.icon.path, content_type: self.icon.content_type)
-    end
-  end
   def icon_url(variant_type: 'icons')
     if self.icon_original_key.present?
       unless self.icon_variants.include?(variant_type)
@@ -70,6 +58,19 @@ class Account < ApplicationRecord
   end
 
   private
+
+  def icon_save
+    if icon
+      if self.icon_original_key.present?
+        delete_variants(variants_column: 'icon_variants', image_type: 'icons')
+        s3_delete(key: self.icon_original_key)
+      end
+        extension = icon.original_filename.split('.').last.downcase
+        key = "/icons/#{self.aid}.#{extension}"
+        self.icon_original_key = key
+        s3_upload(key: key, file: self.icon.path, content_type: self.icon.content_type)
+    end
+  end
 
   def icon_type_and_required
     varidate_image(column_name: 'icon', required: false)

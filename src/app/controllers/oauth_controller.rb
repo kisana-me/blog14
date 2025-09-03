@@ -39,7 +39,7 @@ class OauthController < ApplicationController
 
   def handle_oauth(token_data, resources)
     anyur_id = resources.dig("data", "id")
-    account = Account.find_by(anyur_id: anyur_id, deleted: false)
+    account = Account.find_by(anyur_id: anyur_id)
 
     if @current_account
       if @current_account == account # 同

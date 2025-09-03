@@ -1,11 +1,10 @@
 module TokenTools
-  # ver 1.0.0
+  # ver 1.0.1
   # 必要なカラム(名前 型)
   # - ??_lookup string
   # - ??_digest string
   # - ??_generated_at string
   # - ??_expires_at string
-  # - deleted boolean
 
   LOOKUP_LENGTH = 36
   BASE36_LENGTH = 128
@@ -35,7 +34,7 @@ module TokenTools
     def find_by_token(type, token)
       lookup = new.generate_lookup(token)
       record = where("#{type}_expires_at > ?", Time.current)
-        .find_by("#{type}_lookup": lookup, deleted: false)
+        .find_by("#{type}_lookup": lookup)
       return nil unless record
       digest = record.send("#{type}_digest")
       return nil unless BCrypt::Password.new(digest).is_password?(token)
