@@ -12,7 +12,5 @@ class CreateImages < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :images, :aid, unique: true
-    add_index :accounts, :icon_id, unique: false
-    add_foreign_key :accounts, :images, column: :icon_id
   end
 end

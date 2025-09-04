@@ -1,56 +1,61 @@
 module ImageTools
+  # ver 1.0.1
+  # images/variants/[variant_type]/[aid].[ext]
+  # images/originals/[aid].[ext]
+  # original_ext(string)とvariants(json)が必要
 
-  private
+  include S3Tools
 
-  def process_image(variant_type: 'images', image_type: 'images', variants_column: 'variants', original_key_column: 'original_key')
-    variants =JSON.parse(self.send(variants_column))
-    if variants.include?(variant_type)
-      return
+  def process_image(
+    variant_type: "normal",
+    variants_column: "variants",
+    original_ext_column: "original_ext",
+    original_image_path: nil
+  )
+    return if self.send(variants_column).include?(variant_type)
+    if original_image_path.blank?
+      return unless self.send(original_ext_column).present?
+      downloaded_image = Tempfile.new(["downloaded_image"])
+      original_image_path = downloaded_image.path
+      s3_download(key: "/images/originals/#{self.aid}.#{self.send(original_ext_column)}", response_target: original_image_path)
     end
-    s3 = Aws::S3::Client.new(
-      endpoint: ENV["S3_LOCAL_ENDPOINT"],
-      region: ENV["S3_REGION"],
-      access_key_id: ENV["S3_USERNAME"],
-      secret_access_key: ENV["S3_PASSWORD"],
-      force_path_style: true
-    )
-    downloaded_image = Tempfile.new(['downloaded_image'])
-    converted_image = Tempfile.new(['converted_image'])
-    s3.get_object(bucket: ENV["S3_BUCKET"], key: self.send(original_key_column), response_target: downloaded_image.path)
+    converted_image = Tempfile.new(["converted_image"])
     resize = "2048x2048>"
     extent = "" # 切り取る
     case variant_type
     # icon
-    when 'icons'
+    when "icon"
       resize = "400x400^"
       extent = "400x400"
-    when 'tb-icons'
-      resize = "50x50^"
-      extent = "50x50"
+    when "q-icon"
+      resize = "100x100^"
+      extent = "100x100"
     # banner
-    when 'banners'
+    when "banner"
       resize = "1600x1600^"
       extent = "1600x1600"
-    when 'tb-banners'
+    when "q-banner"
       resize = "400x400^"
       extent = "400x400"
-    # image
-    when 'images'
+    # normal
+    when "normal"
       resize = "2048x2048>"
-    when 'tb-images'
-      resize = "700x700>"
-    when '4k-images'
+    when "q-normal"
+      resize = "512x512>"
+    when "d-normal"
       resize = "4096x4096>"
     # emoji
-    when 'emojis'
+    when "emoji"
       resize = "200x200>"
-    when 'tb-emojis'
+    when "q-emoji"
       resize = "50x50>"
+    else
+      return
     end
-    image = MiniMagick::Image.open(downloaded_image.path)
+    image = MiniMagick::Image.open(original_image_path)
     if image.frames.count > 1
       processed = ImageProcessing::MiniMagick
-        .source(downloaded_image.path)
+        .source(original_image_path)
         .loader(page: nil)
         .coalesce
         .gravity("center")
@@ -68,8 +73,7 @@ module ImageTools
         .convert("webp")
         .call(destination: converted_image.path)
     else
-      image = MiniMagick::Image.open(downloaded_image.path)
-      image.format('webp')
+      image.format("webp")
       image = image.coalesce
       image.combine_options do |img|
         img.gravity "center"
@@ -77,47 +81,74 @@ module ImageTools
         #img.auto_orient
         img.strip # EXIF削除
         img.resize resize
-        unless extent == ''
-          img.extent extent
-        end
+        img.extent extent unless extent.blank?
       end
       image.write(converted_image.path)
     end
-    key = "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp"
-    s3_upload(key: key, file: converted_image.path, content_type: 'image/webp')
-    add_mca_data(self, variants_column, [variant_type], true)
-    downloaded_image.close
+    key = "/images/variants/#{variant_type}/#{self.aid}.webp"
+    s3_upload(key: key, file: converted_image.path, content_type: "image/webp")
+    self.update(variants_column.to_sym => (self.send(variants_column) + [variant_type]).uniq)
+    downloaded_image.close if downloaded_image
     converted_image.close
   end
 
-  def delete_variants(variants_column: 'variants', image_type: 'images')
-    arr = JSON.parse(self.send(variants_column))
-    arr.each do |variant_type|
-      s3_delete(key: "/variants/#{variant_type}/#{image_type}/#{self.aid}.webp")
+
+
+  def delete_variants(variants_column: "variants")
+    self.send(variants_column).each do |variant_type|
+      s3_delete(key: "/images/variants/#{variant_type}/#{self.aid}.webp")
     end
-    remove_mca_data(self, variants_column, arr, false)
+    self.update(variants_column.to_sym => [])
   end
 
-  def delete_image(original_key_column: 'original_key', variants_column: 'variants', image_type: 'images')
-    delete_variants(variants_column: variants_column, image_type: image_type)
-    s3_delete(key: self.send(original_key_column))
-    self.update(original_key_column.to_sym => '')
+
+
+  def delete_original(
+    original_ext_column: "original_ext",
+    variants_column: "variants"
+  )
+    delete_variants(variants_column: variants_column)
+    s3_delete(key: "/images/originals/#{self.aid}.#{self.send(original_ext_column)}")
+    self.update(original_ext_column.to_sym => "")
   end
 
-  def varidate_image(column_name: 'image', required: true)
+
+
+  private
+
+
+
+  def varidate_image(
+    column_name: "image",
+    required: true,
+    max_size_mb: 30,
+    max_width: 4096,
+    max_height: 4096
+  )
     file = self.send(column_name)
-    if file
-      begin
-        image = MiniMagick::Image.read(file)
-        allowed_content_types = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
-        unless allowed_content_types.include?(image.mime_type)
-          errors.add(column_name.to_sym, "未対応の形式です")
-        end
-      rescue MiniMagick::Invalid
-        errors.add(column_name.to_sym, "無効な画像ファイルです")
+    return errors.add(column_name.to_sym, :image_blank) if required && !file
+    begin
+      image = MiniMagick::Image.read(file)
+
+      # 拡張子チェック
+      allowed_content_types = ["PNG", "JPEG", "GIF", "WEBP"]
+      unless allowed_content_types.include?(image.type)
+        errors.add(column_name.to_sym, :image_invalid_format)
       end
-    elsif self.new_record? && required
-      errors.add(column_name.to_sym, "画像がありません")
+
+      # 容量チェック
+      size_in_mb = (file.size.to_f / 1024 / 1024).round(2)
+      if size_in_mb > max_size_mb
+        errors.add(column_name.to_sym, :image_too_large, max_size_mb: max_size_mb)
+      end
+
+      # 解像度チェック
+      if image.width > max_width || image.height > max_height
+        errors.add(column_name.to_sym, :image_dimensions_exceeded, max_width: max_width, max_height: max_height)
+      end
+
+    rescue MiniMagick::Invalid
+      errors.add(column_name.to_sym, :image_invalid)
     end
   end
 end

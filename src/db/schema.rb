@@ -10,16 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 9) do
+ActiveRecord::Schema[8.0].define(version: 11) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "anyur_id"
     t.string "anyur_access_token"
     t.string "anyur_refresh_token"
     t.datetime "anyur_token_fetched_at"
     t.string "aid", limit: 14, null: false
-    t.string "name", default: "", null: false
+    t.string "name", null: false
     t.string "name_id", null: false
-    t.bigint "icon_id"
     t.text "description", default: "", null: false
     t.text "description_cache", default: "", null: false
     t.datetime "birthday"
@@ -31,6 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 9) do
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "icon_id"
     t.index ["aid"], name: "index_accounts_on_aid", unique: true
     t.index ["anyur_id"], name: "index_accounts_on_anyur_id", unique: true
     t.index ["email"], name: "index_accounts_on_email", unique: true
@@ -108,6 +108,15 @@ ActiveRecord::Schema[8.0].define(version: 9) do
     t.check_constraint "json_valid(`variants`)", name: "variants"
   end
 
+  create_table "post_images", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "image_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["image_id"], name: "index_post_images_on_image_id"
+    t.index ["post_id"], name: "index_post_images_on_post_id"
+  end
+
   create_table "post_tags", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "post_id", null: false
     t.bigint "tag_id", null: false
@@ -120,9 +129,12 @@ ActiveRecord::Schema[8.0].define(version: 9) do
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "account_id"
     t.string "aid", limit: 14, null: false
+    t.string "name_id", null: false
+    t.bigint "thumbnail_id"
     t.string "title", null: false
     t.text "summary", null: false
     t.text "content", null: false
+    t.text "toc_cache", default: "", null: false
     t.text "content_cache", default: "", null: false
     t.datetime "published_at"
     t.datetime "edited_at"
@@ -132,6 +144,8 @@ ActiveRecord::Schema[8.0].define(version: 9) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_posts_on_account_id"
     t.index ["aid"], name: "index_posts_on_aid", unique: true
+    t.index ["name_id"], name: "index_posts_on_name_id", unique: true
+    t.index ["thumbnail_id"], name: "index_posts_on_thumbnail_id"
     t.check_constraint "json_valid(`meta`)", name: "meta"
   end
 
@@ -155,7 +169,8 @@ ActiveRecord::Schema[8.0].define(version: 9) do
 
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "aid", limit: 14, null: false
-    t.string "name", default: "", null: false
+    t.string "name", null: false
+    t.string "name_id", null: false
     t.text "description", default: "", null: false
     t.text "description_cache", default: "", null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
@@ -174,8 +189,11 @@ ActiveRecord::Schema[8.0].define(version: 9) do
   add_foreign_key "follows", "accounts", column: "followed_id"
   add_foreign_key "follows", "accounts", column: "follower_id"
   add_foreign_key "images", "accounts"
+  add_foreign_key "post_images", "images"
+  add_foreign_key "post_images", "posts"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "accounts"
+  add_foreign_key "posts", "images", column: "thumbnail_id"
   add_foreign_key "sessions", "accounts"
 end

@@ -68,9 +68,9 @@
       <div class="sub-container">
         <div class="sub-content">
           <div class="sub-heading">おすすめの記事</div>
-          <% recommended_posts(5).each do |post| %>
-            <%= render 'posts/show_mini', post: post %>
-          <% end %>
+          <%# recommended_posts(5).each do |post| %>
+            <%# render 'posts/show_mini', post: post %>
+          <%# end %>
           <div class="sub-heading">新着の記事</div>
           <% new_posts(5).each do |post| %>
             <%= render 'posts/show_mini', post: post %>

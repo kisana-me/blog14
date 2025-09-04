@@ -1,5 +1,5 @@
 <div class="comments">
-  <% permission = admin? || current_account?(post.account) %>
+  <% permission = admin? || (@current_account == post.account) %>
   <% if permission %>
     <% comments = post_all_comments(post) %>
   <% else %>

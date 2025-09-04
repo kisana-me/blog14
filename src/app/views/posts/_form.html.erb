@@ -2,8 +2,24 @@
   <%= render 'shared/error_messages', instead: post %>
   <div>
     <div>
+      <%= f.label :name_id, 'ID' %>
+      <%= f.text_field :name_id, placeholder: 'ID' %>
+    </div>
+    <div>
       <%= f.label :thumbnail, 'サムネイル画像' %>
       <%= f.file_field :thumbnail, placeholder: 'サムネイル画像' %>
+
+      <div class="image-shelf">
+        <% @images.each do |image| %>
+          <%= f.radio_button :thumbnail_aid, image.aid, checked: (@post.thumbnail == image), hidden: false %>
+          <%= f.label :thumbnail_aid, for: "post_thumbnail_aid_#{image.aid}", class: "custom-image-label" do %>
+            <%= image.name %>
+            <%= image_tag(image.image_url) %>
+          <% end %>
+        <% end %>
+        <%= f.radio_button :thumbnail_aid, "00000", checked: (@post.thumbnail.blank?), hidden: false %>
+        <%= f.label :thumbnail_aid, "サムネイルなし", for: "post_thumbnail_aid_#{"00000"}", class: "custom-image-label" %>
+      </div>
     </div>
     <div>
       <%= f.label :title, 'タイトル' %>

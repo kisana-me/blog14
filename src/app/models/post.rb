@@ -1,60 +1,49 @@
 class Post < ApplicationRecord
-  enum :status, { draft: 0, unlisted: 1, published: 2, deleted: 3 }
   belongs_to :account
+  belongs_to :thumbnail, class_name: "Image", optional: true
   has_many :post_tags
   has_many :tags, through: :post_tags
   has_many :comments
-  # Thumbnail
-  attr_accessor :thumbnail
-  validate :thumbnail_type_and_required
-  before_create :thumbnail_upload
-  before_update :thumbnail_upload
-  # Tag
-  # taggingメソッドで代入
+
+  attribute :meta, :json, default: {}
+  enum :status, { draft: 0, unlisted: 1, specific: 2, published: 3, deleted: 4 }
+  attr_accessor :thumbnail_aid
   attr_accessor :selected_tags
 
-  # Thumbnail
-  def thumbnail_upload
-    if thumbnail
-      if self.thumbnail_original_key.present?
-        delete_variants(variants_column: 'thumbnail_variants', image_type: 'thumbnails')
-        s3_delete(key: self.thumbnail_original_key)
-      end
-        extension = thumbnail.original_filename.split('.').last.downcase
-        key = "/thumbnails/#{self.aid}.#{extension}"
-        self.thumbnail_original_key = key
-        s3_upload(key: key, file: self.thumbnail.path, content_type: self.thumbnail.content_type)
-    end
+  after_initialize :set_aid, if: :new_record?
+  before_validation :set_name_id
+  before_validation :assign_thumbnail
+
+  validates :name_id,
+    presence: true,
+    length: { in: 5..50, allow_blank: true },
+    format: { with: BASE64_URLSAFE_REGEX, allow_blank: true },
+    uniqueness: { case_sensitive: false, allow_blank: true }
+  validates :title,
+    presence: true,
+    length: { in: 1..200, allow_blank: true }
+  validates :summary,
+    presence: true,
+    length: { in: 1..500, allow_blank: true }
+  validates :content,
+    presence: true,
+    length: { in: 1..100000, allow_blank: true }
+
+  default_scope { where(status: :published) }
+  scope :general, -> { unscoped.where.not(status: :deleted) }
+
+  # === #
+
+  def thumbnail_url
+    thumbnail&.image_url(variant_type: "thumbnail")
   end
-  def thumbnail_url(variant_type: 'images')
-    if self.thumbnail_original_key.present?
-      unless self.thumbnail_variants.include?(variant_type)
-        process_image(
-          variant_type: variant_type,
-          image_type: 'thumbnails',
-          variants_column: 'thumbnail_variants',
-          original_key_column: 'thumbnail_original_key'
-        )
-      end
-      return object_url(key: "/variants/#{variant_type}/thumbnails/#{self.aid}.webp")
-    else
-      return nil
-    end
-  end
-  def thumbnail_variants_delete
-    delete_variants(variants_column: 'thumbnail_variants', image_type: 'thumbnails')
-    self.save
-  end
-  def thumbnail?
-    thumbnail_original_key.present?
-  end
-  # Tag
-  def tagging(arr: selected_tags)
-    if arr.blank?
+
+  def tagging(tags: selected_tags)
+    if tags.blank?
       self.tags = []
     else
       tmp_tags = []
-      arr.each do |aid|
+      tags.each do |aid|
         tag = Tag.find_by(aid: aid)
         tmp_tags << tag
       end
@@ -64,7 +53,15 @@ class Post < ApplicationRecord
 
   private
 
-  def thumbnail_type_and_required
-    varidate_image(column_name: 'thumbnail', required: false)
+  def set_name_id
+    self.name_id = aid if name_id.blank?
+  end
+
+  def assign_thumbnail
+    return if thumbnail_aid.blank?
+    self.thumbnail = Image.find_by(
+      account: self.account,
+      aid: thumbnail_aid,
+    )
   end
 end

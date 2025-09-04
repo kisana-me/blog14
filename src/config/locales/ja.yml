@@ -5,6 +5,7 @@ ja:
         status:
           draft: "下書き"
           unlisted: "限定公開"
+          specific: "特定用途"
           published: "公開"
           deleted: "削除済み"
     errors:
@@ -18,3 +19,8 @@ ja:
         confirmation: "が一致しません"
         invalid: "は正しい形式で入力してください"
         not_a_number: "は数値で入力してください"
+        image_blank: "がありません"
+        image_invalid: "は無効です"
+        image_invalid_format: "は未対応の形式です(png, jpeg, gif, webpのみ対応)"
+        image_too_large: "の容量が大きすぎます(最大 %{max_size_mb} MB)"
+        image_dimensions_exceeded: "の解像度が大きすぎます(最大 %{max_width}px × %{max_height}px)"

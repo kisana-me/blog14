@@ -3,8 +3,12 @@ class Comment < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :comment, optional: true
   has_many :comments
-  validates :content,
-    presence: true
 
-  #@comment.errors.add(:base, "返信先が見つかりません")
+  attribute :meta, :json, default: {}
+  enum :status, { pending: 0, disallowed: 1, allowed: 2, deleted: 3 }
+
+  validates :content,
+    presence: true,
+    length: { in: 1..1000, allow_blank: true }
+
 end

@@ -20,16 +20,25 @@ Rails.application.routes.draw do
   post "oauth" => "oauth#start"
   get "callback" => "oauth#callback"
 
-  resources :accounts, param: :aid, except: [:new, :create]
-  resources :posts, param: :aid
-  delete 'posts/:aid/thumbnail_variants_delete' => 'posts#thumbnail_variants_delete', as: 'thumbnail_variants_delete'
-  resources :images, param: :aid, except: [:destroy]
-  get 'images/:aid/variants_show' => 'images#variants_show', as: 'variants_show'
-  post 'images/:aid/variants_create' => 'images#variants_create', as: 'variants_create'
-  delete 'images/:aid/variants_delete' => 'images#variants_delete', as: 'variants_delete'
-  delete 'images/:aid/image_delete' => 'images#image_delete', as: 'image_delete'
+  # Accounts
+  resources :accounts, param: :name_id, only: [:index, :show]
+
+  # Posts
+  resources :posts, param: :name_id
+
+  # Images
+  resources :images, param: :aid do
+    member do
+      post "variants_create" => "images#variants_create", as: "variants_create"
+      delete "variants_destroy" => "images#variants_destroy", as: "variants_destroy"
+    end
+  end
+
+  # Comments
   resources :comments, param: :aid, only: [:create, :update]
-  resources :tags, param: :aid
+
+  # Tags
+  resources :tags, param: :name_id, only: [:index, :show]
 
   # Studio
   get 'studio' => 'studio#index'

@@ -1,90 +1,91 @@
 class PostsController < ApplicationController
-  before_action :require_signin, only: %i[ new create edit update thumbnail_variants_delete ]
-  before_action :set_post, only: %i[ show ]
-  before_action :set_correct_post, only: %i[ edit update thumbnail_variants_delete ]
   include PostsHelper
+  before_action :require_signin, except: %i[ index show ]
+  before_action :set_post, only: %i[ show ]
+  before_action :set_correct_post, only: %i[ edit update destroy ]
 
   def index
-    all_posts = Post.where(status: :published)
+    all_posts = Post.all
     @posts = paged_objects(params[:page], all_posts, published_at: :desc)
     @posts_page = total_page(all_posts)
   end
+
   def show
-    unless logged_in?
-      @post.update(views_count: @post.views_count + 1)
-    end
+    # unless logged_in?
+    #   @post.update(views_count: @post.views_count + 1)
+    # end
     @problem, session[:answer] = generate_random_problem
   end
+
   def new
     @post = Post.new
+    @images = @current_account.images
   end
+
   def create
     @post = Post.new(post_params)
-    @post.aid = generate_aid(Post, 'aid')
     @post.account = @current_account
     @post.tagging
     if @post.save
-      flash[:notice] = '作成しました'
-      redirect_to post_path(@post.aid)
+      redirect_to post_path(@post.name_id), notice: "作成しました"
     else
-      flash.now[:alert] = '作成できませんでした'
-      render 'new'
+      flash.now[:alert] = "作成できませんでした"
+      render :new
     end
   end
+
   def edit
+    @images = @current_account.images
   end
+
   def update
-    @post.tagging(arr: params[:post][:selected_tags])
-    if @post.update(post_params)
-      flash[:notice] = '編集しました'
-      redirect_to post_path(@post.aid)
+    @post.assign_attributes(post_params)
+    @post.tagging#(arr: params[:post][:selected_tags])
+    if @post.save
+      redirect_to post_path(@post.name_id), notice: "更新しました"
     else
-      flash.now[:alert] = '編集できませんでした'
-      render 'new'
+      flash.now[:alert] = "更新できませんでした"
+      render :edit
     end
   end
-  def thumbnail_variants_delete
-    if @post.thumbnail_variants_delete
-      flash[:notice] = 'variantsを削除しました'
-      redirect_to privacy_policy_path
+
+  def destroy
+    if @post.update(status: :deleted)
+      redirect_to images_path, notice: "削除しました"
     else
-      flash[:alert] = 'variantsの削除ができませんでした'
-      redirect_to privacy_policy_path
+      flash.now[:alert] = "削除できませんでした"
+      render :show
     end
   end
 
   private
+
   def post_params
-    params.require(:post).permit(
-      :thumbnail,
+    params.expect(post: [
+      :name_id,
       :title,
       :summary,
       :content,
-      :status,
       :published_at,
       :edited_at,
-      selected_tags: []
-    )
+      :status,
+      :thumbnail_aid,
+      selected_tags: [],
+    ])
   end
+
   def set_post
-    @post = Post.where(status: :published).find_by(aid: params[:aid])
-    unless @post
-      if logged_in?
-        return if @post = @current_account.posts.find_by(aid: params[:aid])# deleted以外にする
-        if admin?
-          return if @post = Post.find_by(aid: params[:aid])
-        end
-      end
-      render_404
+    return if @post = Post.find_by(name_id: params[:name_id])
+    if @current_account
+      return if @post = Post.general.find_by(name_id: params[:name_id])
+      return @post = Post.unscoped.find_by(name_id: params[:name_id]) if admin?
     end
+    render_404
   end
+
   def set_correct_post
-    @post = @current_account.posts.find_by(aid: params[:aid])
-    unless @post
-      if admin?
-        return if @post = Post.find_by(aid: params[:aid])
-      end
-      render_404
-    end
+    return if @post = Post.general.find_by(name_id: params[:name_id])
+    return @post = Post.unscoped.find_by(name_id: params[:name_id]) if admin?
+    render_404
   end
 end

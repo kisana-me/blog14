@@ -6,9 +6,8 @@ class CreateAccounts < ActiveRecord::Migration[8.0]
       t.string :anyur_refresh_token, null: true
       t.datetime :anyur_token_fetched_at, null: true
       t.string :aid, null: false, limit: 14
-      t.string :name, null: false, default: ""
+      t.string :name, null: false
       t.string :name_id, null: false
-      t.bigint :icon_id, null: true
       t.text :description, null: false, default: ""
       t.text :description_cache, null: false, default: ""
       t.datetime :birthday, null: true

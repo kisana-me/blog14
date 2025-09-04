@@ -1,44 +1,40 @@
 class Image < ApplicationRecord
-  belongs_to :account
-  validate :image_type_and_required
-  before_create :image_upload
-  before_update :image_upload
+  belongs_to :account, optional: true
+
+  attribute :variants, :json, default: []
+  attribute :meta, :json, default: {}
+  enum :status, { normal: 0, locked: 1, deleted: 2 }
   attr_accessor :image
 
-  def image_upload
-    if image
-      if self.original_key.present?
-        delete_variants()
-        s3_delete(key: self.original_key)
-      end
-        extension = image.original_filename.split('.').last.downcase
-        key = "/images/#{self.aid}.#{extension}"
-        self.original_key = key
-        s3_upload(key: key, file: self.image.path, content_type: self.image.content_type)
+  after_initialize :set_aid, if: :new_record?
+  before_create :image_upload
+
+  validate :image_varidation
+
+  default_scope { where(status: :normal) }
+
+  def image_url(variant_type: "normal")
+    if !variants.include?(variant_type) && original_ext.present?
+      process_image(variant_type: variant_type)
     end
-  end
-  def image_url(variant_type: 'images')
-    if self.original_key.present?
-      unless self.variants.include?(variant_type)
-        process_image(variant_type: variant_type)
-      end
-      return object_url(key: "/variants/#{variant_type}/images/#{self.aid}.webp")
-    else
-      return '/'
-    end
-  end
-  def variants_delete
-    delete_variants()
-    self.save
-  end
-  def image_delete
-    delete_image()
-    self.save
+    return object_url(key: "/images/variants/#{variant_type}/#{self.aid}.webp")
   end
 
   private
 
-  def image_type_and_required
-    varidate_image()
+  def image_upload
+    self.name = image.original_filename.split(".").first if self.name.blank?
+    extension = image.original_filename.split(".").last.downcase
+    self.original_ext = extension
+    s3_upload(
+      key: "/images/originals/#{self.aid}.#{extension}",
+      file: self.image.path,
+      content_type: self.image.content_type
+    )
+  end
+
+  def image_varidation
+    return unless new_record?
+    varidate_image(required: true)
   end
 end

@@ -80,9 +80,7 @@ module PostsHelper
     )
   end
   def whos_posts(who, limit)
-    return who.posts.where(
-      status: :published
-    ).limit(
+    return who.posts.limit(
       limit.to_i
     ).order(
       published_at: :desc
