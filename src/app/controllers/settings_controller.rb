@@ -16,7 +16,8 @@ class SettingsController < ApplicationController
     if @account.update(account_params)
       redirect_to settings_account_path, notice: "更新しました"
     else
-      render :account, alert: "更新できませんでした"
+      flash.now[:alert] = "更新できませんでした"
+      render :account
     end
   end
 

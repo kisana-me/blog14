@@ -5,21 +5,18 @@ class PostsController < ApplicationController
   before_action :set_correct_post, only: %i[ edit update destroy ]
 
   def index
-    all_posts = Post.all
+    all_posts = Post.from_normal_accounts.is_published.includes(:thumbnail)
     @posts = paged_objects(params[:page], all_posts, published_at: :desc)
     @posts_page = total_page(all_posts)
   end
 
   def show
-    # unless logged_in?
-    #   @post.update(views_count: @post.views_count + 1)
-    # end
+    # アクセスカウントしたい
     @problem, session[:answer] = generate_random_problem
   end
 
   def new
     @post = Post.new
-    @images = @current_account.images
   end
 
   def create
@@ -35,12 +32,11 @@ class PostsController < ApplicationController
   end
 
   def edit
-    @images = @current_account.images
   end
 
   def update
     @post.assign_attributes(post_params)
-    @post.tagging#(arr: params[:post][:selected_tags])
+    @post.tagging
     if @post.save
       redirect_to post_path(@post.name_id), notice: "更新しました"
     else
@@ -54,7 +50,7 @@ class PostsController < ApplicationController
       redirect_to images_path, notice: "削除しました"
     else
       flash.now[:alert] = "削除できませんでした"
-      render :show
+      render :edit
     end
   end
 
@@ -75,17 +71,15 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    return if @post = Post.find_by(name_id: params[:name_id])
-    if @current_account
-      return if @post = Post.general.find_by(name_id: params[:name_id])
-      return @post = Post.unscoped.find_by(name_id: params[:name_id]) if admin?
-    end
+    return if @post = Post.from_normal_accounts.is_published.find_by(name_id: params[:name_id])
+    return if @post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id])
+    return if admin? && @post = Post.find_by(name_id: params[:name_id])
     render_404
   end
 
   def set_correct_post
-    return if @post = Post.general.find_by(name_id: params[:name_id])
-    return @post = Post.unscoped.find_by(name_id: params[:name_id]) if admin?
+    return if @post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id])
+    return if admin? && @post = Post.find_by(name_id: params[:name_id])
     render_404
   end
 end

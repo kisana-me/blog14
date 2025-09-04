@@ -26,14 +26,11 @@
     <%= @post.comments.where(status: :allowed).count %>/<%= @post.comments.count %>
     <br />
     <%= link_to('編集', edit_post_path(@post.name_id), data: { turbo: false }, method: :get) %>
-    <% if admin? %>
-      <%= button_to('variants削除', thumbnail_variants_delete_path(@post.name_id), data: { turbo: false }, method: :delete) %>
-    <% end %>
   </div>
   <% end %>
   <div class="post-thumbnail">
-    <% if @post.thumbnail %>
-    <%= image_tag @post.thumbnail.image_url, alt: "#{@post.title}のサムネイル" %>
+    <% if true#@post.thumbnail %>
+    <%= image_tag @post.thumbnail_url, alt: "#{@post.title}のサムネイル" %>
     <% else %>
     <div class="post-altspace">
       <div class="post-alttext">
@@ -72,7 +69,7 @@
       <% end %>
     </div>
     <div class="post-tags">
-      <% @post.tags.where(status: :allowed).each do |tag| %>
+      <% @post.tags.each do |tag| %>
         <%= link_to(tag.name, tag_path(tag.name_id), class: 'post-tag') %>
       <% end %>
     </div>
@@ -102,6 +99,6 @@
       <summary>コメントを残す</summary>
       <%= render 'comments/form', comment: Comment.new, url: comments_path, post_aid: @post.aid %>
     </details>
-    <%= render 'comments/comments', post: @post %>
+    <%# render 'comments/comments', post: @post %>
   </div>
 </div>

@@ -38,10 +38,10 @@ Rails.application.routes.draw do
   resources :comments, param: :aid, only: [:create, :update]
 
   # Tags
-  resources :tags, param: :name_id, only: [:index, :show]
+  resources :tags, param: :name_id
 
   # Studio
-  get 'studio' => 'studio#index'
+  get "studio" => "studio#index"
 
   # Settings
   get "settings" => "settings#index"

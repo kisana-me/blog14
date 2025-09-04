@@ -2,8 +2,8 @@
   <%= link_to(post_path(post.name_id)) do %>
   <div class="show-post-container">
     <div class="show-post-thumbnail">
-      <% if post.thumbnail %>
-      <%= image_tag post.thumbnail_url(variant_type: 'tb-images'), alt: "#{post.title}のサムネイル" %>
+      <% if true #post.thumbnail %>
+      <%= image_tag post.thumbnail_url, alt: "#{post.title}のサムネイル" %>
       <% else %>
       <div class="show-post-altspace">
         <div class="show-post-alttext">

@@ -3,4 +3,4 @@
 <% provide(:layout_style, '') %>
 <% provide(:ga4, 'false') %>
 
-<%= render 'images/form', image: @image, url: image_path(@image.aid), method: :post, new: true %>
+<%= render 'images/form', image: @image, url: image_path(@image.name_id), method: :post, new: true %>

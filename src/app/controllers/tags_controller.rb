@@ -1,67 +1,73 @@
 class TagsController < ApplicationController
-  before_action :require_signin, only: %i[ new create edit update ]
+  before_action :require_admin, except: %i[ index show ]
   before_action :set_tag, only: %i[ show ]
-  before_action :set_correct_tag, only: %i[ edit update ]
+  before_action :set_correct_tag, only: %i[ edit update destroy ]
+
   def index
-    @tags = Tag.where(
-      deleted: false
-    ).order(
-      id: :desc
-    )
+    # タグをページングしたい
+    @tags = Tag.is_normal.limit(10)
   end
+
   def show
-    unless logged_in?
-      @tag.update(views_count: @tag.views_count += 1)
-    end
+    # 投稿をページングしたい
+    # アクセスカウントしたい
+    @posts = @tag.posts.from_normal_accounts.is_published.order(published_at: :desc).limit(10).includes(:thumbnail)
   end
+
   def new
     @tag = Tag.new
   end
+
   def create
     @tag = Tag.new(tag_params)
-    @tag.aid = generate_aid(Tag, 'aid')
     if @tag.save
-      flash[:notice] = '作成しました'
-      redirect_to tag_path(@tag.aid)
+      redirect_to tag_path(@tag.name_id), notice: "作成しました"
     else
-      flash.now[:alert] = '作成できませんでした'
-      render 'new'
+      flash.now[:alert] = "作成できませんでした"
+      render :new
     end
   end
+
   def edit
   end
+
   def update
     if @tag.update(tag_params)
-      flash[:notice] = '編集しました'
-      redirect_to tag_path(@tag.aid)
+      redirect_to tag_path(@tag.name_id), notice: "更新しました"
     else
-      flash.now[:alert] = '編集できませんでした'
-      render 'new'
+      flash.now[:alert] = "更新できませんでした"
+      render :edit
+    end
+  end
+
+  def destroy
+    if @tag.update(status: :deleted)
+      redirect_to tags_path, notice: "削除しました"
+    else
+      flash.now[:alert] = "削除できませんでした"
+      render :edit
     end
   end
 
   private
 
   def tag_params
-    params.require(:tag).permit(
+    params.expect(tag: [
       :name,
+      :name_id,
       :description,
-      :deleted
-    )
+      :status,
+    ])
   end
+
   def set_tag
-    @tag = Tag.find_by(
-      aid: params[:aid],
-      deleted: false
-    )
-    unless @tag
-      if logged_in?
-        return if @tag = Tag.find_by(aid: params[:aid])
-      end
-      return render_404
-    end
+    return if @tag = Tag.is_normal.find_by(name_id: params[:name_id])
+    return if admin? && @tag = Tag.find_by(name_id: params[:name_id])
+    render_404
   end
+
   def set_correct_tag
-    render_404 unless @tag = Tag.find_by(aid: params[:aid])
+    return if admin? && @tag = Tag.find_by(name_id: params[:name_id])
+    render_404
   end
 end

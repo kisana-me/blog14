@@ -12,5 +12,6 @@ class CreateTags < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :tags, :aid, unique: true
+    add_index :tags, :name_id, unique: true
   end
 end

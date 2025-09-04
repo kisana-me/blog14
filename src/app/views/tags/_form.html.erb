@@ -6,28 +6,29 @@
       <%= f.text_field :name, placeholder: '名前' %>
     </div>
     <div class="">
-      <%= f.label :description, '紹介' %>
-      <%= f.text_area :description, placeholder: '紹介' %>
+      <%= f.label :name_id, 'ID' %>
+      <%= f.text_field :name_id, placeholder: 'ID' %>
     </div>
     <div class="">
-      <%= f.label :deleted, '削除' %>
-      <%= f.check_box :deleted, placeholder: '削除' %>
+      <%= f.label :description, '説明' %>
+      <%= f.text_area :description, placeholder: '説明', id: 'my-text-area' %>
+    </div>
+    <div class="">
+      <%= f.label :status, '状態' %>
+      <%= f.check_box :deleted %>
     </div>
   </div>
-  <%= f.submit "アップロード" %>
+  <%= f.submit "送信" %>
 <% end %>
 
 <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
 <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 <script>
   const easyMDE = new EasyMDE({
-    element: document.getElementById('my-text-area'),
+    element: document.getElementById("my-text-area"),
     insertTexts: {
-      horizontalRule: ["", "\n\n-----\n\n"],
-      image: ["![](http://", ")"],
-      link: ["[", "](https://)"],
       table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
     },
-    showIcons: ["code", "table"],
+    showIcons: ["code", "horizontal-rule", "table"],
   })
 </script>

@@ -4,18 +4,11 @@
 <% provide(:ga4, 'false') %>
 
 <h1>Studio</h1>
-<p>
-  <%= @current_account.name %>
-  さん、こんにちは。
-</p>
-<%= link_to('記事を新規作成', new_post_path, data: { turbo: false }) %>
+<p><%= @current_account.name %>さん、こんにちは。</p>
+<%= link_to("記事を新規作成", new_post_path, data: { turbo: false }) %>
 <%= link_to("設定", settings_path) %>
 <%= button_to("サインアウト", signout_path, method: :delete) %>
-<h2>非公開</h2>
-<% @private_posts.each do |post| %>
-  <%= render 'posts/show_mini', post: post %>
-<% end %>
-<h2>限定公開</h2>
-<% @unlisted_posts.each do |post| %>
+<h2>記事</h2>
+<% @posts.each do |post| %>
   <%= render 'posts/show_mini', post: post %>
 <% end %>

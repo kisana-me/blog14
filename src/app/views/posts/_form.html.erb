@@ -10,7 +10,7 @@
       <%= f.file_field :thumbnail, placeholder: 'サムネイル画像' %>
 
       <div class="image-shelf">
-        <% @images.each do |image| %>
+        <% @current_account.images.each do |image| %>
           <%= f.radio_button :thumbnail_aid, image.aid, checked: (@post.thumbnail == image), hidden: false %>
           <%= f.label :thumbnail_aid, for: "post_thumbnail_aid_#{image.aid}", class: "custom-image-label" do %>
             <%= image.name %>

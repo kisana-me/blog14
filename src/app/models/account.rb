@@ -33,7 +33,10 @@ class Account < ApplicationRecord
     length: { in: 8..30 },
     confirmation: true
 
-  default_scope { where(status: :normal) }
+  scope :is_normal, -> { where(status: :normal) }
+  scope :isnt_deleted, -> { where.not(status: :deleted) }
+  scope :is_opened, -> { where(visibility: :opened) }
+  scope :isnt_closed, -> { where.not(visibility: :closed) }
 
   # === #
 

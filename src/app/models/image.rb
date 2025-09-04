@@ -11,7 +11,9 @@ class Image < ApplicationRecord
 
   validate :image_varidation
 
-  default_scope { where(status: :normal) }
+  scope :from_normal_accounts, -> { left_joins(:account).where(accounts: { status: :normal }).or(where(account: nil)) }
+  scope :is_normal, -> { where(status: :normal) }
+  scope :isnt_deleted, -> { where.not(status: :deleted) }
 
   def image_url(variant_type: "normal")
     if !variants.include?(variant_type) && original_ext.present?

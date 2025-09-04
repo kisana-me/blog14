@@ -29,13 +29,14 @@ class Post < ApplicationRecord
     presence: true,
     length: { in: 1..100000, allow_blank: true }
 
-  default_scope { where(status: :published) }
-  scope :general, -> { unscoped.where.not(status: :deleted) }
+  scope :from_normal_accounts, -> { joins(:account).where(accounts: { status: :normal }) }
+  scope :is_published, -> { where(status: :published) }
+  scope :isnt_deleted, -> { where.not(status: :deleted) }
 
   # === #
 
   def thumbnail_url
-    thumbnail&.image_url(variant_type: "thumbnail")
+    thumbnail&.image_url || "/img-2.webp"
   end
 
   def tagging(tags: selected_tags)

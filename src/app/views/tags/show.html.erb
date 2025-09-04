@@ -9,11 +9,13 @@
   <%= @tag.name %>
 </div>
 <div class="tag-info">
-  ID:<%= @tag.aid %>
+  固有ID:<%= @tag.aid %>
   <br />
-  紹介文:<%= @tag.description %>
+  ID:<%= @tag.name_id %>
+  <br />
+  説明:<%= @tag.description %>
 </div>
 <h2>最新の投稿</h2>
-<% tags_posts(@tag, 10).each do |post| %>
+<% @posts.each do |post| %>
   <%= render 'posts/show', post: post %>
 <% end %>

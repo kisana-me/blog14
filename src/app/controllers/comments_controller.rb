@@ -30,6 +30,7 @@ class CommentsController < ApplicationController
       redirect_to post_path(post.aid)
     end
   end
+
   def update
     if @comment.update(update_comment_params)
       flash[:notice] = 'コメントを更新しました'
@@ -39,7 +40,9 @@ class CommentsController < ApplicationController
       redirect_to post_path(@comment.post.aid)
     end
   end
+
   private
+
   def comment_params
     params.require(:comment).permit(
       :name,
@@ -47,11 +50,13 @@ class CommentsController < ApplicationController
       :address
     )
   end
+
   def update_comment_params
     params.require(:comment).permit(
       :public
     )
   end
+
   def set_comment
     @comment = Comment.find_by(aid: params[:aid])
   end

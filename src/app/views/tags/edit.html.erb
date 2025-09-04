@@ -3,4 +3,4 @@
 <% provide(:layout_style, '') %>
 <% provide(:ga4, 'false') %>
 
-<%= render 'tags/form', tag: @tag, url: tag_path(@tag.aid), method: :patch %>
+<%= render 'tags/form', tag: @tag, url: tag_path(@tag.name_id), method: :patch %>
