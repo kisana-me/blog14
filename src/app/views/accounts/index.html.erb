@@ -15,7 +15,7 @@
         <%= account.name %>
       </div>
       <div class="account-description">
-        <%= account.description %>
+        <%= strip_tags account.description_cache %>
       </div>
     </div>
   <% end %>
