@@ -78,7 +78,7 @@
           <% if @post %>
             <div class="sub-heading">筆者</div>
             <div class="post-account">
-              <%= link_to account_path(@post.account.aid), class: 'post-account-path', data: {turbo_prefetch: false} do %>
+              <%= link_to account_path(@post.account.name_id), class: 'post-account-path', data: {turbo_prefetch: false} do %>
                 <div class="post-account-top">
                   <div class="post-account-icon-container">
                     <%= image_tag(@post.account.icon_url, class: 'post-account-icon', alt: "#{@post.account.name}のアイコン") %>
@@ -90,7 +90,7 @@
               <% end %>
             </div>
             <div>
-              <%= @post.account.description %>
+              <%= raw @post.account.description_cache %>
             </div>
           <% end %>
         </div>

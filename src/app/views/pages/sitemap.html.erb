@@ -1,16 +1,24 @@
 <% provide(:title, "サイトマップ") %>
 
-<h1>サイトマップ</h1>
+<% if @post %>
 
-<ul>
-  <li><%= link_to "投稿記事の一覧", posts_path %></li>
-  <li><%= link_to "筆者の一覧", accounts_path %></li>
-  <li><%= link_to "タグの一覧", tags_path %></li>
-</ul>
+  <%= raw @post.content_cache %>
 
-<ul>
-  <li><%= link_to "利用規約", terms_of_service_path %></li>
-  <li><%= link_to "プライバシーポリシー", privacy_policy_path %></li>
-  <li><%= link_to "お問い合わせ", contact_path %></li>
-  <li><%= link_to "サイトマップ", sitemap_path %></li>
-</ul>
+<% else %>
+
+  <h1>サイトマップ</h1>
+
+  <ul>
+    <li><%= link_to "投稿記事の一覧", posts_path %></li>
+    <li><%= link_to "筆者の一覧", accounts_path %></li>
+    <li><%= link_to "タグの一覧", tags_path %></li>
+  </ul>
+
+  <ul>
+    <li><%= link_to "利用規約", terms_of_service_path %></li>
+    <li><%= link_to "プライバシーポリシー", privacy_policy_path %></li>
+    <li><%= link_to "お問い合わせ", contact_path %></li>
+    <li><%= link_to "サイトマップ", sitemap_path %></li>
+  </ul>
+
+<% end %>

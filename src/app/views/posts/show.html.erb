@@ -78,14 +78,16 @@
       <a href="https://misskey-hub.net/share?text=<%= URI.encode_www_form_component(full_title(@post.title)) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="misskey-share-button" target="_blank">Misskeyに共有</a>
     </div>
   </div>
-  <% if toc(@post.content).present? %>
     <div class="post-toc">
       <span>目次</span>
-        <%= toc(@post.content) %>
+      <% if @post.toc_cache.present? %>
+        <%= raw @post.toc_cache %>
+      <% else %>
+        <p>目次はありません</p>
+      <% end %>
     </div>
-  <% end %>
   <div class="post-content">
-    <%= markdown(@post.content) %>
+    <%= raw @post.content_cache %>
   </div>
   <div class="post-ending">
     <div class="post-ending-meta">

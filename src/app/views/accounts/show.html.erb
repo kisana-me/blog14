@@ -19,8 +19,8 @@
   固有ID:<%= @account.aid %>
   <br />
   ID:<%= @account.name_id %>
-  <br />
-  説明:<%= @account.description %>
+  <hr />
+  <%= raw @account.description_cache %>
 </div>
 <h2>最新の投稿</h2>
 <% @posts.each do |post| %>

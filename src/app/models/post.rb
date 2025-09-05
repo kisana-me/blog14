@@ -13,6 +13,7 @@ class Post < ApplicationRecord
   after_initialize :set_aid, if: :new_record?
   before_validation :set_name_id
   before_validation :assign_thumbnail
+  before_save :cache_rendered_content
 
   validates :name_id,
     presence: true,
@@ -64,5 +65,10 @@ class Post < ApplicationRecord
       account: self.account,
       aid: thumbnail_aid,
     )
+  end
+
+  def cache_rendered_content
+    self.toc_cache = ::MarkdownRenderer.render_toc(content)
+    self.content_cache = ::MarkdownRenderer.render(content)
   end
 end

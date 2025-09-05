@@ -1,7 +1,15 @@
 <% provide(:title, "利用規約") %>
 
-<h1>利用規約</h1>
+<% if @post %>
 
-<p>本サービスの利用規約は、下記リンク先に記載しております。</p>
+  <%= raw @post.content_cache %>
 
-<a href="https://anyur.com/terms-of-service">ANYUR 利用規約</a>
+<% else %>
+
+  <h1>利用規約</h1>
+
+  <p>本サービスの利用規約は、下記リンク先に記載しております。</p>
+
+  <a href="https://anyur.com/terms-of-service">ANYUR 利用規約</a>
+
+<% end %>

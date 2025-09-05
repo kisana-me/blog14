@@ -12,6 +12,7 @@ class Account < ApplicationRecord
 
   before_validation :assign_icon
   before_create :set_aid
+  before_save :cache_rendered_description
 
   validates :anyur_id,
     allow_nil: true,
@@ -56,5 +57,9 @@ class Account < ApplicationRecord
       account: self,
       aid: icon_aid,
     )
+  end
+
+  def cache_rendered_description
+    self.description_cache = ::MarkdownRenderer.render(description, safe_render: true)
   end
 end

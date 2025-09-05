@@ -1,35 +1,4 @@
 module PostsHelper
-  require "rouge/plugins/redcarpet"
-
-  def markdown(text)
-    options = {
-      hard_wrap: true,
-      with_toc_data: true
-    }
-    extensions = {
-      tables: true,
-      fenced_code_blocks: true,
-      disable_indented_code_blocks: true,
-      autolink: true,
-      strikethrough: true,
-      lax_spacing: true,
-      space_after_headers: true,
-      superscript: true,
-      underline: true,
-      highlight: true,
-      quote: true,
-      footnotes: true
-    }
-    renderer = CustomMarkdownRenderer.new(self, options)
-    markdown = Redcarpet::Markdown.new(renderer, extensions)
-    markdown.render(text).html_safe
-  end
-
-  def toc(text)
-      renderer = Redcarpet::Render::HTML_TOC.new(nesting_level: 6)
-      markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
-      markdown.render(text).html_safe
-  end
 
   # Paging
 

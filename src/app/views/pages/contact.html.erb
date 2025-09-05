@@ -1,7 +1,15 @@
 <% provide(:title, "お問い合わせ") %>
 
-<h1>お問い合わせ</h1>
+<% if @post %>
 
-<p>本サービスのお問い合わせは、下記リンク先に設置しております。</p>
+  <%= raw @post.content_cache %>
 
-<a href="https://anyur.com/contact">ANYUR お問い合わせ</a>
+<% else %>
+
+  <h1>お問い合わせ</h1>
+
+  <p>本サービスのお問い合わせは、下記リンク先に設置しております。</p>
+
+  <a href="https://anyur.com/contact">ANYUR お問い合わせ</a>
+
+<% end %>

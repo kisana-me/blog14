@@ -1,20 +1,20 @@
 <% provide(:title, "") %>
 
 <% if @current_account %>
-<div>
-  <%= link_to('スタジオ', studio_path, data: { turbo: false }) %>
-  <%= link_to('admin', admin_root_path, data: { turbo: false }) if admin? %>
-</div>
+  <div>
+    <%= link_to("Studio", studio_path, data: { turbo: false }) %>
+    <%= link_to("Admin", admin_root_path, data: { turbo: false }) if admin? %>
+  </div>
 <% end %>
 
-<h1>WELCOME TO IVECOLOR</h1>
-<p>ようこそ！IVECOLORへ！</p>
-<p>当サイトでは主に、</p>
-<ul>
-  <li>TWICEやIVEなど<strong>K-POP関連</strong></li>
-  <li>スマホやPCなど<strong>ガジェット機器</strong></li>
-</ul>
-<p>について投稿していきます！</p>
-<p>閲覧いただきありがとうございます。コンテンツを拡充していきますので支援いただけると幸いです。</p>
-<p>各投稿にコメントを付けられますので意見を述べていただけると大変参考になりありがたいです。</p>
-<p>何かありましたら、遠慮なくお問い合わせください。</p>
+<% if @post %>
+
+  <%= raw @post.content_cache %>
+
+<% else %>
+
+  <h1>WELCOME TO BLOG14</h1>
+  <p>kisanaによるブログシステムです。</p>
+  <p>特定用途でIDが"index"の投稿を作成し、トップページをカスタマイズできます。</p>
+
+<% end %>

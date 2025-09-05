@@ -178,6 +178,7 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["aid"], name: "index_tags_on_aid", unique: true
+    t.index ["name_id"], name: "index_tags_on_name_id", unique: true
     t.check_constraint "json_valid(`meta`)", name: "meta"
   end
 
