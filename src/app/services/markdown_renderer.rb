@@ -50,4 +50,9 @@ class MarkdownRenderer
     markdown = Redcarpet::Markdown.new(renderer, space_after_headers: true)
     markdown.render(markdown_text || "").html_safe
   end
+
+  def self.render_plain(markdown_text)
+    html = render(markdown_text)
+    Rails.application.helpers.strip_tags(html)
+  end
 end
