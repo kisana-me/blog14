@@ -5,7 +5,6 @@ class CreateTags < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.string :name_id, null: false
       t.text :description, null: false, default: ""
-      t.text :description_cache, null: false, default: ""
       t.json :meta, null: false, default: {}
       t.integer :status, null: false, limit: 1, default: 0
 

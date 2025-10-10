@@ -20,7 +20,7 @@
   <br />
   ID:<%= @account.name_id %>
   <hr />
-  <%= raw @account.description_cache %>
+  <%= md_render @account.description %>
 </div>
 <h2>最新の投稿</h2>
 <% @posts.each do |post| %>

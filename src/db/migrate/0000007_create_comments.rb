@@ -7,7 +7,6 @@ class CreateComments < ActiveRecord::Migration[8.0]
       t.string :aid, null: false, limit: 14
       t.string :name, null: false
       t.text :content, null: false
-      t.text :content_cache, null: false, default: ""
       t.string :address, null: false, default: ""
       t.json :meta, null: false, default: {}
       t.integer :status, null: false, limit: 1, default: 0

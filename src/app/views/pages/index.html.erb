@@ -9,7 +9,7 @@
 
 <% if @post %>
 
-  <%= raw @post.content_cache %>
+  <%= md_render @post.content %>
 
 <% else %>
 

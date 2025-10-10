@@ -80,14 +80,15 @@
   </div>
     <div class="post-toc">
       <span>目次</span>
-      <% if @post.toc_cache.present? %>
-        <%= raw @post.toc_cache %>
+      <% toc = md_render_toc @post.content %>
+      <% if toc.present? %>
+        <%= toc %>
       <% else %>
         <p>目次はありません</p>
       <% end %>
     </div>
   <div class="post-content">
-    <%= raw @post.content_cache %>
+    <%= md_render @post.content %>
   </div>
   <div class="post-ending">
     <div class="post-ending-meta">

@@ -53,6 +53,7 @@ class MarkdownRenderer
 
   def self.render_plain(markdown_text)
     html = render(markdown_text)
-    Rails.application.helpers.strip_tags(html)
+    # Rails.application.helpers.strip_tags(html)
+    ApplicationController.helpers.strip_tags(html)
   end
 end

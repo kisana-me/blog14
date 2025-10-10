@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 11) do
+ActiveRecord::Schema[8.0].define(version: 12) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "anyur_id"
     t.string "anyur_access_token"
@@ -20,12 +20,13 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.string "name", null: false
     t.string "name_id", null: false
     t.text "description", default: "", null: false
-    t.text "description_cache", default: "", null: false
     t.datetime "birthday"
     t.string "email"
     t.boolean "email_verified", default: false, null: false
     t.integer "visibility", limit: 1, default: 0, null: false
     t.string "password_digest"
+    t.boolean "totp_enabled", default: false, null: false
+    t.string "totp_secret"
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
@@ -68,7 +69,6 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.string "aid", limit: 14, null: false
     t.string "name", null: false
     t.text "content", null: false
-    t.text "content_cache", default: "", null: false
     t.string "address", default: "", null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
@@ -108,6 +108,24 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.check_constraint "json_valid(`variants`)", name: "variants"
   end
 
+  create_table "oauth_accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
+    t.string "aid", limit: 14, null: false
+    t.bigint "account_id", null: false
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.string "code"
+    t.string "access_token"
+    t.string "refresh_token"
+    t.datetime "access_token_expires_at"
+    t.datetime "refresh_token_expires_at"
+    t.integer "status", limit: 1, default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_oauth_accounts_on_account_id"
+    t.index ["aid"], name: "index_oauth_accounts_on_aid", unique: true
+    t.index ["provider", "uid"], name: "index_oauth_accounts_on_provider_and_uid", unique: true
+  end
+
   create_table "post_images", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "post_id", null: false
     t.bigint "image_id", null: false
@@ -134,8 +152,6 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.string "title", null: false
     t.text "summary", null: false
     t.text "content", null: false
-    t.text "toc_cache", default: "", null: false
-    t.text "content_cache", default: "", null: false
     t.datetime "published_at"
     t.datetime "edited_at"
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
@@ -172,7 +188,6 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.string "name", null: false
     t.string "name_id", null: false
     t.text "description", default: "", null: false
-    t.text "description_cache", default: "", null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
@@ -190,6 +205,7 @@ ActiveRecord::Schema[8.0].define(version: 11) do
   add_foreign_key "follows", "accounts", column: "followed_id"
   add_foreign_key "follows", "accounts", column: "follower_id"
   add_foreign_key "images", "accounts"
+  add_foreign_key "oauth_accounts", "accounts"
   add_foreign_key "post_images", "images"
   add_foreign_key "post_images", "posts"
   add_foreign_key "post_tags", "posts"

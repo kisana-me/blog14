@@ -9,7 +9,6 @@ class CreateAccounts < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.string :name_id, null: false
       t.text :description, null: false, default: ""
-      t.text :description_cache, null: false, default: ""
       t.datetime :birthday, null: true
       t.string :email, null: true
       t.boolean :email_verified, null: false, default: false

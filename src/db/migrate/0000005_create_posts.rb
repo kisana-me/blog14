@@ -8,8 +8,6 @@ class CreatePosts < ActiveRecord::Migration[8.0]
       t.string :title, null: false
       t.text :summary, null: false
       t.text :content, null: false
-      t.text :toc_cache, null: false, default: ""
-      t.text :content_cache, null: false, default: ""
       t.datetime :published_at, null: true
       t.datetime :edited_at, null: true
       t.json :meta, null: false, default: {}

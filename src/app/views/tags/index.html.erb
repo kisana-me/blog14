@@ -12,7 +12,7 @@
         <%= tag.name %>
       </div>
       <div class="tag-description">
-        <%= strip_tags tag.description_cache %>
+        <%= md_render_plain tag.description %>
       </div>
     </div>
   <% end %>

@@ -15,7 +15,7 @@
         <%= account.name %>
       </div>
       <div class="account-description">
-        <%= strip_tags account.description_cache %>
+        <%= md_render_plain account.description %>
       </div>
     </div>
   <% end %>

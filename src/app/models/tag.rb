@@ -7,7 +7,6 @@ class Tag < ApplicationRecord
 
   after_initialize :set_aid, if: :new_record?
   before_validation :set_name_id
-  before_save :cache_rendered_description
 
   validates :name,
     presence: true,
@@ -29,9 +28,5 @@ class Tag < ApplicationRecord
 
   def set_name_id
     self.name_id = aid if name_id.blank?
-  end
-
-  def cache_rendered_description
-    self.description_cache = ::MarkdownRenderer.render(description)
   end
 end

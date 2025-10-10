@@ -13,7 +13,7 @@
   <br />
   ID:<%= @tag.name_id %>
   <hr />
-  <%= raw @tag.description_cache %>
+  <%= md_render @tag.description %>
 </div>
 <h2>最新の投稿</h2>
 <% @posts.each do |post| %>
