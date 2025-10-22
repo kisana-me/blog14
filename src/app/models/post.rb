@@ -5,7 +5,7 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags
   has_many :comments
 
-  attribute :meta, :json, default: {}
+  attribute :meta, :json, default: -> { {} }
   enum :status, { draft: 0, unlisted: 1, specific: 2, published: 3, deleted: 4 }
   attr_accessor :thumbnail_aid
   attr_accessor :selected_tags
@@ -15,19 +15,19 @@ class Post < ApplicationRecord
   before_validation :assign_thumbnail
 
   validates :name_id,
-    presence: true,
-    length: { in: 5..50, allow_blank: true },
-    format: { with: BASE64_URLSAFE_REGEX, allow_blank: true },
-    uniqueness: { case_sensitive: false, allow_blank: true }
+            presence: true,
+            length: { in: 5..50, allow_blank: true },
+            format: { with: BASE64_URLSAFE_REGEX, allow_blank: true },
+            uniqueness: { case_sensitive: false, allow_blank: true }
   validates :title,
-    presence: true,
-    length: { in: 1..200, allow_blank: true }
+            presence: true,
+            length: { in: 1..200, allow_blank: true }
   validates :summary,
-    presence: true,
-    length: { in: 1..500, allow_blank: true }
+            presence: true,
+            length: { in: 1..500, allow_blank: true }
   validates :content,
-    presence: true,
-    length: { in: 1..100000, allow_blank: true }
+            presence: true,
+            length: { in: 1..100_000, allow_blank: true }
 
   scope :from_normal_accounts, -> { joins(:account).where(accounts: { status: :normal }) }
   scope :is_published, -> { where(status: :published) }
@@ -60,9 +60,10 @@ class Post < ApplicationRecord
 
   def assign_thumbnail
     return if thumbnail_aid.blank?
+
     self.thumbnail = Image.find_by(
-      account: self.account,
-      aid: thumbnail_aid,
+      account: account,
+      aid: thumbnail_aid
     )
   end
 end

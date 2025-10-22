@@ -7,8 +7,7 @@ module S3Tools
 
   def object_url(key: "")
     bucket_key = File.join(ENV.fetch("S3_BUCKET"), key)
-    url = File.join(ENV.fetch("S3_PUBLIC_ENDPOINT"), bucket_key)
-    return url
+    File.join(ENV.fetch("S3_PUBLIC_ENDPOINT"), bucket_key)
   end
 
   def signed_object_url(key: "", expires_in: 100)
@@ -26,7 +25,7 @@ module S3Tools
       key: key.to_s.gsub(%r{^/}, ""),
       expires_in: expires_in
     )
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error("Failed to generate signed URL: #{e.message}")
     nil
   end

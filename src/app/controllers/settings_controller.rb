@@ -1,12 +1,10 @@
 class SettingsController < ApplicationController
   before_action :require_signin
-  before_action :set_account, only: %i[ account icon post_account ]
+  before_action :set_account, only: %i[account icon post_account]
 
-  def index
-  end
+  def index; end
 
-  def account
-  end
+  def account; end
 
   def icon
     @images = Image.where(account: @current_account)
@@ -34,15 +32,15 @@ class SettingsController < ApplicationController
   end
 
   def account_params
-    params.require(:account).permit(
-      :name,
-      :name_id,
-      :description,
-      :birthday,
-      :visibility,
-      :password,
-      :password_confirmation,
-      :icon_aid
+    params.expect(
+      account: %i[name
+                  name_id
+                  description
+                  birthday
+                  visibility
+                  password
+                  password_confirmation
+                  icon_aid]
     )
   end
 end

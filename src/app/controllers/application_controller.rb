@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
 
   def require_signin
     return if @current_account
+
     store_location
     flash[:alert] = "サインインしてください"
     redirect_to root_path
@@ -23,6 +24,7 @@ class ApplicationController < ActionController::Base
 
   def require_signout
     return unless @current_account
+
     flash[:alert] = "サインイン済みです"
     redirect_to root_path
   end
@@ -39,7 +41,7 @@ class ApplicationController < ActionController::Base
     session[:forwarding_url] = request.original_url if request.get?
   end
 
-  def redirect_back_or(default = root_path, **options)
-    redirect_to(session.delete(:forwarding_url) || default, **options)
+  def redirect_back_or(default = root_path, **)
+    redirect_to(session.delete(:forwarding_url) || default, **)
   end
 end

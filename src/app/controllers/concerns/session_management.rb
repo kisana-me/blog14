@@ -6,14 +6,15 @@ module SessionManagement
   # Accountに必要なカラム(名前 型)
   # - status enum { normal: 0, locked: 1, deleted: 2 }
 
-  COOKIE_NAME = "ivecolor"
+  COOKIE_NAME = "ivecolor".freeze
   COOKIE_EXPIRES = 1.month # 2592000
 
-  def current_account()
+  def current_account
     @current_account = nil
-    return unless token = cookies.encrypted[COOKIE_NAME.to_sym]
+    return unless (token = cookies.encrypted[COOKIE_NAME.to_sym])
+
     db_session = Session.find_by_token("token", token)
-    if db_session&.account && db_session.account.normal?
+    if db_session&.account&.normal?
       @current_account = db_session.account
     else
       cookies.delete(COOKIE_NAME.to_sym)
@@ -32,13 +33,15 @@ module SessionManagement
       secure: Rails.env.production?,
       httponly: true
     }
-    db_session.save()
+    db_session.save
   end
 
-  def sign_out()
-    return unless token = cookies.encrypted[COOKIE_NAME.to_sym]
+  def sign_out
+    return unless (token = cookies.encrypted[COOKIE_NAME.to_sym])
+
     db_session = Session.find_by_token("token", token)
     return unless db_session
+
     cookies.delete(COOKIE_NAME.to_sym)
     @current_account = nil
     db_session.update(status: :deleted)

@@ -1,14 +1,14 @@
 class Session < ApplicationRecord
   belongs_to :account
 
-  attribute :meta, :json, default: {}
+  attribute :meta, :json, default: -> { {} }
   enum :status, { normal: 0, locked: 1, deleted: 2 }
 
   before_create :set_aid
 
   validates :name,
-    allow_blank: true,
-    length: { in: 1..50 }
+            allow_blank: true,
+            length: { in: 1..50 }
 
   scope :from_normal_accounts, -> { joins(:account).where(accounts: { status: :normal }) }
   scope :is_normal, -> { where(status: :normal) }

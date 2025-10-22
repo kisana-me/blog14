@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  before_action :set_account, only: %i[ show ]
+  before_action :set_account, only: %i[show]
 
   def index
     # アカウントをページングしたい
@@ -15,8 +15,9 @@ class AccountsController < ApplicationController
   private
 
   def set_account
-    return if @account = Account.is_normal.isnt_closed.find_by(name_id: params[:name_id])
-    return if admin? && @account = Account.find_by(name_id: params[:name_id])
+    return if (@account = Account.is_normal.isnt_closed.find_by(name_id: params[:name_id]))
+    return if admin? && (@account = Account.find_by(name_id: params[:name_id]))
+
     render_404
   end
 end

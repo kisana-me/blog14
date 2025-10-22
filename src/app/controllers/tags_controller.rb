@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
-  before_action :require_admin, except: %i[ index show ]
-  before_action :set_tag, only: %i[ show ]
-  before_action :set_correct_tag, only: %i[ edit update destroy ]
+  before_action :require_admin, except: %i[index show]
+  before_action :set_tag, only: %i[show]
+  before_action :set_correct_tag, only: %i[edit update destroy]
 
   def index
     # タグをページングしたい
@@ -18,6 +18,8 @@ class TagsController < ApplicationController
     @tag = Tag.new
   end
 
+  def edit; end
+
   def create
     @tag = Tag.new(tag_params)
     if @tag.save
@@ -26,9 +28,6 @@ class TagsController < ApplicationController
       flash.now[:alert] = "作成できませんでした"
       render :new
     end
-  end
-
-  def edit
   end
 
   def update
@@ -52,22 +51,24 @@ class TagsController < ApplicationController
   private
 
   def tag_params
-    params.expect(tag: [
-      :name,
-      :name_id,
-      :description,
-      :status,
-    ])
+    params.expect(tag: %i[
+                    name
+                    name_id
+                    description
+                    status
+                  ])
   end
 
   def set_tag
-    return if @tag = Tag.is_normal.find_by(name_id: params[:name_id])
-    return if admin? && @tag = Tag.find_by(name_id: params[:name_id])
+    return if (@tag = Tag.is_normal.find_by(name_id: params[:name_id]))
+    return if admin? && (@tag = Tag.find_by(name_id: params[:name_id]))
+
     render_404
   end
 
   def set_correct_tag
-    return if admin? && @tag = Tag.find_by(name_id: params[:name_id])
+    return if admin? && (@tag = Tag.find_by(name_id: params[:name_id]))
+
     render_404
   end
 end

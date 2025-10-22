@@ -6,7 +6,7 @@ class MarkdownRenderer
 
     def preprocess(text)
       text.gsub(/\?\[post\]\(([a-zA-Z0-9\-_]+)\)/) do
-        post = Post.from_normal_accounts.is_published.find_by(name_id: $1.split("/").last)
+        post = Post.from_normal_accounts.is_published.find_by(name_id: ::Regexp.last_match(1).split("/").last)
         if post
           ApplicationController.renderer.render(
             "posts/show_mini",

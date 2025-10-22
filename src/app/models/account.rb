@@ -5,7 +5,7 @@ class Account < ApplicationRecord
   has_many :comments
   belongs_to :icon, class_name: "Image", optional: true
 
-  attribute :meta, :json, default: {}
+  attribute :meta, :json, default: -> { {} }
   enum :visibility, { closed: 0, limited: 1, opened: 2 }
   enum :status, { normal: 0, locked: 1, deleted: 2 }
   attr_accessor :icon_aid
@@ -14,24 +14,24 @@ class Account < ApplicationRecord
   before_create :set_aid
 
   validates :anyur_id,
-    allow_nil: true,
-    uniqueness: { case_sensitive: false }
+            allow_nil: true,
+            uniqueness: { case_sensitive: false }
   validates :name,
-    presence: true,
-    length: { in: 1..50, allow_blank: true }
+            presence: true,
+            length: { in: 1..50, allow_blank: true }
   validates :name_id,
-    presence: true,
-    length: { in: 5..50, allow_blank: true },
-    format: { with: NAME_ID_REGEX, allow_blank: true },
-    uniqueness: { case_sensitive: false, allow_blank: true }
+            presence: true,
+            length: { in: 5..50, allow_blank: true },
+            format: { with: NAME_ID_REGEX, allow_blank: true },
+            uniqueness: { case_sensitive: false, allow_blank: true }
   validates :description,
-    allow_blank: true,
-    length: { in: 1..500 }
+            allow_blank: true,
+            length: { in: 1..500 }
   has_secure_password validations: false
   validates :password,
-    allow_blank: true,
-    length: { in: 8..30 },
-    confirmation: true
+            allow_blank: true,
+            length: { in: 8..30 },
+            confirmation: true
 
   scope :is_normal, -> { where(status: :normal) }
   scope :isnt_deleted, -> { where.not(status: :deleted) }
@@ -41,20 +41,21 @@ class Account < ApplicationRecord
   # === #
 
   def icon_url
-    self.icon&.image_url(variant_type: "icon") || "/img-1.png"
+    icon&.image_url(variant_type: "icon") || "/img-1.png"
   end
 
   def admin?
-    self.meta["roles"]&.include?("admin")
+    meta["roles"]&.include?("admin")
   end
 
   private
 
   def assign_icon
     return if icon_aid.blank?
+
     self.icon = Image.find_by(
       account: self,
-      aid: icon_aid,
+      aid: icon_aid
     )
   end
 end

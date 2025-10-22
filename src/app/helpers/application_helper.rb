@@ -1,15 +1,15 @@
 module ApplicationHelper
-  def full_title(page_title = '')
-    base_title = ENV['APP_NAME']
+  def full_title(page_title = "")
+    base_title = ENV.fetch("APP_NAME", nil)
     if page_title.empty?
       base_title
     else
-      page_title + " | " + base_title
+      "#{page_title} | #{base_title}"
     end
   end
 
   def full_url(path)
-    File.join(ENV['APP_URL'], path)
+    File.join(ENV.fetch("APP_URL", nil), path)
   end
 
   def md_render(md, safe_render: false)

@@ -7,6 +7,7 @@ module CommentsHelper
       id: :desc
     )
   end
+
   def post_comments(post)
     post.comments.where(
       comment_id: nil,
@@ -16,6 +17,7 @@ module CommentsHelper
       id: :desc
     )
   end
+
   def post_all_comments(post)
     post.comments.where(
       comment_id: nil
@@ -23,6 +25,7 @@ module CommentsHelper
       id: :desc
     )
   end
+
   def comment_replies(comment)
     comment.comments.where(
       public: true,
@@ -31,6 +34,7 @@ module CommentsHelper
       id: :desc
     )
   end
+
   def comment_all_replies(comment)
     comment.comments.order(
       id: :desc

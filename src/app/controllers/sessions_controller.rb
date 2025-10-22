@@ -1,10 +1,9 @@
 class SessionsController < ApplicationController
-  before_action :require_signin, except: %i[ start ]
-  before_action :require_signout, only: %i[ start ]
-  before_action :set_session, only: %i[ show edit update destroy ]
+  before_action :require_signin, except: %i[start]
+  before_action :require_signout, only: %i[start]
+  before_action :set_session, only: %i[show edit update destroy]
 
-  def start
-  end
+  def start; end
 
   def signout
     if sign_out
@@ -20,11 +19,9 @@ class SessionsController < ApplicationController
     @sessions = Session.where(account: @current_account, deleted: false)
   end
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @session.update!(session_params)
@@ -34,7 +31,8 @@ class SessionsController < ApplicationController
     end
   end
 
-  def destroy#bad
+  # bad
+  def destroy
     @session.update(deleted: true)
     redirect_to sessions_path, notice: "セッションを削除しました"
   end
@@ -46,6 +44,6 @@ class SessionsController < ApplicationController
   end
 
   def session_params
-    params.require(:session).permit(:name)
+    params.expect(session: [:name])
   end
 end

@@ -20,10 +20,14 @@ module ErrorsManagement
 
   private
 
-  def render_404(exception = nil)
+  def render_404(_exception = nil)
     # log_error(exception)
     respond_to do |format|
-      format.html { render("errors/404", status: :not_found) rescue head :not_found }
+      format.html do
+        render("errors/404", status: :not_found)
+      rescue StandardError
+        head :not_found
+      end
       format.json { render json: { error: "Not Found", request_id: request.request_id }, status: :not_found }
       format.any  { head :not_found }
     end
@@ -32,14 +36,21 @@ module ErrorsManagement
   def render_500(exception = nil)
     log_error(exception)
     respond_to do |format|
-      format.html { render("errors/500", status: :internal_server_error) rescue head :internal_server_error }
-      format.json { render json: { error: "Internal Server Error", request_id: request.request_id }, status: :internal_server_error }
+      format.html do
+        render("errors/500", status: :internal_server_error)
+      rescue StandardError
+        head :internal_server_error
+      end
+      format.json do
+        render json: { error: "Internal Server Error", request_id: request.request_id }, status: :internal_server_error
+      end
       format.any  { head :internal_server_error }
     end
   end
 
   def log_error(exception)
     return unless exception
+
     logger.error "=== Error Occurred ==="
     logger.error "Request ID: #{request.request_id}"
     logger.error "URL: #{request.original_url}"

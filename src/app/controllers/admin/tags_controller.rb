@@ -1,7 +1,7 @@
-class Admin::TagsController < Admin::ApplicationController
-
-  def index
-    @tags = Tag.all
+module Admin
+  class TagsController < Admin::ApplicationController
+    def index
+      @tags = Tag.all
+    end
   end
-  private
 end

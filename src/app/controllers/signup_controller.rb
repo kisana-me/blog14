@@ -28,16 +28,16 @@ class SignupController < ApplicationController
   private
 
   def ensure_oauth_context
-    unless session[:pending_oauth_info].present?
-      render plain: "不正なアクセス", status: :forbidden
-    end
+    return if session[:pending_oauth_info].present?
+
+    render plain: "不正なアクセス", status: :forbidden
   end
 
   def account_params
-    params.require(:account).permit(
-      :name,
-      :name_id,
-      :description
+    params.expect(
+      account: %i[name
+                  name_id
+                  description]
     )
   end
 end

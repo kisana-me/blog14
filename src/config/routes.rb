@@ -10,18 +10,18 @@ Rails.application.routes.draw do
   # Sessions
   get "sessions/start"
   delete "signout" => "sessions#signout"
-  resources :sessions, except: [:new, :create], param: :aid
+  resources :sessions, except: %i[new create], param: :aid
 
   # Signup
   get "signup" => "signup#new"
   post "signup" => "signup#create"
 
   # OAuth
-  post "oauth" => "oauth#start"
-  get "callback" => "oauth#callback"
+  post "oauth/start" => "oauth#start"
+  get "oauth/callback" => "oauth#callback"
 
   # Accounts
-  resources :accounts, param: :name_id, only: [:index, :show]
+  resources :accounts, param: :name_id, only: %i[index show]
 
   # Posts
   resources :posts, param: :name_id
@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   end
 
   # Comments
-  resources :comments, param: :aid, only: [:create, :update]
+  resources :comments, param: :aid, only: %i[create update]
 
   # Tags
   resources :tags, param: :name_id
@@ -52,18 +52,18 @@ Rails.application.routes.draw do
 
   # Administorator
   namespace :admin do
-    root 'studio#index'
-    get 'export' => 'studio#export'
-    resources :accounts, param: :aid, only: [:index, :edit, :update]
-    patch 'posts/update_multiple', to: 'posts#update_multiple', as: :update_multiple_posts
-    resources :posts, param: :aid, only: [:index, :edit, :update]
+    root "studio#index"
+    get "export" => "studio#export"
+    resources :accounts, param: :aid, only: %i[index edit update]
+    patch "posts/update_multiple", to: "posts#update_multiple", as: :update_multiple_posts
+    resources :posts, param: :aid, only: %i[index edit update]
     resources :tags, param: :aid, only: [:index]
-    resources :inquiries, param: :aid, only: [:index, :show, :update]
+    resources :inquiries, param: :aid, only: %i[index show update]
   end
 
   # API
   namespace :v1 do
-    post 'images/create' =>  'images#create'
+    post "images/create" => "images#create"
   end
 
   # Others

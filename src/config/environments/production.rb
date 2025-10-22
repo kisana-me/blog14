@@ -6,17 +6,17 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
   config.assets.compile = false
-  config.public_file_server.headers = { "cache-control" => "public, max-age=#{10.day.to_i}" }
+  config.public_file_server.headers = { "cache-control" => "public, max-age=#{10.days.to_i}" }
   config.active_storage.service = :minio
   config.assume_ssl = true
   config.force_ssl = true
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
   config.logger = Logger.new("log/production.log", "daily")
   config.i18n.fallbacks = true
   config.active_support.report_deprecations = false
   config.active_record.dump_schema_after_migration = false
-  config.active_record.attributes_for_inspect = [ :id ]
+  config.active_record.attributes_for_inspect = [:id]
   config.silence_healthcheck_path = "/up"
   config.cache_store = :memory_store
 
@@ -55,6 +55,6 @@ Rails.application.configure do
     IPAddr.new("188.114.96.0/20"),
     IPAddr.new("190.93.240.0/20"),
     IPAddr.new("197.234.240.0/22"),
-    IPAddr.new("198.41.128.0/17"),
+    IPAddr.new("198.41.128.0/17")
   ]
 end

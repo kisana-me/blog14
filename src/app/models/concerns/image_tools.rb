@@ -12,12 +12,15 @@ module ImageTools
     original_ext_column: "original_ext",
     original_image_path: nil
   )
-    return if self.send(variants_column).include?(variant_type)
+    return if send(variants_column).include?(variant_type)
+
     if original_image_path.blank?
-      return unless self.send(original_ext_column).present?
+      return if send(original_ext_column).blank?
+
       downloaded_image = Tempfile.new(["downloaded_image"])
       original_image_path = downloaded_image.path
-      s3_download(key: "/images/originals/#{self.aid}.#{self.send(original_ext_column)}", response_target: original_image_path)
+      s3_download(key: "/images/originals/#{aid}.#{send(original_ext_column)}",
+                  response_target: original_image_path)
     end
     converted_image = Tempfile.new(["converted_image"])
     resize = "2048x2048>"
@@ -53,20 +56,20 @@ module ImageTools
       return
     end
     image = MiniMagick::Image.open(original_image_path)
-    if image.frames.count > 1
-      processed = ImageProcessing::MiniMagick
+    if image.frames.many?
+      ImageProcessing::MiniMagick
         .source(original_image_path)
         .loader(page: nil)
         .coalesce
         .gravity("center")
         .resize(resize)
         .then do |chain|
-          if extent.present?
-            chain.extent(extent)
-          else
-            chain
-          end
+        if extent.present?
+          chain.extent(extent)
+        else
+          chain
         end
+      end
         .strip
         .auto_orient
         .quality(85)
@@ -78,45 +81,37 @@ module ImageTools
       image.combine_options do |img|
         img.gravity "center"
         img.quality 85
-        #img.auto_orient
+        # img.auto_orient
         img.strip # EXIF削除
         img.resize resize
-        img.extent extent unless extent.blank?
+        img.extent extent if extent.present?
       end
       image.write(converted_image.path)
     end
-    key = "/images/variants/#{variant_type}/#{self.aid}.webp"
+    key = "/images/variants/#{variant_type}/#{aid}.webp"
     s3_upload(key: key, file: converted_image.path, content_type: "image/webp")
-    self.update(variants_column.to_sym => (self.send(variants_column) + [variant_type]).uniq)
-    downloaded_image.close if downloaded_image
+    update(variants_column.to_sym => (send(variants_column) + [variant_type]).uniq)
+    downloaded_image&.close
     converted_image.close
   end
 
-
-
   def delete_variants(variants_column: "variants")
-    self.send(variants_column).each do |variant_type|
-      s3_delete(key: "/images/variants/#{variant_type}/#{self.aid}.webp")
+    send(variants_column).each do |variant_type|
+      s3_delete(key: "/images/variants/#{variant_type}/#{aid}.webp")
     end
-    self.update(variants_column.to_sym => [])
+    update(variants_column.to_sym => [])
   end
-
-
 
   def delete_original(
     original_ext_column: "original_ext",
     variants_column: "variants"
   )
     delete_variants(variants_column: variants_column)
-    s3_delete(key: "/images/originals/#{self.aid}.#{self.send(original_ext_column)}")
-    self.update(original_ext_column.to_sym => "")
+    s3_delete(key: "/images/originals/#{aid}.#{send(original_ext_column)}")
+    update(original_ext_column.to_sym => "")
   end
 
-
-
   private
-
-
 
   def varidate_image(
     column_name: "image",
@@ -125,28 +120,24 @@ module ImageTools
     max_width: 4096,
     max_height: 4096
   )
-    file = self.send(column_name)
+    file = send(column_name)
     return errors.add(column_name.to_sym, :image_blank) if required && !file
+
     begin
       image = MiniMagick::Image.read(file)
 
       # 拡張子チェック
-      allowed_content_types = ["PNG", "JPEG", "GIF", "WEBP"]
-      unless allowed_content_types.include?(image.type)
-        errors.add(column_name.to_sym, :image_invalid_format)
-      end
+      allowed_content_types = %w[PNG JPEG GIF WEBP]
+      errors.add(column_name.to_sym, :image_invalid_format) unless allowed_content_types.include?(image.type)
 
       # 容量チェック
       size_in_mb = (file.size.to_f / 1024 / 1024).round(2)
-      if size_in_mb > max_size_mb
-        errors.add(column_name.to_sym, :image_too_large, max_size_mb: max_size_mb)
-      end
+      errors.add(column_name.to_sym, :image_too_large, max_size_mb: max_size_mb) if size_in_mb > max_size_mb
 
       # 解像度チェック
       if image.width > max_width || image.height > max_height
         errors.add(column_name.to_sym, :image_dimensions_exceeded, max_width: max_width, max_height: max_height)
       end
-
     rescue MiniMagick::Invalid
       errors.add(column_name.to_sym, :image_invalid)
     end

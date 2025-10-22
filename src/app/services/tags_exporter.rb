@@ -1,9 +1,9 @@
-require 'fileutils'
-require 'json'
+require "fileutils"
+require "json"
 
 class TagsExporter
   def call
-    dir = Rails.root.join('storage', 'tags')
+    dir = Rails.root.join("storage/tags")
     FileUtils.mkdir_p(dir)
 
     tags_data = Tag.order(:created_at).map do |tag|
@@ -18,7 +18,7 @@ class TagsExporter
       }
     end
 
-    File.write(dir.join('tags.json'), JSON.pretty_generate(tags_data))
+    File.write(dir.join("tags.json"), JSON.pretty_generate(tags_data))
     tags_data
   end
 end

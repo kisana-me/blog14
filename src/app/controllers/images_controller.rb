@@ -1,7 +1,7 @@
 class ImagesController < ApplicationController
   before_action :require_signin
-  before_action :set_image, only: %i[ show ]
-  before_action :set_correct_image, only: %i[ edit update destroy variants_create variants_destroy ]
+  before_action :set_image, only: %i[show]
+  before_action :set_correct_image, only: %i[edit update destroy variants_create variants_destroy]
 
   def index
     all_images = Image.all
@@ -9,12 +9,13 @@ class ImagesController < ApplicationController
     @images_page = total_page(all_images)
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @image = Image.new
   end
+
+  def edit; end
 
   def create
     @image = Image.new(image_params)
@@ -25,9 +26,6 @@ class ImagesController < ApplicationController
       flash.now[:alert] = "作成できませんでした"
       render :new
     end
-  end
-
-  def edit
   end
 
   def update
@@ -69,21 +67,23 @@ class ImagesController < ApplicationController
   private
 
   def image_params
-    params.expect(image: [
-      :image,
-      :name,
-    ])
+    params.expect(image: %i[
+                    image
+                    name
+                  ])
   end
 
   def set_image
-    return if @image = Image.find_by(aid: params[:aid])
-    return if admin? && @image = Image.unscoped.find_by(aid: params[:aid])
+    return if (@image = Image.find_by(aid: params[:aid]))
+    return if admin? && (@image = Image.unscoped.find_by(aid: params[:aid]))
+
     render_404
   end
 
   def set_correct_image
-    return if @image = @current_account&.images.find_by(aid: params[:aid])
-    return if admin? && @image = Image.unscoped.find_by(aid: params[:aid])
+    return if (@image = @current_account&.images&.find_by(aid: params[:aid]))
+    return if admin? && (@image = Image.unscoped.find_by(aid: params[:aid]))
+
     render_404
   end
 end

@@ -1,8 +1,8 @@
 class Image < ApplicationRecord
   belongs_to :account, optional: true
 
-  attribute :variants, :json, default: []
-  attribute :meta, :json, default: {}
+  attribute :variants, :json, default: -> { [] }
+  attribute :meta, :json, default: -> { {} }
   enum :status, { normal: 0, locked: 1, deleted: 2 }
   attr_accessor :image
 
@@ -16,27 +16,26 @@ class Image < ApplicationRecord
   scope :isnt_deleted, -> { where.not(status: :deleted) }
 
   def image_url(variant_type: "normal")
-    if !variants.include?(variant_type) && original_ext.present?
-      process_image(variant_type: variant_type)
-    end
-    return object_url(key: "/images/variants/#{variant_type}/#{self.aid}.webp")
+    process_image(variant_type: variant_type) if variants.exclude?(variant_type) && original_ext.present?
+    object_url(key: "/images/variants/#{variant_type}/#{aid}.webp")
   end
 
   private
 
   def image_upload
-    self.name = image.original_filename.split(".").first if self.name.blank?
+    self.name = image.original_filename.split(".").first if name.blank?
     extension = image.original_filename.split(".").last.downcase
     self.original_ext = extension
     s3_upload(
-      key: "/images/originals/#{self.aid}.#{extension}",
-      file: self.image.path,
-      content_type: self.image.content_type
+      key: "/images/originals/#{aid}.#{extension}",
+      file: image.path,
+      content_type: image.content_type
     )
   end
 
   def image_varidation
     return unless new_record?
+
     varidate_image(required: true)
   end
 end

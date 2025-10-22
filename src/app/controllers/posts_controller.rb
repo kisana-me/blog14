@@ -1,8 +1,9 @@
 class PostsController < ApplicationController
   include PostsHelper
-  before_action :require_signin, except: %i[ index show ]
-  before_action :set_post, only: %i[ show ]
-  before_action :set_correct_post, only: %i[ edit update destroy ]
+
+  before_action :require_signin, except: %i[index show]
+  before_action :set_post, only: %i[show]
+  before_action :set_correct_post, only: %i[edit update destroy]
 
   def index
     all_posts = Post.from_normal_accounts.is_published.includes(:thumbnail)
@@ -19,6 +20,8 @@ class PostsController < ApplicationController
     @post = Post.new
   end
 
+  def edit; end
+
   def create
     @post = Post.new(post_params)
     @post.account = @current_account
@@ -29,9 +32,6 @@ class PostsController < ApplicationController
       flash.now[:alert] = "作成できませんでした"
       render :new
     end
-  end
-
-  def edit
   end
 
   def update
@@ -58,28 +58,30 @@ class PostsController < ApplicationController
 
   def post_params
     params.expect(post: [
-      :name_id,
-      :title,
-      :summary,
-      :content,
-      :published_at,
-      :edited_at,
-      :status,
-      :thumbnail_aid,
-      selected_tags: [],
-    ])
+                    :name_id,
+                    :title,
+                    :summary,
+                    :content,
+                    :published_at,
+                    :edited_at,
+                    :status,
+                    :thumbnail_aid,
+                    { selected_tags: [] }
+                  ])
   end
 
   def set_post
-    return if @post = Post.from_normal_accounts.is_published.find_by(name_id: params[:name_id])
-    return if @post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id])
-    return if admin? && @post = Post.find_by(name_id: params[:name_id])
+    return if (@post = Post.from_normal_accounts.is_published.find_by(name_id: params[:name_id]))
+    return if (@post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id]))
+    return if admin? && (@post = Post.find_by(name_id: params[:name_id]))
+
     render_404
   end
 
   def set_correct_post
-    return if @post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id])
-    return if admin? && @post = Post.find_by(name_id: params[:name_id])
+    return if (@post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id]))
+    return if admin? && (@post = Post.find_by(name_id: params[:name_id]))
+
     render_404
   end
 end

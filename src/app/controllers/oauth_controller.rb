@@ -17,9 +17,8 @@ class OauthController < ApplicationController
   end
 
   def callback
-    unless params[:state] == session[:oauth_state]
-      return render plain: "Invalid state parameter", status: :unauthorized
-    end
+    return render plain: "Invalid state parameter", status: :unauthorized unless params[:state] == session[:oauth_state]
+
     session.delete(:oauth_state)
 
     token_data = exchange_code_for_token(params[:code])
@@ -64,28 +63,26 @@ class OauthController < ApplicationController
         @current_account.save!
         redirect_to settings_account_path, notice: "連携が完了しました"
       end
+    elsif account
+      sign_in(account)
+      account.assign_attributes(
+        anyur_access_token: token_data["access_token"],
+        anyur_refresh_token: token_data["refresh_token"],
+        anyur_token_fetched_at: Time.current
+      )
+      account.meta["subscription"] = resources.dig("data", "subscription")
+      account.save!
+      redirect_back_or root_path, notice: "サインインしました"
     else
-      if account
-        sign_in(account)
-        account.assign_attributes(
-          anyur_access_token: token_data["access_token"],
-          anyur_refresh_token: token_data["refresh_token"],
-          anyur_token_fetched_at: Time.current
-        )
-        account.meta["subscription"] = resources.dig("data", "subscription")
-        account.save!
-        redirect_back_or root_path, notice: "サインインしました"
-      else
-        session[:pending_oauth_info] = {
-          anyur_id: resources.dig("data", "id"),
-          name: resources.dig("data", "name"),
-          name_id: resources.dig("data", "name_id"),
-          anyur_access_token: token_data["access_token"],
-          anyur_refresh_token: token_data["refresh_token"],
-          subscription: resources.dig("data", "subscription")
-        }
-        redirect_to signup_path
-      end
+      session[:pending_oauth_info] = {
+        anyur_id: resources.dig("data", "id"),
+        name: resources.dig("data", "name"),
+        name_id: resources.dig("data", "name_id"),
+        anyur_access_token: token_data["access_token"],
+        anyur_refresh_token: token_data["refresh_token"],
+        subscription: resources.dig("data", "subscription")
+      }
+      redirect_to signup_path
     end
   end
 end

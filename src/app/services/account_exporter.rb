@@ -1,6 +1,6 @@
-require 'fileutils'
-require 'aws-sdk-s3'
-require 'json'
+require "fileutils"
+require "aws-sdk-s3"
+require "json"
 
 class AccountExporter
   def initialize(account)
@@ -8,7 +8,7 @@ class AccountExporter
   end
 
   def call
-    dir = Rails.root.join('storage', 'accounts', @account.aid)
+    dir = Rails.root.join("storage", "accounts", @account.aid)
     FileUtils.mkdir_p(dir)
 
     report = {
@@ -32,10 +32,10 @@ class AccountExporter
         )
         s3.get_object(
           bucket: ENV.fetch("S3_BUCKET"),
-          key: @account.icon_original_key.sub(%r{^/}, ''),
+          key: @account.icon_original_key.sub(%r{^/}, ""),
           response_target: icon_path.to_s
         )
-      rescue => e
+      rescue StandardError => e
         report[:errors] << "Icon download failed: #{e.message}"
       end
     else
@@ -53,9 +53,9 @@ class AccountExporter
       created_at: @account.created_at,
       updated_at: @account.updated_at
     }
-    File.write(dir.join('account.json'), JSON.pretty_generate(account_data))
+    File.write(dir.join("account.json"), JSON.pretty_generate(account_data))
 
-    File.write(dir.join('report.json'), JSON.pretty_generate(report))
+    File.write(dir.join("report.json"), JSON.pretty_generate(report))
     account_data
   end
 end

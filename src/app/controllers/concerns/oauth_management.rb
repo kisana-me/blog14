@@ -2,10 +2,10 @@ module OauthManagement
   # OAuth Management for IVECOLOR ver 1.0.1
   # controllers/oauth_controllerが必須
 
-  OAUTH_REDIRECT_URI = Rails.env.development? ? "http://localhost:3000/callback" : "https://ivecolor.com/callback"
-  OAUTH_CLIENT_ID = "IVECOLOR"
+  OAUTH_REDIRECT_URI = Rails.env.development? ? "http://localhost:3000/oauth/callback" : "https://ivecolor.com/callback"
+  OAUTH_CLIENT_ID = "IVECOLOR".freeze
   OAUTH_CLIENT_SECRET = ENV.fetch("OAUTH_CLIENT_SECRET")
-  OAUTH_SCOPE =  "id name name_id subscription"
+  OAUTH_SCOPE = "id name name_id subscription".freeze
 
   require "net/http"
 

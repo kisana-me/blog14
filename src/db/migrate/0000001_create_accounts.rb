@@ -14,6 +14,8 @@ class CreateAccounts < ActiveRecord::Migration[8.0]
       t.boolean :email_verified, null: false, default: false
       t.integer :visibility, limit: 1, null: false, default: 0
       t.string :password_digest, null: true
+      t.boolean :totp_enabled, null: false, default: false
+      t.string :totp_secret, null: true
       t.json :meta, null: false, default: {}
       t.integer :status, limit: 1, null: false, default: 0
 
