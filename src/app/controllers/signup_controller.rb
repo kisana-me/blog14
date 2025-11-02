@@ -8,16 +8,20 @@ class SignupController < ApplicationController
 
   def create
     @account = Account.new(account_params)
-    @account.assign_attributes(
-      anyur_id: session[:pending_oauth_info]["anyur_id"],
-      anyur_access_token: session[:pending_oauth_info]["anyur_access_token"],
-      anyur_refresh_token: session[:pending_oauth_info]["anyur_refresh_token"],
-      anyur_token_fetched_at: Time.current
-    )
+
     @account.meta["subscription"] = session[:pending_oauth_info]["subscription"]
 
     if @account.save
       sign_in(@account)
+      OauthAccount.create!(
+        account: @account,
+        provider: "anyur",
+        uid: session[:pending_oauth_info]["anyur_id"],
+        access_token: session[:pending_oauth_info]["anyur_access_token"],
+        refresh_token: session[:pending_oauth_info]["anyur_refresh_token"],
+        expires_at: Time.current + 10.minutes,
+        fetched_at: Time.current
+      )
       session.delete(:pending_oauth_info)
       redirect_back_or root_path, notice: "登録完了"
     else
@@ -35,9 +39,11 @@ class SignupController < ApplicationController
 
   def account_params
     params.expect(
-      account: %i[name
-                  name_id
-                  description]
+      account: %i[
+        name
+        name_id
+        description
+      ]
     )
   end
 end

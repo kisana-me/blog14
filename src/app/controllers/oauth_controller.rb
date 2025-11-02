@@ -38,26 +38,32 @@ class OauthController < ApplicationController
 
   def handle_oauth(token_data, resources)
     anyur_id = resources.dig("data", "id")
-    account = Account.find_by(anyur_id: anyur_id)
+    oauth_account = OauthAccount.find_by(provider: "anyur", uid: anyur_id)
+    account = oauth_account&.account
 
     if @current_account
       if @current_account == account # 同
-        account.assign_attributes(
-          anyur_access_token: token_data["access_token"],
-          anyur_refresh_token: token_data["refresh_token"],
-          anyur_token_fetched_at: Time.current
+        oauth_account.assign_attributes(
+          access_token: token_data["access_token"],
+          refresh_token: token_data["refresh_token"],
+          expires_at: Time.current + 10.minutes,
+          fetched_at: Time.current
         )
         account.meta["subscription"] = resources.dig("data", "subscription")
         account.save!
+        oauth_account.save!
         redirect_to settings_account_path, notice: "情報を更新しました"
       elsif account # 別
         redirect_to settings_account_path, alert: "既に他のアカウントと連携済みです"
       else # 未
-        @current_account.assign_attributes(
-          anyur_id: resources.dig("data", "id"),
-          anyur_access_token: token_data["access_token"],
-          anyur_refresh_token: token_data["refresh_token"],
-          anyur_token_fetched_at: Time.current
+        OauthAccount.create!(
+          account: @current_account,
+          provider: :anyur,
+          uid: resources.dig("data", "id"),
+          access_token: token_data["access_token"],
+          refresh_token: token_data["refresh_token"],
+          expires_at: Time.current + 10.minutes,
+          fetched_at: Time.current
         )
         @current_account.meta["subscription"] = resources.dig("data", "subscription")
         @current_account.save!
@@ -65,10 +71,11 @@ class OauthController < ApplicationController
       end
     elsif account
       sign_in(account)
-      account.assign_attributes(
-        anyur_access_token: token_data["access_token"],
-        anyur_refresh_token: token_data["refresh_token"],
-        anyur_token_fetched_at: Time.current
+      account.oauth_accounts.find_by(provider: "anyur", uid: anyur_id).update(
+        access_token: token_data["access_token"],
+        refresh_token: token_data["refresh_token"],
+        expires_at: Time.current + 10.minutes,
+        fetched_at: Time.current
       )
       account.meta["subscription"] = resources.dig("data", "subscription")
       account.save!

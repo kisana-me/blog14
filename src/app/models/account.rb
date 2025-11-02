@@ -3,6 +3,7 @@ class Account < ApplicationRecord
   has_many :posts
   has_many :images
   has_many :comments
+  has_many :oauth_accounts
   belongs_to :icon, class_name: "Image", optional: true
 
   attribute :meta, :json, default: -> { {} }
@@ -13,9 +14,6 @@ class Account < ApplicationRecord
   before_validation :assign_icon
   before_create :set_aid
 
-  validates :anyur_id,
-            allow_nil: true,
-            uniqueness: { case_sensitive: false }
   validates :name,
             presence: true,
             length: { in: 1..50, allow_blank: true }

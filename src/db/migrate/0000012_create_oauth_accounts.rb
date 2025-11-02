@@ -3,13 +3,13 @@ class CreateOauthAccounts < ActiveRecord::Migration[8.0]
     create_table :oauth_accounts do |t|
       t.string :aid, null: false, limit: 14
       t.references :account, null: false, foreign_key: true
-      t.string :provider, null: false
+      t.integer :provider, limit: 1, null: false
       t.string :uid, null: false
-      t.string :code, null: true
-      t.string :access_token, null: true
-      t.string :refresh_token, null: true
-      t.datetime :access_token_expires_at, null: true
-      t.datetime :refresh_token_expires_at, null: true
+      t.string :access_token, null: false
+      t.string :refresh_token, null: false
+      t.datetime :expires_at, null: false
+      t.datetime :fetched_at, null: false
+      t.json :meta, null: false, default: {}
       t.integer :status, limit: 1, null: false, default: 0
 
       t.timestamps

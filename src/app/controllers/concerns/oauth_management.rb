@@ -1,32 +1,47 @@
 module OauthManagement
-  # OAuth Management for IVECOLOR ver 1.0.1
-  # controllers/oauth_controllerが必須
+  # OAuth Management for IVECOLOR ver 2.0.0
 
-  OAUTH_REDIRECT_URI = Rails.env.development? ? "http://localhost:3000/oauth/callback" : "https://ivecolor.com/callback"
-  OAUTH_CLIENT_ID = "IVECOLOR".freeze
-  OAUTH_CLIENT_SECRET = ENV.fetch("OAUTH_CLIENT_SECRET")
-  OAUTH_SCOPE = "id name name_id subscription".freeze
+  OAUTH_PROVIDERS = {
+    anyur: {
+      client_id: "IVECOLOR",
+      client_secret: ENV.fetch("OAUTH_CLIENT_SECRET"),
+      scope: "id name name_id subscription",
+      redirect_url: Rails.env.development? ? "http://localhost:3000/oauth/callback" : "https://ivecolor.com/callback",
+      authorize_url: "https://anyur.com/oauth/authorize",
+      token_url: "https://anyur.com/oauth/token",
+      resource_url: "https://anyur.com/api/resources"
+    }
+  }.freeze
 
   require "net/http"
 
-  def generate_authorize_url(state)
-    "https://anyur.com/oauth/authorize?" + {
-      response_type: "code",
-      client_id: OAUTH_CLIENT_ID,
-      redirect_uri: OAUTH_REDIRECT_URI,
-      scope: OAUTH_SCOPE,
-      state: state
-    }.to_query
+  def oauth_config(provider = :anyur)
+    OAUTH_PROVIDERS.fetch(provider)
   end
 
-  def exchange_code_for_token(code)
+  def generate_authorize_url(state, provider = :anyur)
+    config = oauth_config(provider)
+    params = {
+      response_type: "code",
+      client_id: config[:client_id],
+      redirect_uri: config[:redirect_url],
+      scope: config[:scope],
+      state: state
+    }
+    uri = URI(config[:authorize_url])
+    uri.query = URI.encode_www_form(params)
+    uri.to_s
+  end
+
+  def exchange_code_for_token(code, provider = :anyur)
+    config = oauth_config(provider)
     token_response = Net::HTTP.post_form(
-      URI("https://anyur.com/oauth/token"),
+      URI(config[:token_url]),
       {
         grant_type: "authorization_code",
-        client_id: OAUTH_CLIENT_ID,
-        client_secret: OAUTH_CLIENT_SECRET,
-        redirect_uri: OAUTH_REDIRECT_URI,
+        client_id: config[:client_id],
+        client_secret: config[:client_secret],
+        redirect_uri: config[:redirect_url],
         code: code
       }
     )
@@ -37,13 +52,14 @@ module OauthManagement
     JSON.parse(token_response.body)
   end
 
-  def use_refresh_token(refresh_token)
+  def use_refresh_token(refresh_token, provider = :anyur)
+    config = oauth_config(provider)
     token_response = Net::HTTP.post_form(
-      URI("https://anyur.com/oauth/token"),
+      URI(config[:token_url]),
       {
         grant_type: "refresh_token",
-        client_id: OAUTH_CLIENT_ID,
-        client_secret: OAUTH_CLIENT_SECRET,
+        client_id: config[:client_id],
+        client_secret: config[:client_secret],
         refresh_token: refresh_token
       }
     )
@@ -54,8 +70,9 @@ module OauthManagement
     JSON.parse(token_response.body)
   end
 
-  def fetch_resources(access_token)
-    info_uri = URI("https://anyur.com/api/resources")
+  def fetch_resources(access_token, provider = :anyur)
+    config = oauth_config(provider)
+    info_uri = URI(config[:resource_url])
     info_request = Net::HTTP::Post.new(info_uri)
     info_request["Authorization"] = "Bearer #{access_token}"
     info_request["Content-Type"] = "application/json"
