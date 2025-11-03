@@ -42,6 +42,17 @@ class Account < ApplicationRecord
     icon&.image_url(variant_type: "icon") || "/img-1.png"
   end
 
+  def subscription_plan
+    status = meta.dig("subscription", "subscription_status")
+    return :basic unless %w[active trialing].include?(status)
+    
+    period_end = meta.dig("subscription", "current_period_end")&.to_time
+    return :expired unless period_end && period_end > Time.current
+
+    plan = meta.dig("subscription", "plan")
+    plan&.to_sym || :unknown
+  end
+
   def admin?
     meta["roles"]&.include?("admin")
   end

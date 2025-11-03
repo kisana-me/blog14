@@ -26,8 +26,8 @@
   </div>
   <br />
   <div>
-    <%= form.label :public, "公開", class: "custom-label" %>
-    <%= form.checkbox :public %>
+    <%= form.label :visibility, "公開", class: "custom-label" %>
+    <%= form.select :visibility, Account.visibilities.keys.map { |k| [t("activerecord.enums.account.visibility.#{k}"), k] }, {} %>
   </div>
   <br />
   <div>
@@ -37,8 +37,7 @@
 
 <br />
 <br />
-現在のサブスクリプション: 不明
-<%# I18n.t("general.subscription.status.#{@current_account.subscription_plan}") %>
+現在のサブスクリプション: <%= I18n.t("general.subscription.status.#{@current_account.subscription_plan}") %>
 <br />
 <br />
 <br />

@@ -3,15 +3,15 @@ module OauthManagement
 
   OAUTH_PROVIDERS = {
     anyur: {
-      client_id: "IVECOLOR",
-      client_secret: ENV.fetch("OAUTH_CLIENT_SECRET"),
+      client_id: Rails.application.credentials.dig(:oauth_providers, :anyur, :client_id),
+      client_secret: Rails.application.credentials.dig(:oauth_providers, :anyur, :client_secret),
       scope: "id name name_id subscription",
-      redirect_url: Rails.env.development? ? "http://localhost:3000/oauth/callback" : "https://ivecolor.com/callback",
+      redirect_url: URI.join(ENV.fetch("APP_URL"), "/oauth/callback").to_s,
       authorize_url: "https://anyur.com/oauth/authorize",
       token_url: "https://anyur.com/oauth/token",
       resource_url: "https://anyur.com/api/resources"
     }
-  }.freeze
+  }
 
   require "net/http"
 

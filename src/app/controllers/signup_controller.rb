@@ -19,7 +19,7 @@ class SignupController < ApplicationController
         uid: session[:pending_oauth_info]["anyur_id"],
         access_token: session[:pending_oauth_info]["anyur_access_token"],
         refresh_token: session[:pending_oauth_info]["anyur_refresh_token"],
-        expires_at: Time.current + 10.minutes,
+        expires_at: 10.minutes.from_now,
         fetched_at: Time.current
       )
       session.delete(:pending_oauth_info)

@@ -33,14 +33,16 @@ class SettingsController < ApplicationController
 
   def account_params
     params.expect(
-      account: %i[name
-                  name_id
-                  description
-                  birthday
-                  visibility
-                  password
-                  password_confirmation
-                  icon_aid]
+      account: %i[
+        name
+        name_id
+        description
+        birthday
+        visibility
+        password
+        password_confirmation
+        icon_aid
+      ]
     )
   end
 end

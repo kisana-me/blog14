@@ -46,7 +46,7 @@ class OauthController < ApplicationController
         oauth_account.assign_attributes(
           access_token: token_data["access_token"],
           refresh_token: token_data["refresh_token"],
-          expires_at: Time.current + 10.minutes,
+          expires_at: 10.minutes.from_now,
           fetched_at: Time.current
         )
         account.meta["subscription"] = resources.dig("data", "subscription")
@@ -62,7 +62,7 @@ class OauthController < ApplicationController
           uid: resources.dig("data", "id"),
           access_token: token_data["access_token"],
           refresh_token: token_data["refresh_token"],
-          expires_at: Time.current + 10.minutes,
+          expires_at: 10.minutes.from_now,
           fetched_at: Time.current
         )
         @current_account.meta["subscription"] = resources.dig("data", "subscription")
@@ -74,7 +74,7 @@ class OauthController < ApplicationController
       account.oauth_accounts.find_by(provider: "anyur", uid: anyur_id).update(
         access_token: token_data["access_token"],
         refresh_token: token_data["refresh_token"],
-        expires_at: Time.current + 10.minutes,
+        expires_at: 10.minutes.from_now,
         fetched_at: Time.current
       )
       account.meta["subscription"] = resources.dig("data", "subscription")

@@ -8,6 +8,12 @@ ja:
           specific: "特定用途"
           published: "公開"
           deleted: "削除済み"
+    enums:
+      account:
+        visibility:
+          opened: "公開"
+          closed: "非公開"
+          limited: "限定公開"
     errors:
       messages:
         record_invalid: "バリデーションに失敗しました: %{errors}"
@@ -24,3 +30,12 @@ ja:
         image_invalid_format: "は未対応の形式です(png, jpeg, gif, webpのみ対応)"
         image_too_large: "の容量が大きすぎます(最大 %{max_size_mb} MB)"
         image_dimensions_exceeded: "の解像度が大きすぎます(最大 %{max_width}px × %{max_height}px)"
+  general:
+    subscription:
+      status:
+        expired: "期限切れ"
+        unknown: "不明"
+        basic: "ベーシック"
+        plus: "プラス"
+        premium: "プレミアム"
+        luxury: "ラグジュアリー"
