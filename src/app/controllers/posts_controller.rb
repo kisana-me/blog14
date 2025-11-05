@@ -57,17 +57,20 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    params.expect(post: [
-                    :name_id,
-                    :title,
-                    :summary,
-                    :content,
-                    :published_at,
-                    :edited_at,
-                    :status,
-                    :thumbnail_aid,
-                    { selected_tags: [] }
-                  ])
+    params.expect(
+      post: [
+        :name_id,
+        :title,
+        :summary,
+        :content,
+        :published_at,
+        :edited_at,
+        :status,
+        :thumbnail_new_image,
+        :thumbnail_image_aid,
+        { selected_tags: [] }
+      ]
+    )
   end
 
   def set_post

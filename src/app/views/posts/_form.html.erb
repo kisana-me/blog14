@@ -6,20 +6,19 @@
       <%= f.text_field :name_id, placeholder: 'ID' %>
     </div>
     <div>
-      <%= f.label :thumbnail, 'サムネイル画像' %>
-      <%= f.file_field :thumbnail, placeholder: 'サムネイル画像' %>
-
-      <div class="image-shelf">
-        <% @current_account.images.each do |image| %>
-          <%= f.radio_button :thumbnail_aid, image.aid, checked: (@post.thumbnail == image), hidden: false %>
-          <%= f.label :thumbnail_aid, for: "post_thumbnail_aid_#{image.aid}", class: "custom-image-label" do %>
-            <%= image.name %>
-            <%= image_tag(image.image_url) %>
-          <% end %>
-        <% end %>
-        <%= f.radio_button :thumbnail_aid, "00000", checked: (@post.thumbnail.blank?), hidden: false %>
-        <%= f.label :thumbnail_aid, "サムネイルなし", for: "post_thumbnail_aid_#{"00000"}", class: "custom-image-label" %>
-      </div>
+      <%= f.label :thumbnail_new_image, 'サムネイル画像' %>
+      <%= f.file_field :thumbnail_new_image, placeholder: 'サムネイル画像' %>
+      <br />
+      または
+      <br />
+      <%= f.label :thumbnail_image_aid, 'サムネイルにする画像のAID' %>
+      <%= f.text_field :thumbnail_image_aid, placeholder: 'サムネイルにする画像のAID' %>
+      <% if @post.thumbnail %>
+        <%= @post.thumbnail.name %>
+        <%= image_tag(@post.thumbnail.image_url) %>
+      <% else %>
+        <p>サムネイル画像は設定されていません。</p>
+      <% end %>
     </div>
     <div>
       <%= f.label :title, 'タイトル' %>

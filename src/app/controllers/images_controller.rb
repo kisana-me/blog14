@@ -47,8 +47,8 @@ class ImagesController < ApplicationController
   end
 
   def variants_create
-    if @image.process_image
-      redirect_to image_path(@image.aid), notice: "画像を生成しました"
+    if url = @image.image_url(variant_type: params[:variant_type])
+      redirect_to image_path(@image.aid), notice: "画像を生成しました#{url}"
     else
       flash.now[:alert] = "画像を生成できませんでした"
       render :edit
@@ -67,10 +67,12 @@ class ImagesController < ApplicationController
   private
 
   def image_params
-    params.expect(image: %i[
-                    image
-                    name
-                  ])
+    params.expect(
+      image: %i[
+        image
+        name
+      ]
+    )
   end
 
   def set_image

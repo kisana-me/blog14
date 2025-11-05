@@ -7,7 +7,8 @@ class Post < ApplicationRecord
 
   attribute :meta, :json, default: -> { {} }
   enum :status, { draft: 0, unlisted: 1, specific: 2, published: 3, deleted: 4 }
-  attr_accessor :thumbnail_aid
+  attr_accessor :thumbnail_new_image
+  attr_accessor :thumbnail_image_aid
   attr_accessor :selected_tags
 
   after_initialize :set_aid, if: :new_record?
@@ -59,11 +60,16 @@ class Post < ApplicationRecord
   end
 
   def assign_thumbnail
-    return if thumbnail_aid.blank?
-
-    self.thumbnail = Image.find_by(
-      account: account,
-      aid: thumbnail_aid
-    )
+    if thumbnail_new_image.present?
+      self.thumbnail = Image.create(
+        account: account,
+        image: thumbnail_new_image
+      )
+    elsif thumbnail_image_aid.present?
+      self.thumbnail = Image.is_normal.find_by(
+        account: account,
+        aid: thumbnail_image_aid
+      )
+    end
   end
 end

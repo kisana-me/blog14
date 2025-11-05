@@ -53,7 +53,7 @@ module ImageTools
     when "q-emoji"
       resize = "50x50>"
     else
-      return
+      raise "Unknown variant_type"
     end
     image = MiniMagick::Image.open(original_image_path)
     if image.frames.many?

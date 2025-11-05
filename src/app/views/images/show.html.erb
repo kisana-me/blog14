@@ -11,8 +11,8 @@
   <p>
     <%= form_with url: variants_create_image_path(@image.aid), method: :post, data: { turbo: false } do %>
       <div>
-        <%= label_tag :variant, "variant" %>
-        <%= select_tag :variant, options_for_select(['images', 'tb-images']) %>
+        <%= label_tag :variant_type, "variant" %>
+        <%= select_tag :variant_type, options_for_select(['icon', 'q-icon', 'banner', 'q-banner', 'normal', 'q-normal', 'd-normal', 'emoji', 'q-emoji']) %>
       </div>
       <div>
         <%= submit_tag "送信" %>

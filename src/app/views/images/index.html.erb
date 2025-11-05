@@ -12,11 +12,11 @@
   <%# image_tag(image.image_url) %>
   <%= link_to('見る', image_path(image.aid)) %>
   <%= link_to('編集', edit_image_path(image.aid)) %>
-  <% if image.variants.include?('images') %>
-    variants/imagesがあります
-    <%= image_tag(image.image_url(variant_type: 'images'), alt: "#{image.name}") %>
+  <% if image.variants.include?('normal') %>
+    variants/normalがあります
+    <%= image_tag(image.image_url(variant_type: 'normal'), alt: "#{image.name}") %>
   <% else %>
-    variants/imagesはない
+    variants/normalはない
   <% end %>
 </div>
 <% end %>
