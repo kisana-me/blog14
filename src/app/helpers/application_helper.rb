@@ -9,7 +9,7 @@ module ApplicationHelper
   end
 
   def full_url(path)
-    File.join(ENV.fetch("APP_URL", nil), path)
+    URI.join(ENV.fetch("APP_URL"), path).to_s
   end
 
   def md_render(md, safe_render: false)

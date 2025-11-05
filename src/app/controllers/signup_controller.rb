@@ -9,20 +9,20 @@ class SignupController < ApplicationController
   def create
     @account = Account.new(account_params)
 
-    @account.meta["subscription"] = session[:pending_oauth_info]["subscription"]
+    @account.meta["subscription"] = session[:oauth_signup]["subscription"]
 
     if @account.save
       sign_in(@account)
       OauthAccount.create!(
         account: @account,
-        provider: "anyur",
-        uid: session[:pending_oauth_info]["anyur_id"],
-        access_token: session[:pending_oauth_info]["anyur_access_token"],
-        refresh_token: session[:pending_oauth_info]["anyur_refresh_token"],
-        expires_at: 10.minutes.from_now,
-        fetched_at: Time.current
+        provider: session[:oauth_signup]["provider"],
+        uid: session[:oauth_signup]["uid"],
+        access_token: session[:oauth_signup]["access_token"],
+        refresh_token: session[:oauth_signup]["refresh_token"],
+        expires_at: session[:oauth_signup]["expires_at"],
+        fetched_at: session[:oauth_signup]["fetched_at"]
       )
-      session.delete(:pending_oauth_info)
+      session.delete(:oauth_signup)
       redirect_back_or root_path, notice: "登録完了"
     else
       render :new
@@ -32,7 +32,7 @@ class SignupController < ApplicationController
   private
 
   def ensure_oauth_context
-    return if session[:pending_oauth_info].present?
+    return if session[:oauth_signup].present?
 
     render plain: "不正なアクセス", status: :forbidden
   end

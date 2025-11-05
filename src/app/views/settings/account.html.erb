@@ -41,8 +41,9 @@
 <br />
 <br />
 <br />
-<%= button_to "ANYURから最新の情報を取得", oauth_start_path, method: :post, data: { turbo: false }, class: "pages-link-button" %>
+<%= button_to "ANYURと連携", oauth_start_path, method: :post, params: { provider: "anyur" }, data: { turbo: false }, class: "pages-link-button" %>
 <br />
+<%= button_to "ANYURの情報を更新", oauth_fetch_path, method: :post, params: { provider: "anyur" }, data: { turbo: false }, class: "pages-link-button" %>
 <br />
 <%= link_to("アイコンを変更", settings_icon_path) %>
 <br />

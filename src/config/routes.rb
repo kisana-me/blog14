@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   # OAuth
   post "oauth/start" => "oauth#start"
   get "oauth/callback" => "oauth#callback"
+  post "oauth/fetch" => "oauth#fetch"
 
   # Accounts
   resources :accounts, param: :name_id, only: %i[index show]

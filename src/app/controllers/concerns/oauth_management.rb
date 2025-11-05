@@ -15,12 +15,9 @@ module OauthManagement
 
   require "net/http"
 
-  def oauth_config(provider = :anyur)
-    OAUTH_PROVIDERS.fetch(provider)
-  end
-
   def generate_authorize_url(state, provider = :anyur)
-    config = oauth_config(provider)
+    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    config = OAUTH_PROVIDERS.fetch(provider)
     params = {
       response_type: "code",
       client_id: config[:client_id],
@@ -34,7 +31,8 @@ module OauthManagement
   end
 
   def exchange_code_for_token(code, provider = :anyur)
-    config = oauth_config(provider)
+    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    config = OAUTH_PROVIDERS.fetch(provider)
     token_response = Net::HTTP.post_form(
       URI(config[:token_url]),
       {
@@ -53,7 +51,8 @@ module OauthManagement
   end
 
   def use_refresh_token(refresh_token, provider = :anyur)
-    config = oauth_config(provider)
+    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    config = OAUTH_PROVIDERS.fetch(provider)
     token_response = Net::HTTP.post_form(
       URI(config[:token_url]),
       {
@@ -64,14 +63,15 @@ module OauthManagement
       }
     )
     unless token_response.is_a?(Net::HTTPSuccess)
-      render plain: "OAuth token request failed: #{token_response.code} #{token_response.body}", status: :unauthorized
+      render plain: "OAuth token refresh failed: #{token_response.code} #{token_response.body}", status: :unauthorized
       return nil
     end
     JSON.parse(token_response.body)
   end
 
   def fetch_resources(access_token, provider = :anyur)
-    config = oauth_config(provider)
+    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    config = OAUTH_PROVIDERS.fetch(provider)
     info_uri = URI(config[:resource_url])
     info_request = Net::HTTP::Post.new(info_uri)
     info_request["Authorization"] = "Bearer #{access_token}"
