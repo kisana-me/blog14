@@ -9,8 +9,9 @@ class LegacyImporter
   def import
     raise "Import directory not found: #{@base_dir}" unless @base_dir.directory?
 
-    import_tags
     import_accounts
+    import_images
+    import_tags
     import_posts
   end
 
@@ -24,6 +25,58 @@ class LegacyImporter
     tags = JSON.parse(tags_json.read)
     tags.each do |t|
       import_tag_from_hash(t)
+    end
+  end
+
+  # ---------- Standalone Images ----------
+  # Import images from "images" directory under the base export folder.
+  # Filenames are expected as "<17-char-id>.<ext>". We:
+  # - Trim id to 14 chars and use it for both aid and name
+  # - Save extension (lowercased) as original_ext
+  # - Set account to the one with aid "t1hqj5le60scd7" if present, otherwise nil
+  # - Skip if an Image with the same 14-char aid already exists
+  def import_images
+    images_dir = @base_dir.join("images")
+    return unless images_dir.directory?
+
+    account = Account.find_by(aid: "t1hqj5le60scd7")
+
+    images_dir.children.each do |path|
+      next unless path.file?
+      base = path.basename.to_s
+
+      begin
+        id_part, ext = base.split(".", 2)
+        next if id_part.blank? || ext.blank?
+
+        aid14 = id_part.to_s[0, 14]
+        ext_down = ext.downcase
+
+        # Optionally filter by allowed extensions to avoid validation errors
+        unless allowed_image_extensions.include?(ext_down)
+          Rails.logger.warn("[LegacyImporter] Skip Image(#{base}) due to unsupported extension: #{ext_down}")
+          next
+        end
+
+        if Image.exists?(aid: aid14)
+          Rails.logger.info("[LegacyImporter] Skip Image(#{aid14}) because it already exists")
+          next
+        end
+
+        upload = build_uploaded_file(path)
+
+        image = Image.new(
+          account: account,
+          aid: aid14,
+          name: aid14,
+          image: upload,
+          original_ext: ext_down
+        )
+
+        image.save!
+      rescue => e
+        Rails.logger.warn("[LegacyImporter] Image(#{base}) import failed: #{e.message}")
+      end
     end
   end
 

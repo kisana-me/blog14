@@ -1,4 +1,5 @@
 require "rouge/plugins/redcarpet"
+require "digest"
 
 class MarkdownRenderer
   class CustomHTML < Redcarpet::Render::HTML
@@ -55,28 +56,42 @@ class MarkdownRenderer
   end
 
   def self.render(markdown_text, safe_render: false)
-    options = {
-      hard_wrap: true,
-      with_toc_data: true,
-      filter_html: safe_render
-    }
-    extensions = {
-      tables: true,
-      fenced_code_blocks: true,
-      disable_indented_code_blocks: true,
-      autolink: true,
-      strikethrough: true,
-      lax_spacing: true,
-      space_after_headers: true,
-      superscript: true,
-      underline: true,
-      highlight: true,
-      quote: true,
-      footnotes: true
-    }
-    renderer = CustomHTML.new(options)
-    markdown = Redcarpet::Markdown.new(renderer, extensions)
-    markdown.render(markdown_text || "").html_safe
+    # Build cache key from text digest and options to avoid re-rendering
+    text = markdown_text.to_s
+    digest = Digest::SHA256.hexdigest(text)
+    cache_key = [
+      "markdown_renderer",
+      "v1", # bump when render logic changes
+      safe_render ? "safe1" : "safe0",
+      digest
+    ].join(":")
+
+    html = Rails.cache.fetch(cache_key) do
+      options = {
+        hard_wrap: true,
+        with_toc_data: true,
+        filter_html: safe_render
+      }
+      extensions = {
+        tables: true,
+        fenced_code_blocks: true,
+        disable_indented_code_blocks: true,
+        autolink: true,
+        strikethrough: true,
+        lax_spacing: true,
+        space_after_headers: true,
+        superscript: true,
+        underline: true,
+        highlight: true,
+        quote: true,
+        footnotes: true
+      }
+      renderer = CustomHTML.new(options)
+      markdown = Redcarpet::Markdown.new(renderer, extensions)
+      markdown.render(text)
+    end
+
+    html.to_s.html_safe
   end
 
   def self.render_toc(markdown_text)

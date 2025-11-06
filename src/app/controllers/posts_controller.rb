@@ -74,16 +74,44 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    return if (@post = Post.from_normal_accounts.is_published.find_by(name_id: params[:name_id]))
-    return if (@post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id]))
-    return if admin? && (@post = Post.find_by(name_id: params[:name_id]))
+    preload_assocs = [:account, :tags, :images, :thumbnail]
+
+    return if (
+      @post = Post
+                .from_normal_accounts
+                .is_published
+                .includes(preload_assocs)
+                .find_by(name_id: params[:name_id])
+    )
+
+    return if (
+      @post = @current_account&.posts&.isnt_deleted
+                &.includes(preload_assocs)
+                &.find_by(name_id: params[:name_id])
+    )
+
+    return if admin? && (
+      @post = Post
+                .includes(preload_assocs)
+                .find_by(name_id: params[:name_id])
+    )
 
     render_404
   end
 
   def set_correct_post
-    return if (@post = @current_account&.posts&.isnt_deleted&.find_by(name_id: params[:name_id]))
-    return if admin? && (@post = Post.find_by(name_id: params[:name_id]))
+    preload_assocs = [:account, :tags, :images, :thumbnail]
+
+    return if (
+      @post = @current_account&.posts&.isnt_deleted
+                &.includes(preload_assocs)
+                &.find_by(name_id: params[:name_id])
+    )
+    return if admin? && (
+      @post = Post
+                .includes(preload_assocs)
+                .find_by(name_id: params[:name_id])
+    )
 
     render_404
   end

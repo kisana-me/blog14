@@ -90,16 +90,6 @@
   <div class="post-content">
     <%= md_render @post.content %>
   </div>
-  <div>
-    付属画像一覧:<br />
-    <% if @post.images.empty? %>
-      付属画像はありません。<br />
-    <% end %>
-    <% @post.images.each do |image| %>
-      画像: <%= image.name %><br />
-      <%# image_tag image.image_url, alt: "#{@post.title}の画像" %>
-    <% end %>
-  </div>
   <div class="post-ending">
     <div class="post-ending-meta">
       <a href="https://x.com/intent/post?text=<%= URI.encode_www_form_component(full_title(@post.title)) %>&url=<%= full_url("/posts/#{@post.aid}") %>" class="x-share-button" target="_blank">Xに共有</a>

@@ -25,35 +25,21 @@ module PostsHelper
 
   # Posts
 
-  def recommended_posts(limit)
-    Post.where(
-      status: :published
-    ).limit(
-      limit.to_i
-    ).order(
-      views_count: :desc
-    )
+  def recommended_posts(limit = 5)
+    Post
+      .from_normal_accounts
+      .is_published
+      .limit(limit.to_i)
+      .order(views_count: :desc)
+      .includes(:thumbnail)
   end
 
-  def new_posts(limit)
-    Post.where(
-      status: :published
-    ).limit(
-      limit.to_i
-    ).order(
-      published_at: :desc
-    )
-  end
-
-  def edited_posts(limit)
-    Post.where.not(
-      edited_at: nil
-    ).where(
-      status: :published
-    ).limit(
-      limit.to_i
-    ).order(
-      edited_at: :desc
-    )
+  def new_posts(limit = 5)
+    Post
+      .from_normal_accounts
+      .is_published
+      .limit(limit.to_i)
+      .order(published_at: :desc)
+      .includes(:thumbnail)
   end
 end
