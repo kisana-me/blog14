@@ -11,12 +11,13 @@ module OauthManagement
       token_url: "https://anyur.com/oauth/token",
       resource_url: "https://anyur.com/api/resources"
     }
-  }
+  }.freeze
 
   require "net/http"
 
   def generate_authorize_url(state, provider = :anyur)
-    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    raise "Unsupported OAuth provider: #{provider}" unless OAUTH_PROVIDERS.key?(provider)
+
     config = OAUTH_PROVIDERS.fetch(provider)
     params = {
       response_type: "code",
@@ -31,7 +32,8 @@ module OauthManagement
   end
 
   def exchange_code_for_token(code, provider = :anyur)
-    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    raise "Unsupported OAuth provider: #{provider}" unless OAUTH_PROVIDERS.key?(provider)
+
     config = OAUTH_PROVIDERS.fetch(provider)
     token_response = Net::HTTP.post_form(
       URI(config[:token_url]),
@@ -51,7 +53,8 @@ module OauthManagement
   end
 
   def use_refresh_token(refresh_token, provider = :anyur)
-    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    raise "Unsupported OAuth provider: #{provider}" unless OAUTH_PROVIDERS.key?(provider)
+
     config = OAUTH_PROVIDERS.fetch(provider)
     token_response = Net::HTTP.post_form(
       URI(config[:token_url]),
@@ -70,7 +73,8 @@ module OauthManagement
   end
 
   def fetch_resources(access_token, provider = :anyur)
-    raise "Unsupported OAuth provider: #{provider}" if !OAUTH_PROVIDERS.key?(provider)
+    raise "Unsupported OAuth provider: #{provider}" unless OAUTH_PROVIDERS.key?(provider)
+
     config = OAUTH_PROVIDERS.fetch(provider)
     info_uri = URI(config[:resource_url])
     info_request = Net::HTTP::Post.new(info_uri)

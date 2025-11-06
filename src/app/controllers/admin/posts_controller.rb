@@ -5,7 +5,6 @@ module Admin
     def index
       @posts = Post
         .unscoped
-        .all
         .order(created_at: :desc)
         .includes(:thumbnail)
     end

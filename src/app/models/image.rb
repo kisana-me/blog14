@@ -25,7 +25,8 @@ class Image < ApplicationRecord
   scope :isnt_closed, -> { where.not(visibility: :closed) }
 
   def image_url(variant_type: "normal")
-    return "/no-image.png" if !self.normal?
+    return "/no-image.png" unless normal?
+
     process_image(variant_type: variant_type) if variants.exclude?(variant_type) && original_ext.present?
     object_url(key: "/images/variants/#{variant_type}/#{aid}.webp")
   end

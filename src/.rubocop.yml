@@ -13,3 +13,6 @@ Style/StringLiterals:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented

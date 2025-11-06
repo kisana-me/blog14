@@ -78,7 +78,7 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    preload_assocs = [:account, :tags, :images, :thumbnail]
+    preload_assocs = %i[account tags images thumbnail]
 
     @post = Post
       .from_normal_accounts
@@ -89,6 +89,7 @@ class PostsController < ApplicationController
     return if @post
 
     return render_404 unless @current_account
+
     @post = @current_account.posts
       .isnt_deleted
       .includes(preload_assocs)
@@ -106,7 +107,8 @@ class PostsController < ApplicationController
 
   def set_correct_post
     return render_404 unless @current_account
-    preload_assocs = [:account, :tags, :images, :thumbnail]
+
+    preload_assocs = %i[account tags images thumbnail]
 
     @post = @current_account.posts
       .isnt_deleted

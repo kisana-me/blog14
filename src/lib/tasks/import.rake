@@ -5,11 +5,11 @@ namespace :import do
   # bundle exec rake import:legacy["C:/path/to/your/export-dir"]
   desc "Import data from storage/exported (optionally specify DIR)"
   task :legacy, [:dir] => :environment do |_, args|
-    dir = args[:dir].presence || Rails.root.join('storage', 'exported')
+    dir = args[:dir].presence || Rails.root.join("storage/exported")
     puts "[import:legacy] Importing from: #{dir}"
     LegacyImporter.new(dir: dir).import
     puts "[import:legacy] Done."
-  rescue => e
+  rescue StandardError => e
     puts "[import:legacy] Failed: #{e.class}: #{e.message}"
     raise
   end

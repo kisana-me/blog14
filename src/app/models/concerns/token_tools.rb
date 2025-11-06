@@ -34,7 +34,7 @@ module TokenTools
     def find_by_token(type, token)
       lookup = new.generate_lookup(token)
       record = where("#{type}_expires_at > ?", Time.current)
-               .find_by("#{type}_lookup": lookup)
+        .find_by("#{type}_lookup": lookup)
       return nil unless record
 
       digest = record.send("#{type}_digest")

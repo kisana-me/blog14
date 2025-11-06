@@ -2,6 +2,7 @@ class OauthController < ApplicationController
   # OAuth Controller for IVECOLOR ver 1.1.0
 
   include OauthManagement
+
   before_action :require_signin, only: %i[fetch]
 
   def start
@@ -45,6 +46,7 @@ class OauthController < ApplicationController
     if oauth_account.expires_at <= Time.current
       token_data = use_refresh_token(oauth_account.refresh_token, provider)
       return if performed?
+
       oauth_account.update!(
         access_token: token_data["access_token"],
         refresh_token: token_data["refresh_token"],
@@ -87,7 +89,7 @@ class OauthController < ApplicationController
       redirect_to settings_account_path, alert: "既に他の本サービスアカウントと連携済みです"
     elsif @current_account && !account
       # 連携済みのアカウントが存在せず、現在のアカウントがサインイン中の場合、連携を追加
-      if @current_account.oauth_accounts.where(provider: provider).count > 0
+      if @current_account.oauth_accounts.where(provider: provider).any?
         redirect_to settings_account_path, alert: "既に同じ外部サービスのアカウントと連携済みです"
         return
       end
@@ -125,7 +127,7 @@ class OauthController < ApplicationController
         name: resources.dig("data", "name") || "",
         name_id: resources.dig("data", "name_id") || "",
         description: resources.dig("data", "description") || "",
-        subscription: resources.dig("data", "subscription") || {"status" => "none", "plan" => "basic"}
+        subscription: resources.dig("data", "subscription") || { "status" => "none", "plan" => "basic" }
       }
       redirect_to signup_path
     else
@@ -136,6 +138,7 @@ class OauthController < ApplicationController
 
   def update_subscription_info(provider, account, resources)
     return unless provider == "anyur"
+
     account.meta["subscription"] = resources.dig("data", "subscription")
     account.save!
   end

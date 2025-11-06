@@ -47,7 +47,8 @@ class ImagesController < ApplicationController
   end
 
   def variants_create
-    if url = @image.image_url(variant_type: params[:variant_type])
+    url = @image.image_url(variant_type: params[:variant_type])
+    if url
       redirect_to image_path(@image.aid), notice: "画像を生成しました#{url}"
     else
       flash.now[:alert] = "画像を生成できませんでした"
@@ -76,15 +77,23 @@ class ImagesController < ApplicationController
   end
 
   def set_image
-    return if (@image = Image.is_normal.isnt_closed.find_by(aid: params[:aid]))
-    return if admin? && (@image = Image.unscoped.find_by(aid: params[:aid]))
+    @image = Image.is_normal.isnt_closed.find_by(aid: params[:aid])
+    return if @image
+
+    @image = Image.unscoped.find_by(aid: params[:aid])
+    return if admin? && @image
 
     render_404
   end
 
   def set_correct_image
-    return if (@image = @current_account&.images.is_normal.find_by(aid: params[:aid]))
-    return if admin? && (@image = Image.unscoped.find_by(aid: params[:aid]))
+    return render_404 unless @current_account
+
+    @image = @current_account.images.is_normal.find_by(aid: params[:aid])
+    return if @image
+
+    @image = Image.unscoped.find_by(aid: params[:aid])
+    return if admin? && @image
 
     render_404
   end

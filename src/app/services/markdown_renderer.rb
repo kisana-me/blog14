@@ -24,22 +24,23 @@ class MarkdownRenderer
       # - each item: aid or aid|caption
       # - multiple items: separated by comma
       # produces <figure> with an <a><img></a> and <figcaption>, or a wrapper div.markdown-image-slider
-      text = text.gsub(/\?\[image\]\(([^)]+)\)/) do
+      text.gsub(/\?\[image\]\(([^)]+)\)/) do
         raw = ::Regexp.last_match(1).to_s
         # split on comma to allow multiple images; captions use '|' to separate
-        items = raw.split(',').map(&:strip).reject(&:empty?)
+        items = raw.split(",").map(&:strip).reject(&:empty?)
 
         figures = items.map do |item|
-          aid, caption = item.split('|', 2).map { |s| s.to_s.strip }
+          aid, caption = item.split("|", 2).map { |s| s.to_s.strip }
           image = Image.from_normal_accounts.is_normal.find_by(aid: aid)
           if image
-            href = Rails.application.routes.url_helpers.image_path(image.aid)
+            Rails.application.routes.url_helpers.image_path(image.aid)
             img_tag = ApplicationController.helpers.image_tag(image.image_url(variant_type: "normal"), alt: image.name)
             # build figcaption only when caption present
             figcap = caption.present? ? ApplicationController.helpers.content_tag(:figcaption, caption) : ""
 
             # figure contains anchor wrapping image, and optional figcaption
-            ApplicationController.helpers.content_tag(:figure, img_tag + figcap, class: "markdown-image-figure").delete("\n\r\t")
+            ApplicationController.helpers.content_tag(:figure, img_tag + figcap,
+                                                      class: "markdown-image-figure").delete("\n\r\t")
           else
             ApplicationController.helpers.content_tag(:figure, "[存在しない画像]", class: "markdown-image-figure")
           end
@@ -47,7 +48,8 @@ class MarkdownRenderer
 
         if figures.size > 1
           # wrap multiple figures in a slider container; front-end can style .markdown-image-slider for horizontal sliding
-          ApplicationController.helpers.content_tag(:div, figures.join.html_safe, class: "markdown-image-slider").delete("\n\r\t")
+          ApplicationController.helpers.content_tag(:div, figures.join.html_safe,
+                                                    class: "markdown-image-slider").delete("\n\r\t")
         else
           figures.first.to_s
         end

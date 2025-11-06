@@ -73,11 +73,13 @@ class TagsController < ApplicationController
   def set_tag
     return if (@tag = Tag.is_normal.isnt_closed.find_by(name_id: params[:name_id]))
     return if admin? && (@tag = Tag.unscoped.find_by(name_id: params[:name_id]))
+
     render_404
   end
 
   def set_correct_tag
     return if admin? && (@tag = Tag.unscoped.find_by(name_id: params[:name_id]))
+
     render_404
   end
 end

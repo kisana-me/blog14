@@ -11,8 +11,7 @@ class Post < ApplicationRecord
   enum :visibility, { closed: 0, limited: 1, opened: 2 }
   enum :status, { normal: 0, locked: 1, deleted: 2, specific: 3 }
   attr_accessor :thumbnail_new_image
-  attr_accessor :thumbnail_image_aid
-  attr_accessor :selected_tags
+  attr_accessor :thumbnail_image_aid, :selected_tags
 
   after_initialize :set_aid, if: :new_record?
   before_validation :set_name_id
@@ -85,16 +84,16 @@ class Post < ApplicationRecord
     # Find our custom image syntax occurrences: ?[image](...) and extract aids
     aids = content.to_s.scan(/\?\[image\]\(([^)]+)\)/).flat_map do |m|
       raw = m.first.to_s
-      raw.split(',').map { |part| part.to_s.split('|', 2).first.to_s.strip }
+      raw.split(",").map { |part| part.to_s.split("|", 2).first.to_s.strip }
     end
-    aids = aids.map(&:presence).compact.uniq
+    aids = aids.filter_map(&:presence).uniq
 
     return if aids.empty?
 
     found_images = Image.from_normal_accounts.is_normal.where(aid: aids)
 
     # Keep only found images and preserve current ordering by aids
-    ordered_images = aids.map { |a| found_images.find { |img| img.aid == a } }.compact
+    ordered_images = aids.filter_map { |a| found_images.find { |img| img.aid == a } }
 
     # Replace associations using ActiveRecord collection writer
     self.images = ordered_images
