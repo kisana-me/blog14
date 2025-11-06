@@ -3,6 +3,8 @@ class Post < ApplicationRecord
   belongs_to :thumbnail, class_name: "Image", optional: true
   has_many :post_tags
   has_many :tags, through: :post_tags
+  has_many :post_images
+  has_many :images, through: :post_images
   has_many :comments
 
   attribute :meta, :json, default: -> { {} }
@@ -14,6 +16,7 @@ class Post < ApplicationRecord
   after_initialize :set_aid, if: :new_record?
   before_validation :set_name_id
   before_validation :assign_thumbnail
+  after_save :sync_post_images, if: :saved_change_to_content?
 
   validates :name_id,
             presence: true,
@@ -71,5 +74,26 @@ class Post < ApplicationRecord
         aid: thumbnail_image_aid
       )
     end
+  end
+
+  def sync_post_images
+    return if content.blank?
+
+    # Find our custom image syntax occurrences: ?[image](...) and extract aids
+    aids = content.to_s.scan(/\?\[image\]\(([^)]+)\)/).flat_map do |m|
+      raw = m.first.to_s
+      raw.split(',').map { |part| part.to_s.split('|', 2).first.to_s.strip }
+    end
+    aids = aids.map(&:presence).compact.uniq
+
+    return if aids.empty?
+
+    found_images = Image.from_normal_accounts.is_normal.where(aid: aids)
+
+    # Keep only found images and preserve current ordering by aids
+    ordered_images = aids.map { |a| found_images.find { |img| img.aid == a } }.compact
+
+    # Replace associations using ActiveRecord collection writer
+    self.images = ordered_images
   end
 end

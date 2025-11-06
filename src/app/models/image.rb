@@ -1,5 +1,7 @@
 class Image < ApplicationRecord
   belongs_to :account, optional: true
+  has_many :post_images
+  has_many :posts, through: :post_images
 
   attribute :variants, :json, default: -> { [] }
   attribute :meta, :json, default: -> { {} }
