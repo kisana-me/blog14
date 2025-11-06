@@ -3,6 +3,10 @@ class StudioController < ApplicationController
 
   def index
     # 投稿をページングしたい
-    @posts = @current_account.posts.isnt_deleted.limit(10).includes(:thumbnail)
+    @posts = @current_account.posts
+      .isnt_deleted
+      .order(created_at: :desc)
+      .limit(10)
+      .includes(:thumbnail)
   end
 end

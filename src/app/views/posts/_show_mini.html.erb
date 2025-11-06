@@ -21,9 +21,6 @@
         <% if post.edited_at %>
         更新:<%= post.edited_at.strftime('%Y/%m/%d %H:%M') %>
         <% end %>
-        <% if defined? show_comments_count %>
-        コメント数:<%= post.comments.where(public: false).count %>/<%= post.comments.count %>
-        <% end %>
       </span>
     </div>
   </div>

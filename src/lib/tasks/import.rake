@@ -1,12 +1,16 @@
-namespace :legacy do
-  desc "Import data from storage/ivecolor-exported (optionally specify DIR)"
-  task :import, [:dir] => :environment do |_, args|
-    dir = args[:dir].presence || Rails.root.join('storage', 'ivecolor-exported')
-    puts "[legacy:import] Importing from: #{dir}"
+namespace :import do
+  # 既定の場所 (src/storage/exported) から取り込む
+  # bundle exec rake import:legacy
+  # # 別ディレクトリを指定して取り込む例
+  # bundle exec rake import:legacy["C:/path/to/your/export-dir"]
+  desc "Import data from storage/exported (optionally specify DIR)"
+  task :legacy, [:dir] => :environment do |_, args|
+    dir = args[:dir].presence || Rails.root.join('storage', 'exported')
+    puts "[import:legacy] Importing from: #{dir}"
     LegacyImporter.new(dir: dir).import
-    puts "[legacy:import] Done."
+    puts "[import:legacy] Done."
   rescue => e
-    puts "[legacy:import] Failed: #{e.class}: #{e.message}"
+    puts "[import:legacy] Failed: #{e.class}: #{e.message}"
     raise
   end
 end

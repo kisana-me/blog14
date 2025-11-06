@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 12) do
+ActiveRecord::Schema[8.0].define(version: 11) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "aid", limit: 14, null: false
     t.string "name", null: false
@@ -33,28 +33,6 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.check_constraint "json_valid(`meta`)", name: "meta"
   end
 
-  create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
-    t.string "aid", limit: 14, null: false
-    t.bigint "account_id"
-    t.string "loggable_type"
-    t.bigint "loggable_id"
-    t.string "action_name", default: "", null: false
-    t.text "attribute_data", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
-    t.datetime "changed_at", default: -> { "current_timestamp(6)" }, null: false
-    t.string "change_reason", default: "", null: false
-    t.string "user_agent", default: "", null: false
-    t.string "ip_address", default: "", null: false
-    t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
-    t.integer "status", limit: 1, default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_activity_logs_on_account_id"
-    t.index ["aid"], name: "index_activity_logs_on_aid", unique: true
-    t.index ["loggable_type", "loggable_id"], name: "index_activity_logs_on_loggable"
-    t.check_constraint "json_valid(`attribute_data`)", name: "attribute_data"
-    t.check_constraint "json_valid(`meta`)", name: "meta"
-  end
-
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "post_id", null: false
     t.bigint "account_id"
@@ -63,6 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.string "name", null: false
     t.text "content", null: false
     t.string "address", default: "", null: false
+    t.integer "visibility", limit: 1, default: 0, null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
@@ -91,6 +70,7 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.string "name", default: "", null: false
     t.string "original_ext", null: false
     t.text "variants", size: :long, default: "[]", null: false, collation: "utf8mb4_bin"
+    t.integer "visibility", limit: 1, default: 0, null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
@@ -143,11 +123,12 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.string "aid", limit: 14, null: false
     t.string "name_id", null: false
     t.bigint "thumbnail_id"
-    t.string "title", null: false
-    t.text "summary", null: false
-    t.text "content", null: false
+    t.string "title", default: "", null: false
+    t.text "summary", default: "", null: false
+    t.text "content", default: "", null: false
     t.datetime "published_at"
     t.datetime "edited_at"
+    t.integer "visibility", limit: 1, default: 0, null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
@@ -182,6 +163,7 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.string "name", null: false
     t.string "name_id", null: false
     t.text "description", default: "", null: false
+    t.integer "visibility", limit: 1, default: 0, null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"
     t.integer "status", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
@@ -192,7 +174,6 @@ ActiveRecord::Schema[8.0].define(version: 12) do
   end
 
   add_foreign_key "accounts", "images", column: "icon_id"
-  add_foreign_key "activity_logs", "accounts"
   add_foreign_key "comments", "accounts"
   add_foreign_key "comments", "comments"
   add_foreign_key "comments", "posts"

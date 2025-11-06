@@ -70,7 +70,8 @@ class LegacyImporter
           aid: aid14,
           name: aid14,
           image: upload,
-          original_ext: ext_down
+          original_ext: ext_down,
+          visibility: :opened
         )
 
         image.save!
@@ -88,7 +89,7 @@ class LegacyImporter
     tag.description = h["description"]
     tag.created_at = parse_time(h["created_at"]) if h["created_at"].present?
     tag.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
-    tag.status = :locked unless h["public"]
+    tag.visibility = :opened if h["public"]
     tag.save!
   rescue => e
     Rails.logger.warn("[LegacyImporter] Tag(#{h["aid"]}) import failed: #{e.message}")
@@ -163,7 +164,7 @@ class LegacyImporter
   post.content = transform_legacy_images_in_markdown(raw_content)
     post.published_at = parse_time(h["published_at"]) if h["published_at"].present?
     post.edited_at = parse_time(h["edited_at"]) if h["edited_at"].present?
-    post.status = :published if h["status"] == "published"
+    post.visibility = :opened if h["status"] == "published"
     post.created_at = parse_time(h["created_at"]) if h["created_at"].present?
     post.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
     post.save!
@@ -222,7 +223,7 @@ class LegacyImporter
       comment.address = c["address"]
       comment.created_at = parse_time(c["created_at"]) if c["created_at"].present?
       comment.updated_at = parse_time(c["updated_at"]) if c["updated_at"].present?
-      comment.status = :allowed if c["public"]
+      comment.visibility = :opened if c["public"]
       comment.save!
     rescue => e
       Rails.logger.warn("[LegacyImporter] Comment import failed: #{e.message}")
@@ -240,7 +241,7 @@ class LegacyImporter
     raise "Image file not found: #{file}" unless file.file?
     Rails.logger.info("[LegacyImporter] Importing image from file: #{file}")
     upload = build_uploaded_file(file)
-    Image.create!(account: account, image: upload)
+    Image.create!(account: account, image: upload, visibility: :opened)
   end
 
   def allowed_image_extensions

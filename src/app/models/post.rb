@@ -8,7 +8,8 @@ class Post < ApplicationRecord
   has_many :comments
 
   attribute :meta, :json, default: -> { {} }
-  enum :status, { draft: 0, unlisted: 1, specific: 2, published: 3, deleted: 4 }
+  enum :visibility, { closed: 0, limited: 1, opened: 2 }
+  enum :status, { normal: 0, locked: 1, deleted: 2, specific: 3 }
   attr_accessor :thumbnail_new_image
   attr_accessor :thumbnail_image_aid
   attr_accessor :selected_tags
@@ -34,8 +35,10 @@ class Post < ApplicationRecord
             length: { in: 1..100_000, allow_blank: true }
 
   scope :from_normal_accounts, -> { joins(:account).where(accounts: { status: :normal }) }
-  scope :is_published, -> { where(status: :published) }
+  scope :is_normal, -> { where(status: :normal) }
   scope :isnt_deleted, -> { where.not(status: :deleted) }
+  scope :is_opened, -> { where(visibility: :opened) }
+  scope :isnt_closed, -> { where.not(visibility: :closed) }
 
   # === #
 

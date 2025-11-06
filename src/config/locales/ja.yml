@@ -1,19 +1,27 @@
 ja:
   activerecord:
     attributes:
-      post:
-        status:
-          draft: "下書き"
-          unlisted: "限定公開"
-          specific: "特定用途"
-          published: "公開"
-          deleted: "削除済み"
     enums:
       account:
         visibility:
-          opened: "公開"
           closed: "非公開"
           limited: "限定公開"
+          opened: "公開"
+      post:
+        visibility:
+          closed: "非公開"
+          limited: "限定公開"
+          opened: "公開"
+      tag:
+        visibility:
+          closed: "非公開"
+          limited: "限定公開"
+          opened: "公開"
+      comment:
+        visibility:
+          closed: "非公開"
+          limited: "限定公開"
+          opened: "公開"
     errors:
       messages:
         record_invalid: "バリデーションに失敗しました: %{errors}"

@@ -3,6 +3,7 @@ class Tag < ApplicationRecord
   has_many :posts, through: :post_tags
 
   attribute :meta, :json, default: -> { {} }
+  enum :visibility, { closed: 0, limited: 1, opened: 2 }
   enum :status, { normal: 0, locked: 1, deleted: 2 }
 
   after_initialize :set_aid, if: :new_record?
@@ -21,6 +22,8 @@ class Tag < ApplicationRecord
 
   scope :is_normal, -> { where(status: :normal) }
   scope :isnt_deleted, -> { where.not(status: :deleted) }
+  scope :is_opened, -> { where(visibility: :opened) }
+  scope :isnt_closed, -> { where.not(visibility: :closed) }
 
   # === #
 

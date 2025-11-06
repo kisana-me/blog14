@@ -29,8 +29,8 @@
       <%= f.text_area :summary, placeholder: 'まとめ' %>
     </div>
     <div>
-      <%= f.label :status, "ステータス" %>
-      <%= f.select :status, Post.statuses.keys.map { |key| [t("activerecord.attributes.post.status.#{key}"), key] } %>
+      <%= f.label :visibility, "公開状況" %>
+      <%= f.select :visibility, Post.visibilities.keys.map { |key| [t("activerecord.enums.post.visibility.#{key}"), key] } %>
     </div>
     <div>
       <%= f.label :published_at, '公開日時' %>

@@ -40,7 +40,9 @@ class SessionsController < ApplicationController
   private
 
   def set_session
-    @session = Session.find_by(account: @current_account, lookup: params[:id], deleted: false)
+    @session = Session
+      .isnt_deleted
+      .find_by(account: @current_account, lookup: params[:id])
   end
 
   def session_params

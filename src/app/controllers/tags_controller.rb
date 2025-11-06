@@ -5,13 +5,22 @@ class TagsController < ApplicationController
 
   def index
     # タグをページングしたい
-    @tags = Tag.is_normal.limit(10)
+    @tags = Tag
+      .is_normal
+      .is_opened
+      .limit(10)
   end
 
   def show
     # 投稿をページングしたい
     # アクセスカウントしたい
-    @posts = @tag.posts.from_normal_accounts.is_published.order(published_at: :desc).limit(10).includes(:thumbnail)
+    @posts = @tag.posts
+      .from_normal_accounts
+      .is_normal
+      .isnt_closed
+      .order(published_at: :desc)
+      .limit(10)
+      .includes(:thumbnail)
   end
 
   def new
@@ -51,24 +60,24 @@ class TagsController < ApplicationController
   private
 
   def tag_params
-    params.expect(tag: %i[
-                    name
-                    name_id
-                    description
-                    status
-                  ])
+    params.expect(
+      tag: %i[
+        name
+        name_id
+        description
+        visibility
+      ]
+    )
   end
 
   def set_tag
-    return if (@tag = Tag.is_normal.find_by(name_id: params[:name_id]))
-    return if admin? && (@tag = Tag.find_by(name_id: params[:name_id]))
-
+    return if (@tag = Tag.is_normal.isnt_closed.find_by(name_id: params[:name_id]))
+    return if admin? && (@tag = Tag.unscoped.find_by(name_id: params[:name_id]))
     render_404
   end
 
   def set_correct_tag
-    return if admin? && (@tag = Tag.find_by(name_id: params[:name_id]))
-
+    return if admin? && (@tag = Tag.unscoped.find_by(name_id: params[:name_id]))
     render_404
   end
 end

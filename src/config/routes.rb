@@ -59,7 +59,7 @@ Rails.application.routes.draw do
     patch "posts/update_multiple", to: "posts#update_multiple", as: :update_multiple_posts
     resources :posts, param: :aid, only: %i[index edit update]
     resources :tags, param: :aid, only: [:index]
-    resources :inquiries, param: :aid, only: %i[index show update]
+    resources :comments, param: :aid, only: [:index]
   end
 
   # API

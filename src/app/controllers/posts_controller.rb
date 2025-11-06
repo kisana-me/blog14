@@ -6,7 +6,11 @@ class PostsController < ApplicationController
   before_action :set_correct_post, only: %i[edit update destroy]
 
   def index
-    all_posts = Post.from_normal_accounts.is_published.includes(:thumbnail)
+    all_posts = Post
+      .from_normal_accounts
+      .is_normal
+      .is_opened
+      .includes(:thumbnail)
     @posts = paged_objects(params[:page], all_posts, published_at: :desc)
     @posts_page = total_page(all_posts)
   end
@@ -65,7 +69,7 @@ class PostsController < ApplicationController
         :content,
         :published_at,
         :edited_at,
-        :status,
+        :visibility,
         :thumbnail_new_image,
         :thumbnail_image_aid,
         { selected_tags: [] }
@@ -76,42 +80,45 @@ class PostsController < ApplicationController
   def set_post
     preload_assocs = [:account, :tags, :images, :thumbnail]
 
-    return if (
-      @post = Post
-                .from_normal_accounts
-                .is_published
-                .includes(preload_assocs)
-                .find_by(name_id: params[:name_id])
-    )
+    @post = Post
+      .from_normal_accounts
+      .is_normal
+      .isnt_closed
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if @post
 
-    return if (
-      @post = @current_account&.posts&.isnt_deleted
-                &.includes(preload_assocs)
-                &.find_by(name_id: params[:name_id])
-    )
+    return render_404 unless @current_account
+    @post = @current_account.posts
+      .isnt_deleted
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if @post
 
-    return if admin? && (
-      @post = Post
-                .includes(preload_assocs)
-                .find_by(name_id: params[:name_id])
-    )
+    @post = Post
+      .unscoped
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if admin? && @post
 
     render_404
   end
 
   def set_correct_post
+    return render_404 unless @current_account
     preload_assocs = [:account, :tags, :images, :thumbnail]
 
-    return if (
-      @post = @current_account&.posts&.isnt_deleted
-                &.includes(preload_assocs)
-                &.find_by(name_id: params[:name_id])
-    )
-    return if admin? && (
-      @post = Post
-                .includes(preload_assocs)
-                .find_by(name_id: params[:name_id])
-    )
+    @post = @current_account.posts
+      .isnt_deleted
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if @post
+
+    @post = Post
+      .unscoped
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if admin? && @post
 
     render_404
   end

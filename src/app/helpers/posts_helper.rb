@@ -1,12 +1,6 @@
 module PostsHelper
   # Paging
 
-  def posts_page
-    total_posts = Post.where(status: :published).count
-    per_page = 20 # 表示件数
-    total_posts.positive? ? (total_posts.to_f / per_page).ceil : 0
-  end
-
   def paged_posts(param)
     param = param.to_i
     page = [param, 1].max
@@ -28,18 +22,20 @@ module PostsHelper
   def recommended_posts(limit = 5)
     Post
       .from_normal_accounts
-      .is_published
+      .is_normal
+      .is_opened
+      .order(edited_at: :desc)
       .limit(limit.to_i)
-      .order(views_count: :desc)
       .includes(:thumbnail)
   end
 
   def new_posts(limit = 5)
     Post
       .from_normal_accounts
-      .is_published
-      .limit(limit.to_i)
+      .is_normal
+      .is_opened
       .order(published_at: :desc)
+      .limit(limit.to_i)
       .includes(:thumbnail)
   end
 end

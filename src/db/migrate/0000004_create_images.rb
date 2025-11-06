@@ -6,6 +6,7 @@ class CreateImages < ActiveRecord::Migration[8.0]
       t.string :name, null: false, default: ""
       t.string :original_ext, null: false
       t.json :variants, null: false, default: []
+      t.integer :visibility, null: false, limit: 1, default: 0
       t.json :meta, null: false, default: {}
       t.integer :status, null: false, limit: 1, default: 0
 

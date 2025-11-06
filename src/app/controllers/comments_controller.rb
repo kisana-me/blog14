@@ -15,15 +15,14 @@ class CommentsController < ApplicationController
       comment = Comment.find_by(aid: params[:comment][:replied])
       @comment.comment = comment if comment.comment.nil?
     end
-    @comment.account = @current_account if logged_in?
-    @comment.aid = generate_aid(Comment, "aid")
+    @comment.account = @current_account
     @comment.post = post
     if @comment.save
       flash[:notice] = "コメントを書き込みました"
     else
       flash[:alert] = "エラー:#{@comment.errors.full_messages.join(', ')}"
     end
-    redirect_to post_path(post.aid)
+    redirect_to post_path(post.name_id)
   end
 
   def update
@@ -32,22 +31,24 @@ class CommentsController < ApplicationController
     else
       flash[:alert] = "エラー:#{@comment.errors.full_messages.join(', ')}"
     end
-    redirect_to post_path(@comment.post.aid)
+    redirect_to post_path(@comment.post.name_id)
   end
 
   private
 
   def comment_params
     params.expect(
-      comment: %i[name
-                  content
-                  address]
+      comment: %i[
+        name
+        content
+        address
+      ]
     )
   end
 
   def update_comment_params
     params.expect(
-      comment: [:public]
+      comment: [:visibility]
     )
   end
 

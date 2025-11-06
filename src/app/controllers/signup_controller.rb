@@ -43,6 +43,10 @@ class SignupController < ApplicationController
         name
         name_id
         description
+        birthday
+        visibility
+        password
+        password_confirmation
       ]
     )
   end

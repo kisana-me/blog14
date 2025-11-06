@@ -3,10 +3,11 @@ module Admin
     before_action :set_post, only: %i[edit update]
 
     def index
-      @published_posts = Post.where(status: :published)
-      @unlisted_posts = Post.where(status: :unlisted)
-      @draft_posts = Post.where(status: :draft)
-      @deleted_posts = Post.where(status: :deleted)
+      @posts = Post
+        .unscoped
+        .all
+        .order(created_at: :desc)
+        .includes(:thumbnail)
     end
 
     def edit; end
@@ -22,8 +23,8 @@ module Admin
     end
 
     def update_multiple
-      if params[:post_aids].present? && params[:status].present?
-        Post.where(aid: params[:post_aids]).update_all(status: params[:status])
+      if params[:post_aids].present? && params[:visibility].present?
+        Post.where(aid: params[:post_aids]).update_all(visibility: params[:visibility])
         flash[:notice] = "選択した投稿のステータスを更新しました"
       else
         flash[:alert] = "投稿とステータスを選択してください"

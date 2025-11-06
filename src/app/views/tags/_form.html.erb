@@ -13,9 +13,9 @@
       <%= f.label :description, '説明' %>
       <%= f.text_area :description, placeholder: '説明', id: 'my-text-area' %>
     </div>
-    <div class="">
-      <%= f.label :status, '状態' %>
-      <%= f.check_box :deleted %>
+    <div>
+      <%= f.label :visibility, "公開状況" %>
+      <%= f.select :visibility, Tag.visibilities.keys.map { |key| [t("activerecord.enums.tag.visibility.#{key}"), key] } %>
     </div>
   </div>
   <%= f.submit "送信" %>

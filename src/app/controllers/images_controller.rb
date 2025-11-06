@@ -76,14 +76,14 @@ class ImagesController < ApplicationController
   end
 
   def set_image
-    return if (@image = Image.find_by(aid: params[:aid]))
+    return if (@image = Image.is_normal.isnt_closed.find_by(aid: params[:aid]))
     return if admin? && (@image = Image.unscoped.find_by(aid: params[:aid]))
 
     render_404
   end
 
   def set_correct_image
-    return if (@image = @current_account&.images&.find_by(aid: params[:aid]))
+    return if (@image = @current_account&.images.is_normal.find_by(aid: params[:aid]))
     return if admin? && (@image = Image.unscoped.find_by(aid: params[:aid]))
 
     render_404

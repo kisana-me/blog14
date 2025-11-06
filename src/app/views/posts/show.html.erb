@@ -4,7 +4,7 @@
 <% provide(:author_id, @post.account.aid) %>
 <% provide(:description, @post.summary) %>
 <% provide(:keywords, keywords) %>
-<% provide(:robots, @post.published? ? '' : 'false') %>
+<% provide(:robots, @post.opened? ? '' : 'false') %>
 <% provide(:type, 'article') %>
 <% provide(:image, @post.thumbnail_url) %>
 <% provide(:card, 'summary_large_image') %>
@@ -17,13 +17,10 @@
     あなたはこの記事の管理者です。
   </div>
   <div>
-    閲覧数:
-    <%# @post.views_count %>
-    <br />
-    記事の状態: <%= t("activerecord.attributes.post.status.#{@post.status}") %>
+    公開状況: <%= t("activerecord.enums.post.visibility.#{@post.visibility}") %>
     <br />
     コメント数:
-    <%= @post.comments.where(status: :allowed).count %>/<%= @post.comments.count %>
+    <%= @post.comments.where(visibility: :opened).count %>/<%= @post.comments.count %>
     <br />
     <%= link_to('編集', edit_post_path(@post.name_id), data: { turbo: false }, method: :get) %>
   </div>
@@ -102,6 +99,6 @@
       <summary>コメントを残す</summary>
       <%= render 'comments/form', comment: Comment.new, url: comments_path, post_aid: @post.aid %>
     </details>
-    <%# render 'comments/comments', post: @post %>
+    <%= render 'comments/comments', post: @post %>
   </div>
 </div>
