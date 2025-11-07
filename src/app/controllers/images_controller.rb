@@ -4,9 +4,8 @@ class ImagesController < ApplicationController
   before_action :set_correct_image, only: %i[edit update destroy variants_create variants_destroy]
 
   def index
-    all_images = Image.all
-    @images = paged_objects(params[:page], all_images, created_at: :desc)
-    @images_page = total_page(all_images)
+    images = Image.all
+    @images = set_pagination_for(images)
   end
 
   def show; end

@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   include SessionManagement
 
   include Tools
+  include Pagination
 
   before_action :current_account
 

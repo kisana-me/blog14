@@ -3,6 +3,7 @@ class ApplicationRecord < ActiveRecord::Base
   include S3Tools
   include ImageTools
   include TokenTools
+  include Paginatable
 
   private
 

@@ -6,13 +6,13 @@ class PostsController < ApplicationController
   before_action :set_correct_post, only: %i[edit update destroy]
 
   def index
-    all_posts = Post
+    posts = Post
       .from_normal_accounts
       .is_normal
       .is_opened
+      .order(published_at: :desc)
       .includes(:thumbnail)
-    @posts = paged_objects(params[:page], all_posts, published_at: :desc)
-    @posts_page = total_page(all_posts)
+    @posts = set_pagination_for(posts)
   end
 
   def show
