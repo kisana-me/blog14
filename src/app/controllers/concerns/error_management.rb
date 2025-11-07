@@ -1,7 +1,7 @@
-module ErrorsManagement
-  # Errors Management ver 1.0.1
+module ErrorManagement
+  # ErrorManagement Ver. 1.0.1
   # controllers/application_controller.rbで
-  # include ErrorsManagement
+  # include ErrorManagement
   # def routing_error
   #   raise ActionController::RoutingError, params[:path]
   # end

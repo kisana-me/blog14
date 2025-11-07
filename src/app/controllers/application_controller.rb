@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  include ErrorsManagement
+  include ErrorManagement
   include SessionManagement
 
   include Tools

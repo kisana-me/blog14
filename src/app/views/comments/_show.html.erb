@@ -24,11 +24,7 @@
     <%= comment.content %>
   </div>
   <% if top %>
-    <% if permission %>
-      <% replies = comment_all_replies(comment) %>
-    <% else %>
-      <% replies = comment_replies(comment) %>
-    <% end %>
+    <% replies = permission ? comment_all_replies(comment) : comment_public_replies(comment) %>
     <% if replies.present? %>
     <details>
       <summary>スレッドを表示</summary>

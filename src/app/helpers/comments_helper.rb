@@ -1,43 +1,33 @@
 module CommentsHelper
-  def all_comments
-    Comment.where(
-      public: true,
-      deleted: false
-    ).order(
-      id: :desc
-    )
-  end
-
-  def post_comments(post)
-    post.comments.where(
-      comment_id: nil,
-      public: true,
-      deleted: false
-    ).order(
-      id: :desc
-    )
+  def post_public_comments(post)
+    post.comments
+      .from_normal_accounts
+      .isnt_deleted
+      .is_opened
+      .where(comment_id: nil)
+      .order(id: :desc)
   end
 
   def post_all_comments(post)
-    post.comments.where(
-      comment_id: nil
-    ).order(
-      id: :desc
-    )
+    post.comments
+      .from_normal_accounts
+      .isnt_deleted
+      .where(comment_id: nil)
+      .order(id: :desc)
   end
 
-  def comment_replies(comment)
-    comment.comments.where(
-      public: true,
-      deleted: false
-    ).order(
-      id: :desc
-    )
+  def comment_public_replies(comment)
+    comment.comments
+      .from_normal_accounts
+      .isnt_deleted
+      .is_opened
+      .order(id: :desc)
   end
 
   def comment_all_replies(comment)
-    comment.comments.order(
-      id: :desc
-    )
+    comment.comments
+      .from_normal_accounts
+      .isnt_deleted
+      .order(id: :desc)
   end
 end

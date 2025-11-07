@@ -1,5 +1,5 @@
 module OauthManagement
-  # OAuth Management for IVECOLOR ver 2.0.0
+  # OAuthManagement Ver. 2.0.0
 
   OAUTH_PROVIDERS = {
     anyur: {

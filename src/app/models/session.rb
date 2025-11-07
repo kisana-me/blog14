@@ -11,6 +11,7 @@ class Session < ApplicationRecord
             length: { in: 1..50 }
 
   scope :from_normal_accounts, -> { joins(:account).where(accounts: { status: :normal }) }
+  scope :from_not_deleted_accounts, -> { joins(:account).where.not(accounts: { status: :deleted }) }
   scope :is_normal, -> { where(status: :normal) }
   scope :isnt_deleted, -> { where.not(status: :deleted) }
 end
