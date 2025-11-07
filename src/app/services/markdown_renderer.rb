@@ -29,10 +29,14 @@ class MarkdownRenderer
         # split on comma to allow multiple images; captions use '|' to separate
         items = raw.split(",").map(&:strip).reject(&:empty?)
 
+        aids = items.map { |item| item.split("|", 2).first.to_s.strip }
+        images = Image.from_normal_accounts.is_normal.where(aid: aids).index_by(&:aid)
+
         figures = items.map do |item|
           aid, caption = item.split("|", 2).map { |s| s.to_s.strip }
-          image = Image.from_normal_accounts.is_normal.find_by(aid: aid)
+          image = images[aid]
           if image
+            # The following line seems to have no effect, you might want to review it.
             Rails.application.routes.url_helpers.image_path(image.aid)
             img_tag = ApplicationController.helpers.image_tag(image.image_url(variant_type: "normal"), alt: image.name)
             # build figcaption only when caption present

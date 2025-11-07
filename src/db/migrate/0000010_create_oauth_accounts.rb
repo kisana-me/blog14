@@ -5,8 +5,8 @@ class CreateOauthAccounts < ActiveRecord::Migration[8.0]
       t.references :account, null: false, foreign_key: true
       t.integer :provider, limit: 1, null: false
       t.string :uid, null: false
-      t.string :access_token, null: false
-      t.string :refresh_token, null: false
+      t.text :access_token, null: false
+      t.text :refresh_token, null: false
       t.datetime :expires_at, null: false
       t.datetime :fetched_at, null: false
       t.json :meta, null: false, default: {}

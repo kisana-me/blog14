@@ -46,16 +46,7 @@ class Post < ApplicationRecord
   end
 
   def tagging(tags: selected_tags)
-    if tags.blank?
-      self.tags = []
-    else
-      tmp_tags = []
-      tags.each do |aid|
-        tag = Tag.find_by(aid: aid)
-        tmp_tags << tag
-      end
-      self.tags = tmp_tags
-    end
+    self.tags = tags.blank? ? [] : Tag.where(aid: tags)
   end
 
   private
