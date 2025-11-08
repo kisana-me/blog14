@@ -3,6 +3,7 @@ class AllExporter
     export_accounts
     export_tags
     export_posts
+    export_images
   end
 
   private
@@ -21,5 +22,9 @@ class AllExporter
     Post.find_each do |post|
       PostExporter.new(post).call
     end
+  end
+
+  def export_images
+    ImagesExporter.new.call
   end
 end
