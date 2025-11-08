@@ -17,6 +17,7 @@ class LegacyImporter
   private
 
   # ---------- Tags ----------
+
   def import_tags
     tags_json = @base_dir.join("tags", "tags.json")
     return unless tags_json.file?
@@ -45,49 +46,33 @@ class LegacyImporter
   # ---------- Images ----------
 
   def import_images
-    images_dir = @base_dir.join("images")
-    return unless images_dir.directory?
+    images_json = @base_dir.join("images", "images.json")
+    return unless images_json.file?
 
     account = Account.find_by(aid: "t1hqj5le60scd7")
 
-    images_dir.children.each do |path|
-      next unless path.file?
-
-      base = path.basename.to_s
-
-      begin
-        id_part, ext = base.split(".", 2)
-        next if id_part.blank? || ext.blank?
-
-        aid14 = id_part.to_s[0, 14]
-        ext_down = ext.downcase
-
-        unless allowed_image_extensions.include?(ext_down)
-          Rails.logger.warn("[LegacyImporter] Skip Image(#{base}) due to unsupported extension: #{ext_down}")
-          next
-        end
-
-        if Image.exists?(aid: aid14)
-          Rails.logger.info("[LegacyImporter] Skip Image(#{aid14}) because it already exists")
-          next
-        end
-
-        upload = build_uploaded_file(path)
-
-        image = Image.new(
-          account: account,
-          aid: aid14,
-          name: aid14,
-          image: upload,
-          original_ext: ext_down,
-          visibility: :opened
-        )
-
-        image.save!
-      rescue StandardError => e
-        Rails.logger.warn("[LegacyImporter] Image(#{base}) import failed: #{e.message}")
-      end
+    images = JSON.parse(images_json.read)
+    images.each do |image|
+      import_image_from_hash(image, account)
     end
+  end
+
+  def import_image_from_hash(h, account)
+    image_path = @base_dir.join("images", h["aid"] + "." + h["extension"])
+    raise "Image file not found: #{image_path}" unless image_path.file?
+
+    image = Image.new
+    image.account = account
+    image.image = build_uploaded_file(image_path)
+    image.aid = h["aid"].to_s[0, 14]
+    image.name = h["name"]
+    image.description = h["description"] + "OLD_AID=#{h['aid']}"
+    image.visibility = :opened if h["public"]
+    image.created_at = parse_time(h["created_at"]) if h["created_at"].present?
+    image.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
+    image.save!
+  rescue StandardError => e
+    Rails.logger.warn("[LegacyImporter] Image(#{h['aid']}) import failed: #{e.message}")
   end
 
   # ---------- Accounts ----------
@@ -261,8 +246,6 @@ class LegacyImporter
   end
 
   def build_uploaded_file(path)
-    # Build an object that behaves like a form upload (ActionDispatch::Http::UploadedFile)
-    # so validations that call MiniMagick::Image.read(file) and file.size work as in controllers
     ext = path.extname.delete(".").downcase
     content_type = mime_type_for(ext)
 
