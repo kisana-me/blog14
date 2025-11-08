@@ -6,7 +6,7 @@ class ImagesExporter
     dir = Rails.root.join('storage', 'images')
     FileUtils.mkdir_p(dir)
 
-    images_data = Image.order(:id).map do |image|
+    images_data = Image.order(:created_at).map do |image|
       {
         aid: image.aid,
         name: image.name,
