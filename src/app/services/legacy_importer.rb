@@ -78,17 +78,22 @@ class LegacyImporter
   # ---------- Accounts ----------
 
   def import_accounts
+    accounts_index_file = @base_dir.join("accounts", "accounts.json")
+    return unless accounts_index_file.file?
+    accounts_index_data = JSON.parse(accounts_index_file.read)
+
     accounts_dir = @base_dir.join("accounts")
     return unless accounts_dir.directory?
 
-    accounts_dir.children.each do |acc_dir|
-      next unless acc_dir.directory?
+    accounts_index_data.each do |acc_aid|
+      dir = accounts_dir.join(acc_aid)
+      next unless dir.directory?
 
-      json = acc_dir.join("account.json")
+      json = dir.join("account.json")
       next unless json.file?
 
       data = JSON.parse(json.read)
-      import_account_from_hash(acc_dir, data)
+      import_account_from_hash(dir, data)
     end
   end
 
@@ -118,10 +123,15 @@ class LegacyImporter
   # ---------- Posts ----------
 
   def import_posts
+    posts_index_file = @base_dir.join("posts", "posts.json")
+    return unless posts_index_file.file?
+    posts_index_data = JSON.parse(posts_index_file.read)
+
     posts_dir = @base_dir.join("posts")
     return unless posts_dir.directory?
 
-    posts_dir.children.sort.each do |dir|
+    posts_index_data.each do |post_aid|
+      dir = posts_dir.join(post_aid)
       next unless dir.directory?
 
       data_path = dir.join("data.json")
