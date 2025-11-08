@@ -86,8 +86,8 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.bigint "account_id", null: false
     t.integer "provider", limit: 1, null: false
     t.string "uid", null: false
-    t.string "access_token", null: false
-    t.string "refresh_token", null: false
+    t.text "access_token", null: false
+    t.text "refresh_token", null: false
     t.datetime "expires_at", null: false
     t.datetime "fetched_at", null: false
     t.text "meta", size: :long, default: "{}", null: false, collation: "utf8mb4_bin"

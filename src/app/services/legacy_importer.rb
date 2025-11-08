@@ -5,7 +5,6 @@ class LegacyImporter
     @base_dir = Pathname.new(dir)
   end
 
-  # Entry point
   def import
     raise "Import directory not found: #{@base_dir}" unless @base_dir.directory?
 
@@ -28,13 +27,23 @@ class LegacyImporter
     end
   end
 
-  # ---------- Standalone Images ----------
-  # Import images from "images" directory under the base export folder.
-  # Filenames are expected as "<17-char-id>.<ext>". We:
-  # - Trim id to 14 chars and use it for both aid and name
-  # - Save extension (lowercased) as original_ext
-  # - Set account to the one with aid "t1hqj5le60scd7" if present, otherwise nil
-  # - Skip if an Image with the same 14-char aid already exists
+  def import_tag_from_hash(h)
+    tag = Tag.new
+    tag.aid = h["aid"].to_s[0, 14]
+    tag.name = h["name"]
+    tag.name_id = h["aid"]
+    tag.description = h["description"]
+    tag.visibility = :opened if h["public"]
+    tag.meta["views_count"] = h["views_count"].present? ? h["views_count"].to_i : 0
+    tag.created_at = parse_time(h["created_at"]) if h["created_at"].present?
+    tag.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
+    tag.save!
+  rescue StandardError => e
+    Rails.logger.warn("[LegacyImporter] Tag(#{h['aid']}) import failed: #{e.message}")
+  end
+
+  # ---------- Images ----------
+
   def import_images
     images_dir = @base_dir.join("images")
     return unless images_dir.directory?
@@ -53,7 +62,6 @@ class LegacyImporter
         aid14 = id_part.to_s[0, 14]
         ext_down = ext.downcase
 
-        # Optionally filter by allowed extensions to avoid validation errors
         unless allowed_image_extensions.include?(ext_down)
           Rails.logger.warn("[LegacyImporter] Skip Image(#{base}) due to unsupported extension: #{ext_down}")
           next
@@ -82,21 +90,8 @@ class LegacyImporter
     end
   end
 
-  def import_tag_from_hash(h)
-    tag = Tag.new
-    tag.aid = h["aid"].to_s[0, 14]
-    tag.name = h["name"]
-    tag.name_id = h["aid"]
-    tag.description = h["description"]
-    tag.created_at = parse_time(h["created_at"]) if h["created_at"].present?
-    tag.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
-    tag.visibility = :opened if h["public"]
-    tag.save!
-  rescue StandardError => e
-    Rails.logger.warn("[LegacyImporter] Tag(#{h['aid']}) import failed: #{e.message}")
-  end
-
   # ---------- Accounts ----------
+
   def import_accounts
     accounts_dir = @base_dir.join("accounts")
     return unless accounts_dir.directory?
@@ -119,11 +114,12 @@ class LegacyImporter
     account.name_id = h["name_id"]
     account.description = h["description"]
     account.visibility = :opened if h["public"]
+    account.meta["views_count"] = h["views_count"].present? ? h["views_count"].to_i : 0
     account.created_at = parse_time(h["created_at"]) if h["created_at"].present?
     account.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
     account.save!
 
-    # icon (support any extension)
+    # icon
     icon_path = find_image_by_stem(dir, "icon")
     if icon_path&.file?
       image = create_image_from_file(file_path: icon_path, account: account)
@@ -135,6 +131,7 @@ class LegacyImporter
   end
 
   # ---------- Posts ----------
+
   def import_posts
     posts_dir = @base_dir.join("posts")
     return unless posts_dir.directory?
@@ -168,6 +165,7 @@ class LegacyImporter
     post.published_at = parse_time(h["published_at"]) if h["published_at"].present?
     post.edited_at = parse_time(h["edited_at"]) if h["edited_at"].present?
     post.visibility = :opened if h["status"] == "published"
+    post.meta["views_count"] = h["views_count"].present? ? h["views_count"].to_i : 0
     post.created_at = parse_time(h["created_at"]) if h["created_at"].present?
     post.updated_at = parse_time(h["updated_at"]) if h["updated_at"].present?
     post.save!
@@ -178,7 +176,7 @@ class LegacyImporter
       post.save!
     end
 
-    # Thumbnail (support any extension)
+    # Thumbnail
     thumb = find_image_by_stem(dir, "thumbnail")
     if thumb&.file?
       img = create_image_from_file(file_path: thumb, account: account)
@@ -186,17 +184,7 @@ class LegacyImporter
       post.save!
     end
 
-    # Post images
-    # images_dir = dir.join("images")
-    # if images_dir.directory?
-    #   images_dir.children.each do |img_path|
-    #     next unless img_path.file?
-    #     img = create_image_from_file(file_path: img_path, account: account)
-    #     post.images << img unless post.images.exists?(img.id)
-    #   end
-    # end
-
-    # Comments (best-effort; format-tolerant)
+    # Comments
     comments_path = dir.join("comments.json")
     import_comments_from_json(post, comments_path) if comments_path.file?
   rescue StandardError => e
@@ -231,6 +219,7 @@ class LegacyImporter
   end
 
   # ---------- Helpers ----------
+
   def parse_time(str)
     return nil if str.blank?
 
