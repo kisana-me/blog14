@@ -1,94 +1,99 @@
 class ImagesController < ApplicationController
-  before_action :logged_in_account
-  before_action :set_image, only: %i[ show ]
-  before_action :set_correct_image, only: %i[ edit update variants_show variants_create variants_delete image_delete ]
+  before_action :require_signin
+  before_action :set_image, only: %i[show]
+  before_action :set_correct_image, only: %i[edit update destroy variants_create variants_destroy]
 
   def index
-    all_images = Image.all
-    @images = paged_objects(params[:page], all_images, created_at: :desc)
-    @images_page = total_page(all_images)
+    images = Image.all
+    @images = set_pagination_for(images)
   end
-  def show
-  end
-  def variants_show
-  end
-  def variants_create
-    selected_variant = params[:variant]
-    url = ''
-    case selected_variant
-    when 'images'
-      url = @image.image_url(variant_type: 'images')
-    when 'tb-images'
-      url = @image.image_url(variant_type: 'tb-images')
-    end
-    flash[:notice] = "画像を生成しました#{selected_variant},#{url}"
-    redirect_to image_path(@image.aid)
-  end
+
+  def show; end
+
   def new
     @image = Image.new
   end
+
+  def edit; end
+
   def create
     @image = Image.new(image_params)
     @image.account = @current_account
-    @image.aid = generate_aid(Image, 'aid')
     if @image.save
-      flash[:notice] = "画像をアップロードしました"
-      redirect_to images_path
+      redirect_to images_path, notice: "作成しました"
     else
-      flash.now[:alert] = "画像をアップロードできませんでした"
-      render 'new'
+      flash.now[:alert] = "作成できませんでした"
+      render :new
     end
   end
-  def edit
-  end
+
   def update
     if @image.update(image_params)
-      flash[:notice] = '変更しました'
-      redirect_to images_path
+      redirect_to image_path(@image.aid), notice: "更新しました"
     else
-      flash.now[:alert] = '変更できませんでした'
-      render 'edit'
+      flash.now[:alert] = "更新できませんでした"
+      render :edit
     end
   end
-  def variants_delete
-    if @image.variants_delete
-      flash[:notice] = 'variantsを削除しました'
-      redirect_to image_path(@image.aid)
+
+  def destroy
+    if @image.update(status: :deleted)
+      redirect_to images_path, notice: "削除しました"
     else
-      flash.now[:alert] = 'variantsの削除ができませんでした'
-      render 'show'
+      flash.now[:alert] = "削除できませんでした"
+      render :edit
     end
   end
-  def image_delete
-    if @image.image_delete
-      flash[:notice] = '画像を削除しました'
-      redirect_to image_path(@image.aid)
+
+  def variants_create
+    url = @image.image_url(variant_type: params[:variant_type])
+    if url
+      redirect_to image_path(@image.aid), notice: "画像を生成しました#{url}"
     else
-      flash.now[:alert] = '画像の削除ができませんでした'
-      render 'show'
+      flash.now[:alert] = "画像を生成できませんでした"
+      render :edit
     end
   end
+
+  def variants_destroy
+    if @image.delete_variants
+      redirect_to image_path(@image.aid), notice: "variantsを削除しました"
+    else
+      flash.now[:alert] = "variantsを削除できませんでした"
+      render :edit
+    end
+  end
+
   private
+
   def image_params
-    params.require(:image).permit(
-      :image,
-      :name,
-      :description,
-      :public
+    params.expect(
+      image: %i[
+        image
+        name
+      ]
     )
   end
+
   def set_image
-    @image = Image.find_by(aid: params[:aid], public: true)
+    @image = Image.is_normal.isnt_closed.find_by(aid: params[:aid])
+    return if @image
+
+    @image = Image.unscoped.find_by(aid: params[:aid])
+    return if admin? && @image
+
+    render_404
   end
+
   def set_correct_image
-    @image = @current_account.images.find_by(
-      aid: params[:aid]
-    )
-    unless @image
-      if admin?
-        return if @image = Image.find_by(aid: params[:aid])
-      end
-      render_404
-    end
+    return render_404 unless @current_account
+
+    @image = @current_account.images.is_normal.find_by(aid: params[:aid])
+    return if @image
+
+    @image = Image.unscoped.find_by(aid: params[:aid])
+    return if admin? && @image
+
+    render_404
   end
 end

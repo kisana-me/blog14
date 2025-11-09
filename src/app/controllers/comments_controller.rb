@@ -1,57 +1,57 @@
 class CommentsController < ApplicationController
-  before_action :logged_in_account, only: %i[ update ]
-  before_action :set_comment, only: %i[ update ]
+  before_action :require_signin, only: %i[update]
+  before_action :set_comment, only: %i[update]
 
   def create
     @comment = Comment.new(comment_params)
     post = Post.find_by(aid: params[:comment][:post_aid])
     unless session[:answer].to_i == params[:test1][:test].to_i
       @problem, session[:answer] = generate_random_problem
-      flash[:alert] = '解答が間違っています'
+      flash[:alert] = "解答が間違っています"
       redirect_to post_path(post.aid)
       return
     end
     if params[:comment][:replied].present?
       comment = Comment.find_by(aid: params[:comment][:replied])
-      if comment.comment.nil?
-        @comment.comment = comment
-      end
+      @comment.comment = comment if comment.comment.nil?
     end
-    if logged_in?
-      @comment.account = @current_account
-    end
-    @comment.aid = generate_aid(Comment, 'aid')
+    @comment.account = @current_account
     @comment.post = post
     if @comment.save
-      flash[:notice] = 'コメントを書き込みました'
-      redirect_to post_path(post.aid)
+      flash[:notice] = "コメントを書き込みました"
     else
-      flash[:alert] = "エラー:#{@comment.errors.full_messages.join(", ")}"
-      redirect_to post_path(post.aid)
+      flash[:alert] = "エラー:#{@comment.errors.full_messages.join(', ')}"
     end
+    redirect_to post_path(post.name_id)
   end
+
   def update
     if @comment.update(update_comment_params)
-      flash[:notice] = 'コメントを更新しました'
-      redirect_to post_path(@comment.post.aid)
+      flash[:notice] = "コメントを更新しました"
     else
-      flash[:alert] = "エラー:#{@comment.errors.full_messages.join(", ")}"
-      redirect_to post_path(@comment.post.aid)
+      flash[:alert] = "エラー:#{@comment.errors.full_messages.join(', ')}"
     end
+    redirect_to post_path(@comment.post.name_id)
   end
+
   private
+
   def comment_params
-    params.require(:comment).permit(
-      :name,
-      :content,
-      :address
+    params.expect(
+      comment: %i[
+        name
+        content
+        address
+      ]
     )
   end
+
   def update_comment_params
-    params.require(:comment).permit(
-      :public
+    params.expect(
+      comment: [:visibility]
     )
   end
+
   def set_comment
     @comment = Comment.find_by(aid: params[:aid])
   end

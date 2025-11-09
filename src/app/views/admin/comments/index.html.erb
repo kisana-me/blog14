@@ -1,0 +1,11 @@
+<h1>コメント</h1>
+
+<% @comments.each do |comment| %>
+  <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+    <p><strong>公開状況:</strong> <%= t("activerecord.enums.comment.visibility.#{comment.visibility}") %></p>
+    <p><strong>ポスト:</strong> <%= link_to comment.post.title, post_path(comment.post.name_id) %></p>
+    <p><strong>名前:</strong> <%= comment.name %></p>
+    <p><strong>内容:</strong> <%= comment.content %></p>
+    <p><strong>作成日:</strong> <%= comment.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+  </div>
+<% end %>

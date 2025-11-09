@@ -3,53 +3,68 @@ class Account < ApplicationRecord
   has_many :posts
   has_many :images
   has_many :comments
-  has_secure_password
-  validates :name_id,
-    presence: true,
-    length: { in: 5..50, allow_blank: true },
-    format: { with: BASE_64_URL_REGEX, allow_blank: true },
-    uniqueness: { case_sensitive: false }
-  validates :password,
-    presence: true,
-    length: { in: 8..72, allow_blank: true },
-    allow_nil: true
-  validate :icon_type_and_required
-  before_create :icon_upload
-  before_update :icon_upload
-  attr_accessor :icon
-  attr_accessor :invitation_code
+  has_many :oauth_accounts
+  belongs_to :icon, class_name: "Image", optional: true
 
-  def icon_upload
-    if icon
-      if self.icon_original_key.present?
-        delete_variants(variants_column: 'icon_variants', image_type: 'icons')
-        s3_delete(key: self.icon_original_key)
-      end
-        extension = icon.original_filename.split('.').last.downcase
-        key = "/icons/#{self.aid}.#{extension}"
-        self.icon_original_key = key
-        s3_upload(key: key, file: self.icon.path, content_type: self.icon.content_type)
-    end
+  attribute :meta, :json, default: -> { {} }
+  enum :visibility, { closed: 0, limited: 1, opened: 2 }
+  enum :status, { normal: 0, locked: 1, deleted: 2 }
+  attr_accessor :icon_aid
+
+  before_validation :assign_icon
+  before_create :set_aid
+
+  validates :name,
+            presence: true,
+            length: { in: 1..50, allow_blank: true }
+  validates :name_id,
+            presence: true,
+            length: { in: 5..50, allow_blank: true },
+            format: { with: NAME_ID_REGEX, allow_blank: true },
+            uniqueness: { case_sensitive: false, allow_blank: true }
+  validates :description,
+            allow_blank: true,
+            length: { in: 1..500 }
+  has_secure_password validations: false
+  validates :password,
+            allow_blank: true,
+            length: { in: 8..30 },
+            confirmation: true
+
+  scope :is_normal, -> { where(status: :normal) }
+  scope :isnt_deleted, -> { where.not(status: :deleted) }
+  scope :is_opened, -> { where(visibility: :opened) }
+  scope :isnt_closed, -> { where.not(visibility: :closed) }
+
+  # === #
+
+  def icon_url
+    icon&.image_url(variant_type: "icon") || "/img-1.png"
   end
-  def icon_url(variant_type: 'icons')
-    if self.icon_original_key.present?
-      unless self.icon_variants.include?(variant_type)
-        process_image(
-          variant_type: variant_type,
-          image_type: 'icons',
-          variants_column: 'icon_variants',
-          original_key_column: 'icon_original_key'
-        )
-      end
-      return object_url(key: "/variants/#{variant_type}/icons/#{self.aid}.webp")
-    else
-      return '/'
-    end
+
+  def subscription_plan
+    status = meta.dig("subscription", "subscription_status")
+    return :basic unless %w[active trialing].include?(status)
+
+    period_end = meta.dig("subscription", "current_period_end")&.to_time
+    return :expired unless period_end && period_end > Time.current
+
+    plan = meta.dig("subscription", "plan")
+    plan&.to_sym || :unknown
+  end
+
+  def admin?
+    meta["roles"]&.include?("admin")
   end
 
   private
 
-  def icon_type_and_required
-    varidate_image(column_name: 'icon', required: false)
+  def assign_icon
+    return if icon_aid.blank?
+
+    self.icon = Image.find_by(
+      account: self,
+      aid: icon_aid
+    )
   end
 end

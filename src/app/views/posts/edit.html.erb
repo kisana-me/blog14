@@ -3,4 +3,4 @@
 <% provide(:layout_style, '') %>
 <% provide(:ga4, 'false') %>
 
-<%= render 'posts/form', post: @post, url: post_path(@post.aid), method: :patch %>
+<%= render 'posts/form', post: @post, url: post_path(@post.name_id), method: :patch %>

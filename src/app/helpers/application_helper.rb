@@ -1,19 +1,26 @@
 module ApplicationHelper
-  def full_title(page_title = '')
-    base_title = ENV['APP_NAME']
+  def full_title(page_title = "")
+    base_title = ENV.fetch("APP_NAME", nil)
     if page_title.empty?
       base_title
     else
-      page_title + " | " + base_title
+      "#{page_title} | #{base_title}"
     end
   end
+
   def full_url(path)
-    File.join(ENV['APP_URL'], path)
+    URI.join(ENV.fetch("APP_URL"), path).to_s
   end
-  # def link_to(name = nil, options = nil, html_options = nil, &block)
-  #   html_options ||= {}
-  #   html_options[:data] ||= {}
-  #   html_options[:data][:turbo_prefetch] = false unless html_options[:data].key?(:turbo_prefetch)
-  #   super(name, options, html_options, &block)
-  # end
+
+  def md_render(md, safe_render: false)
+    ::MarkdownRenderer.render(md, safe_render: safe_render)
+  end
+
+  def md_render_toc(md)
+    ::MarkdownRenderer.render_toc(md)
+  end
+
+  def md_render_plain(md)
+    ::MarkdownRenderer.render_plain(md)
+  end
 end

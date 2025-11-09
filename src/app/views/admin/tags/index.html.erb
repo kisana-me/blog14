@@ -6,7 +6,7 @@
 
 <h1>タグ一覧(admin)</h1>
 <% @tags.each do |tag| %>
-  <%= link_to edit_tag_path(tag.aid), class: 'tag-path', data: {turbo_prefetch: false} do %>
+  <%= link_to edit_tag_path(tag.name_id), class: 'tag-path', data: {turbo_prefetch: false} do %>
     <div class="tag-top">
       <div class="tag-name">
         <%= tag.name %>

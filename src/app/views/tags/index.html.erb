@@ -6,13 +6,13 @@
 
 <h1>タグ一覧</h1>
 <% @tags.each do |tag| %>
-  <%= link_to tag_path(tag.aid), class: 'tag-path', data: {turbo_prefetch: false} do %>
+  <%= link_to tag_path(tag.name_id), class: 'tag-path' do %>
     <div class="tag-top">
       <div class="tag-name">
         <%= tag.name %>
       </div>
       <div class="tag-description">
-        <%= tag.description %>
+        <%= md_render_plain tag.description %>
       </div>
     </div>
   <% end %>

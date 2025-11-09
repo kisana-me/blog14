@@ -1,3 +1,5 @@
-class Admin::ApplicationController < ApplicationController
-  before_action :admin_account
+module Admin
+  class ApplicationController < ApplicationController
+    before_action :require_admin
+  end
 end

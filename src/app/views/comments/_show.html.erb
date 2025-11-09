@@ -6,8 +6,8 @@
   <% if permission %>
     <div>
       <%= form_with(model: comment, url: comment_path(comment.aid), method: :put, data: { turbo: false }) do |f| %>
-        <%= f.check_box :public, id: "comment_#{comment.aid}" %>
-        <%= f.label comment.aid, "公開" %>
+        <%= f.label :visibility, "公開状況" %>
+        <%= f.select :visibility, Comment.visibilities.keys.map { |key| [t("activerecord.enums.comment.visibility.#{key}"), key] } %>
         <%= f.submit "更新" %>
       <% end %>
     </div>
@@ -16,7 +16,7 @@
     ID:<%= comment.aid %>
     名前:<%= comment.name.present? ? comment.name : '名無し' %>
     <% if comment.account %>
-      (<%= link_to( comment.account.name, account_path(comment.account.aid)) %>)
+      (<%= link_to( comment.account.name, account_path(comment.account.name_id)) %>)
     <% end %>
     日時:<%= comment.created_at.strftime('%Y/%m/%d %H:%M') %>
   </div>
@@ -24,11 +24,7 @@
     <%= comment.content %>
   </div>
   <% if top %>
-    <% if permission %>
-      <% replies = comment_all_replies(comment) %>
-    <% else %>
-      <% replies = comment_replies(comment) %>
-    <% end %>
+    <% replies = permission ? comment_all_replies(comment) : comment_public_replies(comment) %>
     <% if replies.present? %>
     <details>
       <summary>スレッドを表示</summary>

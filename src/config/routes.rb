@@ -1,55 +1,75 @@
 Rails.application.routes.draw do
-
-  get "health" => "rails/health#show", as: :rails_health_check
   root "pages#index"
 
-  scope :secrets do
-    get '/' => 'pages#secrets'
-    post '/'=> 'pages#secrets_check', as: 'secrets_check'
-    post 'signup' => 'accounts#create_signup'
-    post 'login' => 'accounts#create_login'
-    delete 'logout' => 'accounts#logout'
+  # Pages
+  get "terms-of-service" => "pages#terms_of_service"
+  get "privacy-policy" => "pages#privacy_policy"
+  get "contact" => "pages#contact"
+  get "sitemap" => "pages#sitemap"
+
+  # Sessions
+  get "sessions/start"
+  delete "signout" => "sessions#signout"
+  resources :sessions, except: %i[new create], param: :aid
+
+  # Signup
+  get "signup" => "signup#new"
+  post "signup" => "signup#create"
+
+  # OAuth
+  post "oauth/start" => "oauth#start"
+  get "oauth/callback" => "oauth#callback"
+  post "oauth/fetch" => "oauth#fetch"
+
+  # Accounts
+  resources :accounts, param: :name_id, only: %i[index show]
+
+  # Posts
+  resources :posts, param: :name_id
+
+  # Images
+  resources :images, param: :aid do
+    member do
+      post "variants_create" => "images#variants_create", as: "variants_create"
+      delete "variants_destroy" => "images#variants_destroy", as: "variants_destroy"
+    end
   end
 
-  resources :accounts, param: :aid, except: [:new, :create]
-  resources :session, params: :aid, only: []
-  resources :posts, param: :aid
-  delete 'posts/:aid/thumbnail_variants_delete' => 'posts#thumbnail_variants_delete', as: 'thumbnail_variants_delete'
-  resources :images, param: :aid, except: [:delete]
-  get 'images/:aid/variants_show' => 'images#variants_show', as: 'variants_show'
-  post 'images/:aid/variants_create' => 'images#variants_create', as: 'variants_create'
-  delete 'images/:aid/variants_delete' => 'images#variants_delete', as: 'variants_delete'
-  delete 'images/:aid/image_delete' => 'images#image_delete', as: 'image_delete'
-  resources :comments, param: :aid, only: [:create, :update]
-  resources :tags, param: :aid
+  # Comments
+  resources :comments, param: :aid, only: %i[create update]
 
-  # Pages
-  get 'terms' => 'pages#terms'
-  get 'privacy' => 'pages#privacy'
-  get 'sitemap' => 'pages#sitemap'
-  get 'contact' => 'pages#contact'
-  post 'contact' => 'pages#create_contact'
+  # Tags
+  resources :tags, param: :name_id
 
   # Studio
-  get 'studio' => 'studio#index'
+  get "studio" => "studio#index"
+
+  # Settings
+  get "settings" => "settings#index"
+  get "settings/account" => "settings#account"
+  get "settings/icon" => "settings#icon"
+  patch "settings/account" => "settings#post_account"
+  delete "settings/leave" => "settings#leave"
 
   # Administorator
   namespace :admin do
-    root 'studio#index'
-    get 'export' => 'studio#export'
-    resources :accounts, param: :aid, only: [:index, :edit, :update]
-    patch 'posts/update_multiple', to: 'posts#update_multiple', as: :update_multiple_posts
-    resources :posts, param: :aid, only: [:index, :edit, :update]
+    root "studio#index"
+    get "export" => "studio#export"
+    resources :accounts, param: :aid, only: %i[index edit update]
+    patch "posts/update_multiple", to: "posts#update_multiple", as: :update_multiple_posts
+    resources :posts, param: :aid, only: %i[index edit update]
     resources :tags, param: :aid, only: [:index]
-    resources :inquiries, param: :aid, only: [:index, :show, :update]
+    resources :comments, param: :aid, only: [:index]
   end
 
   # API
   namespace :v1 do
-    post 'images/create' =>  'images#create'
+    post "images/create" => "images#create"
   end
 
-  # Error
-  get '*not_found', to: 'application#routing_error'
-  post '*not_found', to: 'application#routing_error'
+  # Others
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Errors
+  match "*path", to: "application#routing_error", via: :all
 end

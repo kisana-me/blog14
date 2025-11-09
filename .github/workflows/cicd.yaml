@@ -17,9 +17,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ~/blog14
+            cd ~/ivecolor
             docker compose down
-            git remote set-url origin https://kisana-me:${{ secrets.GH_TOKEN }}@github.com/kisana-me/blog14.git
+            git remote set-url origin https://kisana-me:${{ secrets.GH_TOKEN }}@github.com/kisana-me/ivecolor.git
             git fetch origin main
             git reset --hard origin/main
             docker compose up -d --build

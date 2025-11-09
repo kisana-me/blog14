@@ -128,69 +128,87 @@
   display: block;
 }
 
-/* post */
+/*
+  post
+*/
+
+/* post owners */
+
+.post-owners-info {
+  padding: 4px 8px;
+  border: 1px solid #ff0000;
+  border-radius: 7px;
+  margin: 0 0 5px 0;
+}
+.post-owners-message {
+  color: red;
+}
+
+/* post thumbnail */
 
 .post-thumbnail {
-  background: linear-gradient(90deg, rgba(240,164,255,1) 0%, rgba(255,128,156,1) 16%, rgba(255,211,153,1) 36%, rgba(197,250,130,1) 57%, rgba(140,244,255,1) 80%, rgba(166,128,255,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(240,164,255,1) 0%,
+    rgba(255,128,156,1) 16%,
+    rgba(255,211,153,1) 36%,
+    rgba(197,250,130,1) 57%,
+    rgba(140,244,255,1) 80%,
+    rgba(166,128,255,1) 100%);
   border-radius: 7px;
   aspect-ratio: 16 / 9;
-  position: relative;
-}
-.post-altspace {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 7px;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.post-alttext {
-  border-radius: 3px;
-  background: #fff7;
-  padding: 0 10px;
 }
 .post-thumbnail img {
-  border-radius: 7px;
   width: 100%;
+  border-radius: 7px;
   aspect-ratio: 16 / 9;
   display: block;
+  object-fit: cover;
 }
-.post-context h1 {
+
+/* post context */
+
+.post-context > div {
+  margin: 5px 0;
+}
+.post-title {
   padding: 0;
-  border-left: 0;
+  border: 0;
   margin: 0;
-  font-size: 27px;
-  margin-bottom: 7px;
+  font-size: 24px;
   background-color: inherit;
 }
-.post-content span {
-  font-size: 12px;
+.post-summary {
+  font-size: 0.95rem;
 }
-.post-content .show-mini-post {
-  border: 1px solid #cdcdcd;
-  border-radius: 7px;
-  box-sizing: border-box;
+.post-dates {
+  font-size: 0.9rem;
+  color: #393939;
 }
+/* post accountは下に */
 .post-tags {
-  margin: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 .post-tag {
+  padding: 0px 5px;
+  border: .1px solid #9ef6ff;
+  border-radius: 7px;
   background: linear-gradient(210deg, rgb(151, 247, 199) 0%, rgb(232, 247, 205) 74%);
   color: inherit;
   text-decoration: none;
-  border: 1px solid #9ef6ff;
-  border-radius: 7px;
-  padding: 0px 5px;
 }
 .post-meta {
   display: flex;
+  gap: 2px;
   flex-wrap: wrap;
   align-content: center;
-  flex-direction: row-reverse;
-  margin-bottom: 7px;
+  justify-content: flex-end;
 }
+
+/* post toc */
+
 .post-toc {
   border: 2px solid #b9dad7;
   border-radius: 7px;
@@ -204,17 +222,45 @@
   display: block;
   text-align: center;
 }
+
+/* post content */
+
+.post-content span {
+  font-size: 12px;
+}
+.post-content .show-mini-post {
+  border: 1px solid #cdcdcd;
+  border-radius: 7px;
+  box-sizing: border-box;
+}
+.markdown-image-slider {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow-x: auto;
+}
+.markdown-image-figure {
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin: 0;
+}
+.markdown-image-figure figcaption {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* post ending */
+
 .post-ending {
   margin: 30px 0 8px;
 }
-.post-ending-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: center;
-  flex-direction: row-reverse;
-  margin-bottom: 7px;
+.post-author {
+
 }
-.post-ending hr {
+.post-hr {
   border: none;
   height: 7px;
   background: linear-gradient(90deg, rgba(240,164,255,1) 0%, rgba(255,128,156,1) 16%, rgba(255,211,153,1) 36%, rgba(197,250,130,1) 57%, rgba(140,244,255,1) 80%, rgba(166,128,255,1) 100%);
@@ -256,7 +302,7 @@
   flex-shrink: 0;
 }
 
-/* flex */
+
 
 @media (max-width: 528px) {
   /* 以下 */

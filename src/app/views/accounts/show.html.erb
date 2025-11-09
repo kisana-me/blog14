@@ -16,11 +16,13 @@
   </div>
 </div>
 <div class="account-profile">
-  ID:<%= @account.aid %>
+  固有ID:<%= @account.aid %>
   <br />
-  紹介文:<%= @account.description %>
+  ID:<%= @account.name_id %>
+  <hr />
+  <%= md_render @account.description %>
 </div>
 <h2>最新の投稿</h2>
-<% whos_posts(@account, 10).each do |post| %>
+<% @posts.each do |post| %>
   <%= render 'posts/show', post: post %>
 <% end %>

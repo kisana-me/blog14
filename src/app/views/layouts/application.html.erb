@@ -68,17 +68,17 @@
       <div class="sub-container">
         <div class="sub-content">
           <div class="sub-heading">おすすめの記事</div>
-          <% recommended_posts(5).each do |post| %>
+          <% recommended_posts().each do |post| %>
             <%= render 'posts/show_mini', post: post %>
           <% end %>
           <div class="sub-heading">新着の記事</div>
-          <% new_posts(5).each do |post| %>
+          <% new_posts().each do |post| %>
             <%= render 'posts/show_mini', post: post %>
           <% end %>
           <% if @post %>
             <div class="sub-heading">筆者</div>
             <div class="post-account">
-              <%= link_to account_path(@post.account.aid), class: 'post-account-path', data: {turbo_prefetch: false} do %>
+              <%= link_to account_path(@post.account.name_id), class: 'post-account-path', data: {turbo_prefetch: false} do %>
                 <div class="post-account-top">
                   <div class="post-account-icon-container">
                     <%= image_tag(@post.account.icon_url, class: 'post-account-icon', alt: "#{@post.account.name}のアイコン") %>
@@ -90,7 +90,7 @@
               <% end %>
             </div>
             <div>
-              <%= @post.account.description %>
+              <%= md_render @post.account.description %>
             </div>
           <% end %>
         </div>

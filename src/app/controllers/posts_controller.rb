@@ -1,90 +1,133 @@
 class PostsController < ApplicationController
-  before_action :logged_in_account, only: %i[ new create edit update thumbnail_variants_delete ]
-  before_action :set_post, only: %i[ show ]
-  before_action :set_correct_post, only: %i[ edit update thumbnail_variants_delete ]
   include PostsHelper
+  include ViewLogger
+
+  before_action :require_signin, except: %i[index show]
+  before_action :set_post, only: %i[show]
+  before_action :set_correct_post, only: %i[edit update destroy]
 
   def index
-    all_posts = Post.where(status: :published)
-    @posts = paged_objects(params[:page], all_posts, published_at: :desc)
-    @posts_page = total_page(all_posts)
+    posts = Post
+      .from_normal_accounts
+      .is_normal
+      .is_opened
+      .order(published_at: :desc)
+      .includes(:thumbnail)
+    @posts = set_pagination_for(posts)
   end
+
   def show
-    unless logged_in?
-      @post.update(views_count: @post.views_count + 1)
+    @is_post_owner = @current_account && (@current_account.id == @post.account_id || admin?)
+    if @is_post_owner
+      @views_count = ViewLog.where(viewable: @post).count
+    else
+      log_view(@post)
     end
     @problem, session[:answer] = generate_random_problem
   end
+
   def new
     @post = Post.new
   end
+
+  def edit; end
+
   def create
     @post = Post.new(post_params)
-    @post.aid = generate_aid(Post, 'aid')
     @post.account = @current_account
     @post.tagging
     if @post.save
-      flash[:notice] = '作成しました'
-      redirect_to post_path(@post.aid)
+      redirect_to post_path(@post.name_id), notice: "作成しました"
     else
-      flash.now[:alert] = '作成できませんでした'
-      render 'new'
+      flash.now[:alert] = "作成できませんでした"
+      render :new
     end
   end
-  def edit
-  end
+
   def update
-    @post.tagging(arr: params[:post][:selected_tags])
-    if @post.update(post_params)
-      flash[:notice] = '編集しました'
-      redirect_to post_path(@post.aid)
+    @post.assign_attributes(post_params)
+    @post.tagging
+    if @post.save
+      redirect_to post_path(@post.name_id), notice: "更新しました"
     else
-      flash.now[:alert] = '編集できませんでした'
-      render 'new'
+      flash.now[:alert] = "更新できませんでした"
+      render :edit
     end
   end
-  def thumbnail_variants_delete
-    if @post.thumbnail_variants_delete
-      flash[:notice] = 'variantsを削除しました'
-      redirect_to privacy_path
+
+  def destroy
+    if @post.update(status: :deleted)
+      redirect_to images_path, notice: "削除しました"
     else
-      flash[:alert] = 'variantsの削除ができませんでした'
-      redirect_to privacy_path
+      flash.now[:alert] = "削除できませんでした"
+      render :edit
     end
   end
 
   private
+
   def post_params
-    params.require(:post).permit(
-      :thumbnail,
-      :title,
-      :summary,
-      :content,
-      :status,
-      :published_at,
-      :edited_at,
-      selected_tags: []
+    params.expect(
+      post: [
+        :name_id,
+        :title,
+        :summary,
+        :content,
+        :published_at,
+        :edited_at,
+        :visibility,
+        :thumbnail_new_image,
+        :thumbnail_image_aid,
+        { selected_tags: [] }
+      ]
     )
   end
+
   def set_post
-    @post = Post.where(status: :published).find_by(aid: params[:aid])
-    unless @post
-      if logged_in?
-        return if @post = @current_account.posts.find_by(aid: params[:aid])# deleted以外にする
-        if admin?
-          return if @post = Post.find_by(aid: params[:aid])
-        end
-      end
-      render_404
-    end
+    preload_assocs = %i[account tags images thumbnail]
+
+    @post = Post
+      .from_normal_accounts
+      .is_normal
+      .isnt_closed
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if @post
+
+    return render_404 unless @current_account
+
+    @post = @current_account.posts
+      .isnt_deleted
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if @post
+
+    @post = Post
+      .unscoped
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if admin? && @post
+
+    render_404
   end
+
   def set_correct_post
-    @post = @current_account.posts.find_by(aid: params[:aid])
-    unless @post
-      if admin?
-        return if @post = Post.find_by(aid: params[:aid])
-      end
-      render_404
-    end
+    return render_404 unless @current_account
+
+    preload_assocs = %i[account tags images thumbnail]
+
+    @post = @current_account.posts
+      .isnt_deleted
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if @post
+
+    @post = Post
+      .unscoped
+      .includes(preload_assocs)
+      .find_by(name_id: params[:name_id])
+    return if admin? && @post
+
+    render_404
   end
 end

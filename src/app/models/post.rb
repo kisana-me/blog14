@@ -1,70 +1,93 @@
 class Post < ApplicationRecord
-  enum status: { draft: 0, unlisted: 1, published: 2, deleted: 3 }
   belongs_to :account
+  belongs_to :thumbnail, class_name: "Image", optional: true
   has_many :post_tags
   has_many :tags, through: :post_tags
+  has_many :post_images
+  has_many :images, through: :post_images
   has_many :comments
-  # Thumbnail
-  attr_accessor :thumbnail
-  validate :thumbnail_type_and_required
-  before_create :thumbnail_upload
-  before_update :thumbnail_upload
-  # Tag
-  # taggingメソッドで代入
-  attr_accessor :selected_tags
+  has_many :view_logs, as: :viewable
 
-  # Thumbnail
-  def thumbnail_upload
-    if thumbnail
-      if self.thumbnail_original_key.present?
-        delete_variants(variants_column: 'thumbnail_variants', image_type: 'thumbnails')
-        s3_delete(key: self.thumbnail_original_key)
-      end
-        extension = thumbnail.original_filename.split('.').last.downcase
-        key = "/thumbnails/#{self.aid}.#{extension}"
-        self.thumbnail_original_key = key
-        s3_upload(key: key, file: self.thumbnail.path, content_type: self.thumbnail.content_type)
-    end
+  attribute :meta, :json, default: -> { {} }
+  enum :visibility, { closed: 0, limited: 1, opened: 2 }
+  enum :status, { normal: 0, locked: 1, deleted: 2, specific: 3 }
+  attr_accessor :thumbnail_new_image
+  attr_accessor :thumbnail_image_aid, :selected_tags
+
+  after_initialize :set_aid, if: :new_record?
+  before_validation :set_name_id
+  before_validation :assign_thumbnail
+  after_save :sync_post_images, if: :saved_change_to_content?
+
+  validates :name_id,
+            presence: true,
+            length: { in: 5..50, allow_blank: true },
+            format: { with: BASE64_URLSAFE_REGEX, allow_blank: true },
+            uniqueness: { case_sensitive: false, allow_blank: true }
+  validates :title,
+            presence: true,
+            length: { in: 1..200, allow_blank: true }
+  validates :summary,
+            presence: true,
+            length: { in: 1..500, allow_blank: true }
+  validates :content,
+            presence: true,
+            length: { in: 1..100_000, allow_blank: true }
+
+  scope :from_normal_accounts, -> { joins(:account).where(accounts: { status: :normal }) }
+  scope :is_normal, -> { where(status: :normal) }
+  scope :isnt_deleted, -> { where.not(status: :deleted) }
+  scope :is_opened, -> { where(visibility: :opened) }
+  scope :isnt_closed, -> { where.not(visibility: :closed) }
+
+  # === #
+
+  def thumbnail_url
+    thumbnail&.image_url || "/img-2.webp"
   end
-  def thumbnail_url(variant_type: 'images')
-    if self.thumbnail_original_key.present?
-      unless self.thumbnail_variants.include?(variant_type)
-        process_image(
-          variant_type: variant_type,
-          image_type: 'thumbnails',
-          variants_column: 'thumbnail_variants',
-          original_key_column: 'thumbnail_original_key'
-        )
-      end
-      return object_url(key: "/variants/#{variant_type}/thumbnails/#{self.aid}.webp")
-    else
-      return nil
-    end
-  end
-  def thumbnail_variants_delete
-    delete_variants(variants_column: 'thumbnail_variants', image_type: 'thumbnails')
-    self.save
-  end
-  def thumbnail?
-    thumbnail_original_key.present?
-  end
-  # Tag
-  def tagging(arr: selected_tags)
-    if arr.blank?
-      self.tags = []
-    else
-      tmp_tags = []
-      arr.each do |aid|
-        tag = Tag.find_by(aid: aid)
-        tmp_tags << tag
-      end
-      self.tags = tmp_tags
-    end
+
+  def tagging(tags: selected_tags)
+    self.tags = tags.blank? ? [] : Tag.where(aid: tags)
   end
 
   private
 
-  def thumbnail_type_and_required
-    varidate_image(column_name: 'thumbnail', required: false)
+  def set_name_id
+    self.name_id = aid if name_id.blank?
+  end
+
+  def assign_thumbnail
+    if thumbnail_new_image.present?
+      self.thumbnail = Image.create(
+        account: account,
+        image: thumbnail_new_image
+      )
+    elsif thumbnail_image_aid.present?
+      self.thumbnail = Image.is_normal.find_by(
+        account: account,
+        aid: thumbnail_image_aid
+      )
+    end
+  end
+
+  def sync_post_images
+    return if content.blank?
+
+    # Find our custom image syntax occurrences: ?[image](...) and extract aids
+    aids = content.to_s.scan(/\?\[image\]\(([^)]+)\)/).flat_map do |m|
+      raw = m.first.to_s
+      raw.split(",").map { |part| part.to_s.split("|", 2).first.to_s.strip }
+    end
+    aids = aids.filter_map(&:presence).uniq
+
+    return if aids.empty?
+
+    found_images = Image.from_normal_accounts.is_normal.where(aid: aids)
+
+    # Keep only found images and preserve current ordering by aids
+    ordered_images = aids.filter_map { |a| found_images.find { |img| img.aid == a } }
+
+    # Replace associations using ActiveRecord collection writer
+    self.images = ordered_images
   end
 end
