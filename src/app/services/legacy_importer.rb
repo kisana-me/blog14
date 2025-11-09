@@ -190,16 +190,14 @@ class LegacyImporter
     arr = JSON.parse(path.read)
     return unless arr.is_a?(Array)
     account_aids = arr.filter_map { |c| c["account_aid"].to_s[0, 14].presence }.uniq
-    parent_comment_aids = arr.filter_map { |c| c["parent_comment_aid"].to_s[0, 14].presence }.uniq
     accounts_by_aid = Account.where(aid: account_aids).index_by(&:aid)
-    parent_comments_by_aid = Comment.where(aid: parent_comment_aids).index_by(&:aid)
 
     arr.each do |c|
       c["aid"]
       comment = Comment.new
       comment.post = post
       comment.account = accounts_by_aid[c["account_aid"].to_s[0, 14]] if c["account_aid"].present?
-      comment.comment = parent_comments_by_aid[c["parent_comment_aid"].to_s[0, 14]] if c["parent_comment_aid"].present?
+      comment.comment = Comment.find_by(aid: c["parent_comment_aid"].to_s[0, 14]) if c["parent_comment_aid"].present?
       comment.aid = c["aid"].to_s[0, 14]
       comment.name = c["name"]
       comment.content = c["content"]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 11) do
+ActiveRecord::Schema[8.0].define(version: 12) do
   create_table "accounts", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "aid", limit: 14, null: false
     t.string "name", null: false
@@ -174,6 +174,26 @@ ActiveRecord::Schema[8.0].define(version: 11) do
     t.check_constraint "json_valid(`meta`)", name: "meta"
   end
 
+  create_table "view_logs", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
+    t.string "viewable_type", null: false
+    t.bigint "viewable_id", null: false
+    t.bigint "account_id"
+    t.string "ip", limit: 45
+    t.text "user_agent"
+    t.text "referer"
+    t.string "session_id"
+    t.string "device_type"
+    t.string "browser"
+    t.string "os"
+    t.boolean "is_bot", default: false
+    t.datetime "viewed_at", default: -> { "current_timestamp(6)" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_view_logs_on_account_id"
+    t.index ["ip", "viewed_at"], name: "index_view_logs_on_ip_and_viewed_at"
+    t.index ["viewable_type", "viewable_id"], name: "index_view_logs_on_viewable_type_and_viewable_id"
+  end
+
   add_foreign_key "accounts", "images", column: "icon_id"
   add_foreign_key "comments", "accounts"
   add_foreign_key "comments", "comments"
@@ -189,4 +209,5 @@ ActiveRecord::Schema[8.0].define(version: 11) do
   add_foreign_key "posts", "accounts"
   add_foreign_key "posts", "images", column: "thumbnail_id"
   add_foreign_key "sessions", "accounts"
+  add_foreign_key "view_logs", "accounts"
 end

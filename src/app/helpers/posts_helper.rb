@@ -20,13 +20,32 @@ module PostsHelper
   # Posts
 
   def recommended_posts(limit = 5)
-    Post
-      .from_normal_accounts
-      .is_normal
-      .is_opened
-      .order(edited_at: :desc)
-      .limit(limit.to_i)
-      .includes(:thumbnail)
+    limit = limit.to_i
+    Rails.cache.fetch(["recommended_posts", limit], expires_in: 7.day) do
+      candidates = Post
+        .from_normal_accounts
+        .is_normal
+        .is_opened
+        .order(published_at: :desc)
+        .limit(500)
+        .pluck(:id)
+
+      view_counts = if candidates.any?
+        ViewLog
+          .where(viewable_type: "Post", viewable_id: candidates)
+          .where("created_at >= ?", 1.months.ago)
+          .group(:viewable_id)
+          .count
+      else
+        {}
+      end
+
+      ranked_ids = candidates.sort_by { |id| -(view_counts[id] || 0) }
+
+      Post
+        .where(id: ranked_ids.first(limit))
+        .order(Arel.sql("FIELD(id, #{ranked_ids.first(limit).join(',')})"))
+    end
   end
 
   def new_posts(limit = 5)

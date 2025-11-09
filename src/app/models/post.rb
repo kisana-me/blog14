@@ -6,6 +6,7 @@ class Post < ApplicationRecord
   has_many :post_images
   has_many :images, through: :post_images
   has_many :comments
+  has_many :view_logs, as: :viewable
 
   attribute :meta, :json, default: -> { {} }
   enum :visibility, { closed: 0, limited: 1, opened: 2 }

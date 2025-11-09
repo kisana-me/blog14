@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   include PostsHelper
+  include ViewLogger
 
   before_action :require_signin, except: %i[index show]
   before_action :set_post, only: %i[show]
@@ -16,7 +17,12 @@ class PostsController < ApplicationController
   end
 
   def show
-    # アクセスカウントしたい
+    @is_post_owner = @current_account && (@current_account.id == @post.account_id || admin?)
+    if @is_post_owner
+      @views_count = ViewLog.where(viewable: @post).count
+    else
+      log_view(@post)
+    end
     @problem, session[:answer] = generate_random_problem
   end
 
