@@ -11,7 +11,7 @@ module ViewLogger
       session_id: request.session.id.to_s,
       viewed_at: Time.current
     )
-  rescue => e
+  rescue StandardError => e
     Rails.logger.warn("[ViewLogger] failed to record: #{e.message}")
   end
 end

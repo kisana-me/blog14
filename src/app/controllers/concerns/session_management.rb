@@ -6,18 +6,18 @@ module SessionManagement
   # Accountに必要なカラム(名前 型)
   # - status enum { normal: 0, locked: 1, deleted: 2 }
 
-  COOKIE_NAME = "ivecolor"
-  COOKIE_EXPIRES_IN = 6.month
-  TOKEN_EXPIRES_IN = 6.month
+  COOKIE_NAME = "ivecolor".freeze
+  COOKIE_EXPIRES_IN = 6.months
+  TOKEN_EXPIRES_IN = 6.months
 
-  def current_account()
+  def current_account
     @current_account = nil
-    tokens = get_tokens()
+    tokens = get_tokens
     cookie_needs_update = false
 
     while tokens.any?
       token = tokens.first
-      db_session = Session.isnt_deleted.from_not_deleted_accounts.find_by_token(token)
+      db_session = Session.isnt_deleted.from_not_deleted_accounts.findby_token(token)
       if db_session
         @current_account = db_session.account
         break
@@ -48,10 +48,10 @@ module SessionManagement
   end
 
   def sign_out
-    tokens = get_tokens()
+    tokens = get_tokens
     return false unless (token = tokens.shift)
 
-    db_session = Session.isnt_deleted.find_by_token(token)
+    db_session = Session.isnt_deleted.find_by(token: token)
     db_session&.update(status: :deleted)
 
     if tokens.empty?
@@ -63,7 +63,7 @@ module SessionManagement
     true
   end
 
-  def signed_in_accounts()
+  def signed_in_accounts
     db_sessions = Session
       .isnt_deleted
       .from_not_deleted_accounts
@@ -90,7 +90,7 @@ module SessionManagement
 
   private
 
-  def get_tokens()
+  def get_tokens
     JSON.parse(cookies.encrypted[COOKIE_NAME.to_sym] || "[]")
   rescue JSON::ParserError
     []

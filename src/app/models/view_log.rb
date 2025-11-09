@@ -13,11 +13,11 @@ class ViewLog < ApplicationRecord
     self.is_bot = user_agent&.match?(/bot|crawler|spider|preview/i)
     return if is_bot
 
-    if user_agent
-      self.device_type = user_agent.match?(/mobile/i) ? "mobile" : "desktop"
-      self.browser = parse_browser
-      self.os = parse_os
-    end
+    return unless user_agent
+
+    self.device_type = user_agent.match?(/mobile/i) ? "mobile" : "desktop"
+    self.browser = parse_browser
+    self.os = parse_os
   end
 
   def parse_browser

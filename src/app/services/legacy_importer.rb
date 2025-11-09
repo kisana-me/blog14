@@ -58,7 +58,7 @@ class LegacyImporter
   end
 
   def import_image_from_hash(h, account)
-    image_path = @base_dir.join("images", h["aid"] + "." + h["extension"])
+    image_path = @base_dir.join("images", "#{h['aid']}.#{h['extension']}")
     raise "Image file not found: #{image_path}" unless image_path.file?
 
     image = Image.new
@@ -80,6 +80,7 @@ class LegacyImporter
   def import_accounts
     accounts_index_file = @base_dir.join("accounts", "accounts.json")
     return unless accounts_index_file.file?
+
     accounts_index_data = JSON.parse(accounts_index_file.read)
 
     accounts_dir = @base_dir.join("accounts")
@@ -125,6 +126,7 @@ class LegacyImporter
   def import_posts
     posts_index_file = @base_dir.join("posts", "posts.json")
     return unless posts_index_file.file?
+
     posts_index_data = JSON.parse(posts_index_file.read)
 
     posts_dir = @base_dir.join("posts")
@@ -189,6 +191,7 @@ class LegacyImporter
   def import_comments_from_json(post, path)
     arr = JSON.parse(path.read)
     return unless arr.is_a?(Array)
+
     account_aids = arr.filter_map { |c| c["account_aid"].to_s[0, 14].presence }.uniq
     accounts_by_aid = Account.where(aid: account_aids).index_by(&:aid)
 

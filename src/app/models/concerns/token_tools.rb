@@ -33,11 +33,12 @@ module TokenTools
   def authenticate_token(token, type = "token")
     digest = send("#{type}_digest")
     return false unless digest
+
     BCrypt::Password.new(digest).is_password?(token)
   end
 
   class_methods do
-    def find_by_token(token, type = "token")
+    def findby_token(token, type = "token")
       lookup = new.generate_lookup(token)
       record = where("#{type}_expires_at > ?", Time.current)
         .find_by("#{type}_lookup": lookup)

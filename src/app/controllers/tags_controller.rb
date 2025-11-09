@@ -16,9 +16,7 @@ class TagsController < ApplicationController
   def show
     # 投稿をページングしたい
 
-    unless admin?
-      log_view(@tag)
-    end
+    log_view(@tag) unless admin?
 
     @posts = @tag.posts
       .from_normal_accounts

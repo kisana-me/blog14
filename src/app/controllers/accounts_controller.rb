@@ -16,9 +16,7 @@ class AccountsController < ApplicationController
     # 投稿をページングしたい
 
     @is_account_owner = @current_account && (@current_account.id == @account.id || admin?)
-    unless @is_account_owner
-      log_view(@account)
-    end
+    log_view(@account) unless @is_account_owner
 
     @posts = @account.posts
       .from_normal_accounts
