@@ -137,7 +137,7 @@ class OauthController < ApplicationController
   end
 
   def update_subscription_info(provider, account, resources)
-    return unless provider == "anyur"
+    return unless provider == "anyur".to_sym
 
     account.meta["subscription"] = resources.dig("data", "subscription")
     account.save!
