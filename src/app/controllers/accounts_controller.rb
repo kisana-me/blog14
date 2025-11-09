@@ -1,4 +1,6 @@
 class AccountsController < ApplicationController
+  include ViewLogger
+
   before_action :set_account, only: %i[show]
 
   def index
@@ -12,7 +14,12 @@ class AccountsController < ApplicationController
 
   def show
     # 投稿をページングしたい
-    # アクセスカウントしたい
+
+    @is_account_owner = @current_account && (@current_account.id == @account.id || admin?)
+    unless @is_account_owner
+      log_view(@account)
+    end
+
     @posts = @account.posts
       .from_normal_accounts
       .is_normal

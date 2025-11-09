@@ -1,4 +1,6 @@
 class TagsController < ApplicationController
+  include ViewLogger
+
   before_action :require_admin, except: %i[index show]
   before_action :set_tag, only: %i[show]
   before_action :set_correct_tag, only: %i[edit update destroy]
@@ -13,7 +15,11 @@ class TagsController < ApplicationController
 
   def show
     # 投稿をページングしたい
-    # アクセスカウントしたい
+
+    unless admin?
+      log_view(@tag)
+    end
+
     @posts = @tag.posts
       .from_normal_accounts
       .is_normal
