@@ -1,0 +1,20 @@
+<h1>Admin Studio Console</h1>
+
+<%= form_with url: admin_studio_console_path, method: :post, local: true, data: { turbo: false } do %>
+  <div>
+    <%= label_tag :command, 'コマンド' %>
+    <%= text_area_tag :command, params[:command], placeholder: 'コマンドを入力してください', rows: 10, cols: 80 %>
+  </div>
+  <div>
+    <%= submit_tag '実行' %>
+  </div>
+<% end %>
+
+<% if @output.present? %>
+  <h2>出力結果</h2>
+  <pre><%= @output %></pre>
+<% end %>
+<% if @error.present? %>
+  <h2>エラー</h2>
+  <pre><%= @error %></pre>
+<% end %>

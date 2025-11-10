@@ -1,6 +1,7 @@
 module V1
   class ApplicationController < ApplicationController
     protect_from_forgery except: :new_token
+
     def new_token
       set_csrf_token_cookie
       render body: nil
@@ -8,8 +9,8 @@ module V1
 
     private
 
-    def api_logged_in_account
-      return if logged_in?
+    def api_require_signin
+      return if @current_account
 
       render status: :unauthorized
     end

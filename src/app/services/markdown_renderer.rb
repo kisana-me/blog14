@@ -40,7 +40,7 @@ class MarkdownRenderer
             Rails.application.routes.url_helpers.image_path(image.aid)
             img_tag = ApplicationController.helpers.image_tag(image.image_url(variant_type: "normal"), alt: image.name)
             # build figcaption only when caption present
-            figcap = caption.present? ? ApplicationController.helpers.content_tag(:figcaption, caption) : ""
+            figcap = ApplicationController.helpers.content_tag(:figcaption, caption.present? ? caption : image.name)
 
             # figure contains anchor wrapping image, and optional figcaption
             ApplicationController.helpers.content_tag(:figure, img_tag + figcap,

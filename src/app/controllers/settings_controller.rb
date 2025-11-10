@@ -7,7 +7,12 @@ class SettingsController < ApplicationController
   def account; end
 
   def icon
-    @images = Image.where(account: @current_account)
+    images = Image
+      .is_normal
+      .is_opened
+      .where(account: @current_account)
+      .order(id: :desc)
+    @images = set_pagination_for(images)
   end
 
   def post_account

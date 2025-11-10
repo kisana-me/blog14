@@ -1,14 +1,21 @@
 module V1
   class ImagesController < V1::ApplicationController
-    before_action :api_logged_in_account
+    before_action :api_require_signin
+
     def create
       @image = Image.new(image_params)
       @image.account = @current_account
-      @image.aid = generate_aid(Image, "aid")
       if @image.save
-        render json: { status: true, url: Image.find_by(aid: @image.aid).image_url }
+        render json: {
+          flag: true,
+          url: @image.image_url,
+          aid: @image.aid,
+          name: @image.name
+        }
       else
-        render json: { status: false }
+        render json: {
+          flag: false
+        }
       end
     end
 
@@ -16,9 +23,12 @@ module V1
 
     def image_params
       params.expect(
-        image: %i[image
-                  name
-                  description]
+        image: %i[
+          image
+          name
+          description
+          visibility
+        ]
       )
     end
   end
