@@ -8,7 +8,7 @@ module ViewLogger
       ip: request.remote_ip,
       user_agent: request.user_agent,
       referer: request.referer,
-      session_id: request.session.id.to_s,
+      session_id: request.session.id,
       viewed_at: Time.current
     )
   rescue StandardError => e
