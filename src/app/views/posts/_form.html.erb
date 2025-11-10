@@ -118,7 +118,10 @@
     })
     .then(data => {
       console.log('Success:', data)
-      onSuccess(data.url)
+      // onSuccess(data.url)
+      const cm = easyMDE.codemirror
+      const customSyntax = `?[](${data.aid})`
+      cm.replaceSelection(customSyntax + "\n")
     })
     .catch(error => {
       console.error('Error:', error)

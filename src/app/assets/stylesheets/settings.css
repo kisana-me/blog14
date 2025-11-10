@@ -1,0 +1,9 @@
+input[type="radio"]:checked + .settings-icon-label {
+  border: 2px solid #64afff;
+}
+.settings-icon-label {
+  width: 100px;
+  border: 2px solid #8c8c8c;
+  display: flex;
+  flex-direction: column;
+}

@@ -71,6 +71,8 @@ class ImagesController < ApplicationController
       image: %i[
         image
         name
+        description
+        visibility
       ]
     )
   end

@@ -11,14 +11,16 @@
   <div class="image-shelf">
     <% @images.each do |image| %>
       <%= form.radio_button :icon_aid, image.aid, checked: (@account.icon_id == image.id), hidden: false %>
-      <%= form.label :icon_aid, for: "account_icon_aid_#{image.aid}", class: "custom-image-label" do %>
+      <%= form.label :icon_aid, for: "account_icon_aid_#{image.aid}", class: "settings-icon-label" do %>
         <%= image.name %>
-        <%= image_tag(image.image_url(variant_type: "icons")) %>
+        <%= image_tag(image.image_url(variant_type: "normal"), style: "width: 100px; height: 100px; object-fit: cover;") %>
       <% end %>
     <% end %>
     <%= form.radio_button :icon_aid, "00000", checked: (@account.icon_id.blank?), hidden: false %>
-    <%= form.label :icon_aid, "アイコン無し", for: "account_icon_aid_#{"00000"}", class: "custom-image-label" %>
+    <%= form.label :icon_aid, "アイコン無し", for: "account_icon_aid_#{"00000"}", class: "settings-icon-label" %>
   </div>
+  <br />
+  <%= render 'shared/paging', pages: @total_pages, page: @page, page_to: '/settings/icon' %>
   <br />
   <div>
     <%= form.submit "更新", class: "custom-button" %>
