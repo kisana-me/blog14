@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include MdTools
+
   belongs_to :account
   belongs_to :thumbnail, class_name: "Image", optional: true
   has_many :post_tags
@@ -17,6 +19,7 @@ class Post < ApplicationRecord
   after_initialize :set_aid, if: :new_record?
   before_validation :set_name_id
   before_validation :assign_thumbnail
+  before_save :transform_standard2custom_image
   after_save :sync_post_images, if: :saved_change_to_content?
 
   validates :name_id,
@@ -68,6 +71,18 @@ class Post < ApplicationRecord
         aid: thumbnail_image_aid
       )
     end
+  end
+
+  def transform_standard2custom_image
+    return if content.blank?
+
+    new_content = standard2custom_image(content)
+
+    if new_content != content
+      self.content = new_content
+      Rails.logger.info("POST TRANSFORM LEGACY IMAGES IN MARKDOWN ======= TRANSFORMED!!!")
+    end
+    new_content
   end
 
   def sync_post_images

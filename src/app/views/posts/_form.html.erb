@@ -120,7 +120,7 @@
       console.log('Success:', data)
       // onSuccess(data.url)
       const cm = easyMDE.codemirror
-      const customSyntax = `?[](${data.aid})`
+      const customSyntax = `?[image](${data.aid}|${data.name})`
       cm.replaceSelection(customSyntax + "\n")
     })
     .catch(error => {

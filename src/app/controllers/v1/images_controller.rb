@@ -9,7 +9,8 @@ module V1
         render json: {
           flag: true,
           url: @image.image_url,
-          aid: @image.aid
+          aid: @image.aid,
+          name: @image.name
         }
       else
         render json: {
