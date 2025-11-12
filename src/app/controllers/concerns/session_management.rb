@@ -51,7 +51,7 @@ module SessionManagement
     tokens = get_tokens
     return false unless (token = tokens.shift)
 
-    db_session = Session.isnt_deleted.find_by(token: token)
+    db_session = Session.isnt_deleted.from_not_deleted_accounts.findby_token(token)
     db_session&.update(status: :deleted)
 
     if tokens.empty?
@@ -74,16 +74,22 @@ module SessionManagement
 
   def change_account(account_aid)
     tokens = get_tokens
-    target_db_session = Session
-      .isnt_deleted
-      .from_not_deleted_accounts
-      .find_by(account: { aid: account_aid })
-    return false unless target_db_session
+    target_token = nil
+    tokens.shift
 
-    target_token = tokens.find { |token| target_db_session.authenticate_token(token) }
+    while tokens.any?
+      token = tokens.first
+      db_session = Session.isnt_deleted.from_not_deleted_accounts.findby_token(token)
+      if db_session && db_session.account.aid == account_aid
+        target_token = token
+        break
+      else
+        tokens.shift
+      end
+    end
     return false unless target_token
 
-    new_tokens = tokens.partition { |t| t == target_token }.flatten
+    new_tokens = get_tokens.partition { |t| t == target_token }.flatten
     write_tokens(new_tokens)
     true
   end

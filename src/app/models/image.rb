@@ -14,8 +14,11 @@ class Image < ApplicationRecord
   before_create :image_upload
 
   validates :name,
-            allow_blank: true,
-            length: { in: 1..50 }
+    allow_blank: true,
+    length: { in: 1..50 }
+  validates :description,
+    allow_blank: true,
+    length: { in: 1..500 }
   validate :image_varidation
 
   scope :from_normal_accounts, -> { left_joins(:account).where(accounts: { status: :normal }).or(where(account: nil)) }
