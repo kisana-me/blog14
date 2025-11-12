@@ -62,12 +62,11 @@ class MarkdownRenderer
   end
 
   def self.render(markdown_text, safe_render: false)
-    # Build cache key from text digest and options to avoid re-rendering
     text = markdown_text.to_s
     digest = Digest::SHA256.hexdigest(text)
     cache_key = [
       "markdown_renderer",
-      "v1", # bump when render logic changes
+      "v1",
       safe_render ? "safe1" : "safe0",
       digest
     ].join(":")
@@ -108,7 +107,6 @@ class MarkdownRenderer
 
   def self.render_plain(markdown_text)
     html = render(markdown_text)
-    # Rails.application.helpers.strip_tags(html)
     ApplicationController.helpers.strip_tags(html)
   end
 end

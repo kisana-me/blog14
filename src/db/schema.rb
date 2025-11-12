@@ -16,7 +16,7 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.string "name", null: false
     t.string "name_id", null: false
     t.text "description", default: "", null: false
-    t.datetime "birthday"
+    t.datetime "birthdate"
     t.string "email"
     t.boolean "email_verified", default: false, null: false
     t.integer "visibility", limit: 1, default: 0, null: false
@@ -178,13 +178,13 @@ ActiveRecord::Schema[8.0].define(version: 12) do
     t.string "viewable_type", null: false
     t.bigint "viewable_id", null: false
     t.bigint "account_id"
-    t.string "ip", limit: 45, null: false
-    t.text "user_agent", default: "", null: false
-    t.text "referer", default: "", null: false
-    t.string "session_id", default: "", null: false
-    t.string "device_type", default: "", null: false
-    t.string "browser", default: "", null: false
-    t.string "os", default: "", null: false
+    t.string "ip", limit: 45
+    t.text "user_agent"
+    t.text "referer"
+    t.string "session_id"
+    t.string "device_type"
+    t.string "browser"
+    t.string "os"
     t.boolean "is_bot", default: false, null: false
     t.datetime "viewed_at", default: -> { "current_timestamp(6)" }, null: false
     t.datetime "created_at", null: false
