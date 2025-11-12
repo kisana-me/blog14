@@ -42,7 +42,7 @@ class SettingsController < ApplicationController
         name
         name_id
         description
-        birthday
+        birthdate
         visibility
         password
         password_confirmation
