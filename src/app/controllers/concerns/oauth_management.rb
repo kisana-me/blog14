@@ -5,7 +5,7 @@ module OauthManagement
     anyur: {
       client_id: Rails.application.credentials.dig(:oauth_providers, :anyur, :client_id),
       client_secret: Rails.application.credentials.dig(:oauth_providers, :anyur, :client_secret),
-      scope: "id name name_id subscription",
+      scope: "persona_aid name name_id subscription",
       redirect_url: URI.join(ENV.fetch("APP_URL"), "/oauth/callback").to_s,
       authorize_url: "https://anyur.com/oauth/authorize",
       token_url: "https://anyur.com/oauth/token",

@@ -1,6 +1,6 @@
 <h1>IVECOLORを開始する</h1>
 
-<p>ようこそ！以下にあなたの情報を登録してください。</p>
+<p>ようこそ！以下の情報を確認して登録してください。</p>
 
 <%= form_with model: @account, url: signup_path, method: :post, data: { turbo: false } do |f| %>
   <%= render "shared/error_messages", instead: @account %>

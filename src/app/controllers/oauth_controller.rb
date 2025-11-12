@@ -1,5 +1,5 @@
 class OauthController < ApplicationController
-  # OAuth Controller for IVECOLOR ver 1.1.0
+  # OAuth Controller Ver. 1.1.0
 
   include OauthManagement
 
@@ -69,7 +69,7 @@ class OauthController < ApplicationController
   # ========== #
 
   def handle_oauth(token_data, resources, provider)
-    uid = resources.dig("data", "id")
+    uid = resources.dig("data", "persona_aid")
     oauth_account = OauthAccount.find_by(provider: provider, uid: uid)
     account = oauth_account&.account
 
